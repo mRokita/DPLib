@@ -22,6 +22,8 @@ REGEXPS =  {
     # [19:54:18] hTml: test
     re.compile('^\\[\d\d\\:\d\d\\:\d\d\\]\\ \\*(.*?)\\ \\((.*?)\\)\\ eliminated\\ \\*(.*?)\\ \\((.*?)\\).'): ServerEvent.ELIM,
     # [18:54:24] *|ACEBot_1| (Spyder SE) eliminated *|herself| (Spyder SE).
+    re.compile('^\\[\d\d\\:\d\d\\:\d\d\\]\\ \\*(.*?)\\\'s\\ (.*?)\\ revived\\!'): ServerEvent.RESPAWN,
+    # [19:03:57] *Red's ACEBot_6 revived!
 }
 
 CHAR_TAB = ['\0', '-', '-', '-', '_', '*', 't', '.', 'N', '-', '\n', '#', '.', '>', '*', '*',
@@ -42,8 +44,16 @@ CHAR_TAB = ['\0', '-', '-', '-', '_', '*', 't', '.', 'N', '-', '\n', '#', '.', '
                 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '{', '|', '}', '~', '<']
 
 
+class Player(object):
+    def __init__(self, server, id, dplogin, nick, build):
+        self.server = server
+        self.id = id
+        self.dplogin = dplogin
+        self.nick = nick
+        self.build = build
+
 class Server(object):
-    __ALLOWED_EVENTS = ['on_chat', 'on_elim']
+    __ALLOWED_EVENTS = ['on_chat', 'on_elim', 'on_respawn']
 
     def __init__(self, hostname, port, logfile=None, rcon_password=None):
         self.__rcon_password = rcon_password
@@ -52,21 +62,31 @@ class Server(object):
         self.__logfile_name = logfile
         self.handlers = {
             ServerEvent.CHAT: 'on_chat',
-            ServerEvent.ELIM: 'on_elim'
+            ServerEvent.ELIM: 'on_elim',
+            ServerEvent.RESPAWN: 'on_respawn',
         }
         self.__listeners = {
             ServerEvent.CHAT: [],
-            ServerEvent.ELIM: []
+            ServerEvent.ELIM: [],
+            ServerEvent.RESPAWN: [],
         }
         self.loop = asyncio.get_event_loop()
 
     @asyncio.coroutine
+    def on_chat(self, nick, message):
+        pass
+
+    @asyncio.coroutine
     def on_elim(self, killer_nick, killer_weapon, victim_nick, victim_weapon):
-        print(killer_nick, killer_weapon, victim_nick, victim_weapon)
+        pass
 
     @asyncio.coroutine
     def on_entered(self, nick, ip):
         pass
+
+    @asyncio.coroutine
+    def on_respawn(self, team, nick):
+        print(team, nick)
 
     def event(self, func):
         if func.__name__ in self.__ALLOWED_EVENTS:
@@ -98,7 +118,7 @@ class Server(object):
                 'message': args[1]
             }
             self.perform_listeners(ServerEvent.CHAT, args, kwargs)
-        if event_type == ServerEvent.ELIM:
+        elif event_type == ServerEvent.ELIM:
             kwargs = {
                 'killer_nick': args[0],
                 'killer_weapon': args[1],
@@ -106,6 +126,12 @@ class Server(object):
                 'victim_weapon': args[3]
             }
             self.perform_listeners(ServerEvent.ELIM, args, kwargs)
+        elif event_type == ServerEvent.RESPAWN:
+            kwargs = {
+                'team': args[0],
+                'nick': args[1],
+            }
+            self.perform_listeners(ServerEvent.RESPAWN, args, kwargs)
         asyncio.async(getattr(self, self.handlers[event_type])(**kwargs))
 
     @asyncio.coroutine
@@ -115,13 +141,20 @@ class Server(object):
             for res in results:
                 yield from self.__handle_event(event_type=REGEXPS[r], args=res)
 
-
     def rcon(self, command):
         sock = socket(AF_INET, SOCK_DGRAM)
         sock.connect((self.__hostname, self.__port))
         sock.settimeout(3)
         sock.send(bytes('\xFF\xFF\xFF\xFFrcon {} {}\n'.format(self.__rcon_password, command), 'latin-1'))
-        return sock.recv(2048)
+        return sock.recv(2048).decode('latin-1')
+
+    def kick(self, id=None, nick=None):
+        if nick:
+            id = self.get_ingame_info(nick).id
+        if id:
+            self.rcon('kick %s' % id)
+        else:
+            raise TypeError('Player id or nick is required.')
 
     def say(self, message):
         self.rcon('say "%s"' % message.format(C=chr(136), U=chr(134), I=chr(135)))
@@ -143,9 +176,22 @@ class Server(object):
         return predicate
 
     @asyncio.coroutine
+    def wait_for_respawn(self, timeout=None, team=None, nick=None, check=None):
+        future = asyncio.Future(loop=self.loop)
+        margs = (team, nick)
+        predicate = self.get_predicate(margs, check)
+        self.__listeners[ServerEvent.RESPAWN].append((predicate, future))
+        try:
+            data = yield from asyncio.wait_for(future, timeout,
+                                               loop=self.loop)
+        except asyncio.TimeoutError:
+            data = None
+        return data
+
+    @asyncio.coroutine
     def wait_for_elim(self, timeout=None, killer_nick=None, killer_weapon=None, victim_nick=None, victim_weapon=None,
                       check=None):
-        future = asyncio.Future(loop=asyncio.get_event_loop())
+        future = asyncio.Future(loop=self.loop)
         margs = (killer_nick, killer_weapon, victim_nick, victim_weapon)
         predicate = self.get_predicate(margs, check)
         self.__listeners[ServerEvent.ELIM].append((predicate, future))
@@ -158,7 +204,7 @@ class Server(object):
 
     @asyncio.coroutine
     def wait_for_message(self, timeout=None, nick=None, message=None, check=None):
-        future = asyncio.Future(loop=asyncio.get_event_loop())
+        future = asyncio.Future(loop=self.loop)
         margs = (nick, message)
         predicate = self.get_predicate(margs, check)
         self.__listeners[ServerEvent.CHAT].append((predicate, future))
@@ -181,6 +227,26 @@ class Server(object):
                     yield from self.__parse_line(line.decode('latin-1'))
                 yield from asyncio.sleep(0.05)
         self.__log_file.close()
+
+    def get_players(self):
+        response = self.rcon('sv players')
+        response = re.findall('(\d+)\\ \\(?(.*?)\\)?\\]\\ \\*\\ (?:OP\\ \d+\\,\\ )?(.+)\\ \\((b\d+)\\)', response)
+        players = list()
+        for p_data in response:
+            player = Player(nick=p_data[2],
+                            id=p_data[0],
+                            dplogin=p_data[1],
+                            build=p_data[3],
+                            server=self)
+            players.append(player)
+        return players
+
+    def get_ingame_info(self, nick):
+        players = self.get_players()
+        for p in players:
+            if p.nick == nick:
+                return p
+        return None
 
     def run(self):
         self.loop.run_until_complete(self.start())
