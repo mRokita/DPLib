@@ -216,6 +216,12 @@ class Server(object):
         return message
 
     def start(self, scan_old=False, realtime=True):
+        """
+
+        :param scan_old:
+        :param realtime:
+        :return:
+        """
         self.__alive = True
         self.__log_file = open(self.__logfile_name, 'rb')
         if not scan_old:

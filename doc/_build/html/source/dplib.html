@@ -1,0 +1,793 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dplib package &#8212; DPLib 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">DPLib 1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="dplib-package">
+<h1>dplib package<a class="headerlink" href="#dplib-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-dplib.dplogin">
+<span id="dplib-dplogin-module"></span><h2>dplib.dplogin module<a class="headerlink" href="#module-dplib.dplogin" title="Permalink to this headline">¶</a></h2>
+<p>DPLogin - a module for managing DPLogin accounts.</p>
+<dl class="class">
+<dt id="dplib.dplogin.DPLogin">
+<em class="property">class </em><code class="descclassname">dplib.dplogin.</code><code class="descname">DPLogin</code><span class="sig-paren">(</span><em>username=None</em>, <em>password=None</em>, <em>pw_hash=None</em>, <em>pw_session_hash=None</em>, <em>session_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>A class that represents a  DPLogin session.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>username</strong> – </li>
+<li><strong>password</strong> – </li>
+<li><strong>pw_hash</strong> – </li>
+<li><strong>pw_session_hash</strong> – </li>
+<li><strong>session_id</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><strong>TypeError</strong> – Wrong password or hash</p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.add_name">
+<code class="descname">add_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.add_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.add_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a name to the account.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> – name to be deleted</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">HTTP response</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.cancel_invite">
+<code class="descname">cancel_invite</code><span class="sig-paren">(</span><em>clanid</em>, <em>playerid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.cancel_invite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.cancel_invite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancel invite to clan for some player.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>clanid</strong> – id of a clan</li>
+<li><strong>playerid</strong> – id of a player</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">HTTP response</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.cancel_join_request">
+<code class="descname">cancel_join_request</code><span class="sig-paren">(</span><em>clanid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.cancel_join_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.cancel_join_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancel a clan join request.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>clanid</strong> – id of a clan</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">HTTP response</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.create_clan">
+<code class="descname">create_clan</code><span class="sig-paren">(</span><em>name</em>, <em>tag</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.create_clan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.create_clan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new clan.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>name</strong> – Name of the new clan</li>
+<li><strong>tag</strong> – Tag of the new clan</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">HTTP response</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.del_name">
+<code class="descname">del_name</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.del_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.del_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a name from the account.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>name</strong> – name to be deleted</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">HTTP response</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.get_clan_members">
+<code class="descname">get_clan_members</code><span class="sig-paren">(</span><em>clanid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.get_clan_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.get_clan_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get members of a clan with id of clanid.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>clanid</strong> – id of the clan</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A list of dict objects with ids, names and ranks.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.get_clans">
+<code class="descname">get_clans</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.get_clans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.get_clans" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get clans of the user.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of dicts with clan info</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.get_profile_data">
+<code class="descname">get_profile_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.get_profile_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.get_profile_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get profile data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">dict({“field”: “value”})</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.invite_member">
+<code class="descname">invite_member</code><span class="sig-paren">(</span><em>clanid</em>, <em>playerid=None</em>, <em>name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.invite_member"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.invite_member" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invite a member to a clan.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>clanid</strong> – id of the clan</li>
+<li><strong>playerid</strong> – id of the player to invite</li>
+<li><strong>name</strong> – name of the player to invite</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">HTTP response</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.join_clan">
+<code class="descname">join_clan</code><span class="sig-paren">(</span><em>clan_id=None</em>, <em>clan_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.join_clan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.join_clan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join a clan.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>clan_id</strong> – id of a clan</li>
+<li><strong>clan_name</strong> – name of a clan</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">HTTP Response</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.kick_from_clan">
+<code class="descname">kick_from_clan</code><span class="sig-paren">(</span><em>clanid</em>, <em>playerid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.kick_from_clan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.kick_from_clan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kick a player with id of playerid from a clan with id of clanid.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>clanid</strong> – id of a clan</li>
+<li><strong>playerid</strong> – id of a player</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">HTTP response</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.leave_clan">
+<code class="descname">leave_clan</code><span class="sig-paren">(</span><em>clan_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.leave_clan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.leave_clan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Leave clan with clan_id.
+:param clan_id: id of the clan to leave</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">HTTP Response</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.leave_current_clan">
+<code class="descname">leave_current_clan</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.leave_current_clan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.leave_current_clan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Leave the current clan.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">HTTP Response</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.make_leader">
+<code class="descname">make_leader</code><span class="sig-paren">(</span><em>clanid</em>, <em>playerid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.make_leader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.make_leader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make player with id of playerid a leader of a clan with clanid.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>clanid</strong> – id of a clan</li>
+<li><strong>playerid</strong> – id of a player</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">HTTP response</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.reject_join_request">
+<code class="descname">reject_join_request</code><span class="sig-paren">(</span><em>clanid</em>, <em>playerid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.reject_join_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.reject_join_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject a clan join request.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>clanid</strong> – id of a clan</li>
+<li><strong>playerid</strong> – id of a player</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">HTTP response</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.remove_clan_leader">
+<code class="descname">remove_clan_leader</code><span class="sig-paren">(</span><em>clanid</em>, <em>playerid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.remove_clan_leader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.remove_clan_leader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a leader with id of playerid from a clan with id of clanid.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>clanid</strong> – id of a clan</li>
+<li><strong>playerid</strong> – id of a player</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">HTTP response</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.set_sessid">
+<code class="descname">set_sessid</code><span class="sig-paren">(</span><em>session_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.set_sessid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.set_sessid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set session id to session_id.
+Used to “fake” session_id, pretty useful for hijacking ;)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>session_id</strong> – session id to set</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">NoneType</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.update_profile">
+<code class="descname">update_profile</code><span class="sig-paren">(</span><em>newpassword=None</em>, <em>email=None</em>, <em>realname=None</em>, <em>birthdate=None</em>, <em>location=None</em>, <em>displayemail=None</em>, <em>forumname=None</em>, <em>aim=None</em>, <em>icq=None</em>, <em>msn=None</em>, <em>yim=None</em>, <em>website=None</em>, <em>bio=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.update_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.update_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update DPLogin profile.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>newpassword</strong> – </li>
+<li><strong>email</strong> – </li>
+<li><strong>realname</strong> – </li>
+<li><strong>birthdate</strong> – </li>
+<li><strong>location</strong> – </li>
+<li><strong>displayemail</strong> – </li>
+<li><strong>forumname</strong> – </li>
+<li><strong>aim</strong> – </li>
+<li><strong>icq</strong> – </li>
+<li><strong>msn</strong> – </li>
+<li><strong>yim</strong> – </li>
+<li><strong>website</strong> – </li>
+<li><strong>bio</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">HTTP response</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="dplib.dplogin.get_new_password_hash">
+<code class="descclassname">dplib.dplogin.</code><code class="descname">get_new_password_hash</code><span class="sig-paren">(</span><em>password</em>, <em>user_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#get_new_password_hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.get_new_password_hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hash the password at password change.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>password</strong> – </li>
+<li><strong>user_id</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Hashed password and user id</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dplib.dplogin.get_password_hash">
+<code class="descclassname">dplib.dplogin.</code><code class="descname">get_password_hash</code><span class="sig-paren">(</span><em>password</em>, <em>user_id</em>, <em>session_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#get_password_hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.get_password_hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hash plain password a few times.
+Used at log in when a plaintext password is specified.
+:param password:
+:param user_id:
+:param session_id:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Hashed password</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dplib.dplogin.get_session_hash">
+<code class="descclassname">dplib.dplogin.</code><code class="descname">get_session_hash</code><span class="sig-paren">(</span><em>pwhash</em>, <em>session_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#get_session_hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.get_session_hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hash password again, use session_id as a seed.
+Used at log in when no plaintext password is specified
+:param pwhash:
+:param session_id:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Session hash</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Rtype str:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dplib.dplogin.hex_md5">
+<code class="descclassname">dplib.dplogin.</code><code class="descname">hex_md5</code><span class="sig-paren">(</span><em>string</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#hex_md5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.hex_md5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hash a string using md5</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>string</strong> – String to hash</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">MD5 hash of string</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-dplib.server">
+<span id="dplib-server-module"></span><h2>dplib.server module<a class="headerlink" href="#module-dplib.server" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="dplib.server.ListenerType">
+<em class="property">class </em><code class="descclassname">dplib.server.</code><code class="descname">ListenerType</code><a class="reference internal" href="../_modules/dplib/server.html#ListenerType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.ListenerType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="dplib.server.ListenerType.PERMANENT">
+<code class="descname">PERMANENT</code><em class="property"> = 0</em><a class="headerlink" href="#dplib.server.ListenerType.PERMANENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ListenerType.TRIGGER_ONCE">
+<code class="descname">TRIGGER_ONCE</code><em class="property"> = 1</em><a class="headerlink" href="#dplib.server.ListenerType.TRIGGER_ONCE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dplib.server.Player">
+<em class="property">class </em><code class="descclassname">dplib.server.</code><code class="descname">Player</code><span class="sig-paren">(</span><em>server</em>, <em>id</em>, <em>dplogin</em>, <em>nick</em>, <em>build</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Player"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Player" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="dplib.server.Server">
+<em class="property">class </em><code class="descclassname">dplib.server.</code><code class="descname">Server</code><span class="sig-paren">(</span><em>hostname</em>, <em>port</em>, <em>logfile=None</em>, <em>rcon_password=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="dplib.server.Server.event">
+<code class="descname">event</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.event" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.get_ingame_info">
+<code class="descname">get_ingame_info</code><span class="sig-paren">(</span><em>nick</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.get_ingame_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.get_ingame_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.get_players">
+<code class="descname">get_players</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.get_players"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.get_players" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.get_predicate">
+<code class="descname">get_predicate</code><span class="sig-paren">(</span><em>margs</em>, <em>check</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.get_predicate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.get_predicate" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.kick">
+<code class="descname">kick</code><span class="sig-paren">(</span><em>id=None</em>, <em>nick=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.kick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.kick" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_chat">
+<code class="descname">on_chat</code><span class="sig-paren">(</span><em>nick</em>, <em>message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_chat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_chat" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_elim">
+<code class="descname">on_elim</code><span class="sig-paren">(</span><em>killer_nick</em>, <em>killer_weapon</em>, <em>victim_nick</em>, <em>victim_weapon</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_elim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_elim" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_entered">
+<code class="descname">on_entered</code><span class="sig-paren">(</span><em>nick</em>, <em>ip</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_entered"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_entered" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_respawn">
+<code class="descname">on_respawn</code><span class="sig-paren">(</span><em>team</em>, <em>nick</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_respawn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_respawn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.perform_listeners">
+<code class="descname">perform_listeners</code><span class="sig-paren">(</span><em>event_type</em>, <em>args</em>, <em>kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.perform_listeners"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.perform_listeners" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.rcon">
+<code class="descname">rcon</code><span class="sig-paren">(</span><em>command</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.rcon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.rcon" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.run">
+<code class="descname">run</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.run" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.say">
+<code class="descname">say</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.say"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.say" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.set_cvar">
+<code class="descname">set_cvar</code><span class="sig-paren">(</span><em>var</em>, <em>value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.set_cvar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.set_cvar" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.start">
+<code class="descname">start</code><span class="sig-paren">(</span><em>scan_old=False</em>, <em>realtime=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.start" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>scan_old</strong> – </li>
+<li><strong>realtime</strong> – </li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.stop_listening">
+<code class="descname">stop_listening</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.stop_listening"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.stop_listening" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_elim">
+<code class="descname">wait_for_elim</code><span class="sig-paren">(</span><em>timeout=None</em>, <em>killer_nick=None</em>, <em>killer_weapon=None</em>, <em>victim_nick=None</em>, <em>victim_weapon=None</em>, <em>check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_elim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_elim" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_message">
+<code class="descname">wait_for_message</code><span class="sig-paren">(</span><em>timeout=None</em>, <em>nick=None</em>, <em>message=None</em>, <em>check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_message" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_respawn">
+<code class="descname">wait_for_respawn</code><span class="sig-paren">(</span><em>timeout=None</em>, <em>team=None</em>, <em>nick=None</em>, <em>check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_respawn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_respawn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dplib.server.ServerEvent">
+<em class="property">class </em><code class="descclassname">dplib.server.</code><code class="descname">ServerEvent</code><a class="reference internal" href="../_modules/dplib/server.html#ServerEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.ServerEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.CHAT">
+<code class="descname">CHAT</code><em class="property"> = 1</em><a class="headerlink" href="#dplib.server.ServerEvent.CHAT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.DATE">
+<code class="descname">DATE</code><em class="property"> = 5</em><a class="headerlink" href="#dplib.server.ServerEvent.DATE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.ELIM">
+<code class="descname">ELIM</code><em class="property"> = 2</em><a class="headerlink" href="#dplib.server.ServerEvent.ELIM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.MAPCHANGE">
+<code class="descname">MAPCHANGE</code><em class="property"> = 4</em><a class="headerlink" href="#dplib.server.ServerEvent.MAPCHANGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.NAMECHANGE">
+<code class="descname">NAMECHANGE</code><em class="property"> = 6</em><a class="headerlink" href="#dplib.server.ServerEvent.NAMECHANGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.RESPAWN">
+<code class="descname">RESPAWN</code><em class="property"> = 3</em><a class="headerlink" href="#dplib.server.ServerEvent.RESPAWN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.TIMEOUT">
+<code class="descname">TIMEOUT</code><em class="property"> = 0</em><a class="headerlink" href="#dplib.server.ServerEvent.TIMEOUT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dplib">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dplib" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">dplib package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-dplib.dplogin">dplib.dplogin module</a></li>
+<li><a class="reference internal" href="#module-dplib.server">dplib.server module</a></li>
+<li><a class="reference internal" href="#module-dplib">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/source/dplib.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">DPLib 1.0 documentation</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Michał Rokita.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+    </div>
+  </body>
+</html>

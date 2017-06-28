@@ -1,0 +1,349 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>dplib.server &#8212; DPLib 1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/classic.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head>
+  <body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">DPLib 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for dplib.server</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
+<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">socket</span> <span class="k">import</span> <span class="n">socket</span><span class="p">,</span> <span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_DGRAM</span>
+
+
+<div class="viewcode-block" id="ServerEvent"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.ServerEvent">[docs]</a><span class="k">class</span> <span class="nc">ServerEvent</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">TIMEOUT</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">CHAT</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">ELIM</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">RESPAWN</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">MAPCHANGE</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">DATE</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">NAMECHANGE</span> <span class="o">=</span> <span class="mi">6</span></div>
+
+<div class="viewcode-block" id="ListenerType"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.ListenerType">[docs]</a><span class="k">class</span> <span class="nc">ListenerType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">PERMANENT</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">TRIGGER_ONCE</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+<span class="n">REGEXPS</span> <span class="o">=</span>  <span class="p">{</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d</span><span class="se">\\</span><span class="s1">:\d\d</span><span class="se">\\</span><span class="s1">:\d\d</span><span class="se">\\</span><span class="s1">]</span><span class="se">\\</span><span class="s1"> (.*?)</span><span class="se">\\</span><span class="s1">: (.+).&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">,</span>
+    <span class="c1"># [19:54:18] hTml: test</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d</span><span class="se">\\</span><span class="s1">:\d\d</span><span class="se">\\</span><span class="s1">:\d\d</span><span class="se">\\</span><span class="s1">]</span><span class="se">\\</span><span class="s1"> </span><span class="se">\\</span><span class="s1">*(.*?)</span><span class="se">\\</span><span class="s1"> </span><span class="se">\\</span><span class="s1">((.*?)</span><span class="se">\\</span><span class="s1">)</span><span class="se">\\</span><span class="s1"> eliminated</span><span class="se">\\</span><span class="s1"> </span><span class="se">\\</span><span class="s1">*(.*?)</span><span class="se">\\</span><span class="s1"> </span><span class="se">\\</span><span class="s1">((.*?)</span><span class="se">\\</span><span class="s1">).&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM</span><span class="p">,</span>
+    <span class="c1"># [18:54:24] *|ACEBot_1| (Spyder SE) eliminated *|herself| (Spyder SE).</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d</span><span class="se">\\</span><span class="s1">:\d\d</span><span class="se">\\</span><span class="s1">:\d\d</span><span class="se">\\</span><span class="s1">]</span><span class="se">\\</span><span class="s1"> </span><span class="se">\\</span><span class="s1">*(.*?)</span><span class="se">\\\&#39;</span><span class="s1">s</span><span class="se">\\</span><span class="s1"> (.*?)</span><span class="se">\\</span><span class="s1"> revived</span><span class="se">\\</span><span class="s1">!&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">RESPAWN</span><span class="p">,</span>
+    <span class="c1"># [19:03:57] *Red&#39;s ACEBot_6 revived!</span>
+<span class="p">}</span>
+
+<span class="n">CHAR_TAB</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span>
+                <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\&quot;</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="s1">&#39;$&#39;</span><span class="p">,</span> <span class="s1">&#39;%&#39;</span><span class="p">,</span> <span class="s1">&#39;&amp;&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="s1">&#39;4&#39;</span><span class="p">,</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;9&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;?&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;W&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;`&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;{&#39;</span><span class="p">,</span> <span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;}&#39;</span><span class="p">,</span> <span class="s1">&#39;~&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span>
+                <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\&quot;</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="s1">&#39;$&#39;</span><span class="p">,</span> <span class="s1">&#39;%&#39;</span><span class="p">,</span> <span class="s1">&#39;&amp;&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="s1">&#39;4&#39;</span><span class="p">,</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;9&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;?&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;W&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;`&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;W&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="s1">&#39;{&#39;</span><span class="p">,</span> <span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;}&#39;</span><span class="p">,</span> <span class="s1">&#39;~&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">]</span>
+
+
+<div class="viewcode-block" id="Player"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Player">[docs]</a><span class="k">class</span> <span class="nc">Player</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">dplogin</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">build</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="n">server</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="nb">id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dplogin</span> <span class="o">=</span> <span class="n">dplogin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nick</span> <span class="o">=</span> <span class="n">nick</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">build</span> <span class="o">=</span> <span class="n">build</span></div>
+
+<div class="viewcode-block" id="Server"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server">[docs]</a><span class="k">class</span> <span class="nc">Server</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="n">__ALLOWED_EVENTS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;on_chat&#39;</span><span class="p">,</span> <span class="s1">&#39;on_elim&#39;</span><span class="p">,</span> <span class="s1">&#39;on_respawn&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="n">port</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rcon_password</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__rcon_password</span> <span class="o">=</span> <span class="n">rcon_password</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__hostname</span> <span class="o">=</span> <span class="n">hostname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__port</span> <span class="o">=</span> <span class="n">port</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__logfile_name</span> <span class="o">=</span> <span class="n">logfile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">:</span> <span class="s1">&#39;on_chat&#39;</span><span class="p">,</span>
+            <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM</span><span class="p">:</span> <span class="s1">&#39;on_elim&#39;</span><span class="p">,</span>
+            <span class="n">ServerEvent</span><span class="o">.</span><span class="n">RESPAWN</span><span class="p">:</span> <span class="s1">&#39;on_respawn&#39;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="n">ServerEvent</span><span class="o">.</span><span class="n">RESPAWN</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Server.on_chat"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_chat">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">on_chat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Server.on_elim"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_elim">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">on_elim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">killer_nick</span><span class="p">,</span> <span class="n">killer_weapon</span><span class="p">,</span> <span class="n">victim_nick</span><span class="p">,</span> <span class="n">victim_weapon</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Server.on_entered"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_entered">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">on_entered</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">ip</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Server.on_respawn"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_respawn">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">on_respawn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Server.event"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.event">[docs]</a>    <span class="k">def</span> <span class="nf">event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ALLOWED_EVENTS</span><span class="p">:</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">coroutine</span><span class="p">(</span><span class="n">func</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">func</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Event </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> doesn</span><span class="se">\&#39;</span><span class="s1">t exist&#39;</span> <span class="o">%</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Server.stop_listening"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.stop_listening">[docs]</a>    <span class="k">def</span> <span class="nf">stop_listening</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__alive</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Server.perform_listeners"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.perform_listeners">[docs]</a>    <span class="k">def</span> <span class="nf">perform_listeners</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_type</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">to_remove</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">check</span><span class="p">,</span> <span class="n">future</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">event_type</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">future</span><span class="o">.</span><span class="n">cancelled</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">future</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">check</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+                    <span class="n">future</span><span class="o">.</span><span class="n">set_result</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">to_remove</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">to_remove</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">event_type</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
+
+    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">__handle_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_type</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">:</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;nick&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">perform_listeners</span><span class="p">(</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM</span><span class="p">:</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;killer_nick&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s1">&#39;killer_weapon&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="s1">&#39;victim_nick&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                <span class="s1">&#39;victim_weapon&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">perform_listeners</span><span class="p">(</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">RESPAWN</span><span class="p">:</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;team&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s1">&#39;nick&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">perform_listeners</span><span class="p">(</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">RESPAWN</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">asyncio</span><span class="o">.</span><span class="k">async</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">event_type</span><span class="p">])(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+
+    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">__parse_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">REGEXPS</span><span class="p">:</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
+                <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">__handle_event</span><span class="p">(</span><span class="n">event_type</span><span class="o">=</span><span class="n">REGEXPS</span><span class="p">[</span><span class="n">r</span><span class="p">],</span> <span class="n">args</span><span class="o">=</span><span class="n">res</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Server.rcon"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.rcon">[docs]</a>    <span class="k">def</span> <span class="nf">rcon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+        <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_DGRAM</span><span class="p">)</span>
+        <span class="n">sock</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">__hostname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__port</span><span class="p">))</span>
+        <span class="n">sock</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="n">sock</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\xFF\xFF\xFF\xFF</span><span class="s1">rcon </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__rcon_password</span><span class="p">,</span> <span class="n">command</span><span class="p">),</span> <span class="s1">&#39;latin-1&#39;</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">2048</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Server.kick"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.kick">[docs]</a>    <span class="k">def</span> <span class="nf">kick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nick</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">nick</span><span class="p">:</span>
+            <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ingame_info</span><span class="p">(</span><span class="n">nick</span><span class="p">)</span><span class="o">.</span><span class="n">id</span>
+        <span class="k">if</span> <span class="nb">id</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;kick </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Player id or nick is required.&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Server.say"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.say">[docs]</a>    <span class="k">def</span> <span class="nf">say</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;say &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">message</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="nb">chr</span><span class="p">(</span><span class="mi">136</span><span class="p">),</span> <span class="n">U</span><span class="o">=</span><span class="nb">chr</span><span class="p">(</span><span class="mi">134</span><span class="p">),</span> <span class="n">I</span><span class="o">=</span><span class="nb">chr</span><span class="p">(</span><span class="mi">135</span><span class="p">)))</span></div>
+
+<div class="viewcode-block" id="Server.set_cvar"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.set_cvar">[docs]</a>    <span class="k">def</span> <span class="nf">set_cvar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;set </span><span class="si">%s</span><span class="s1"> &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Server.get_predicate"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.get_predicate">[docs]</a>    <span class="k">def</span> <span class="nf">get_predicate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">):</span>
+        <span class="k">def</span> <span class="nf">predicate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">margs</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;predicate() takes </span><span class="si">%d</span><span class="s1"> positional arguments but </span><span class="si">%d</span><span class="s1"> were given&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">margs</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)))</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">margs</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">a</span><span class="p">:</span>
+                    <span class="n">result</span> <span class="o">=</span> <span class="n">result</span> <span class="ow">and</span> <span class="n">a</span> <span class="o">==</span> <span class="n">args</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">check</span><span class="p">):</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">result</span> <span class="ow">and</span> <span class="n">check</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">result</span>
+        <span class="k">return</span> <span class="n">predicate</span></div>
+
+<div class="viewcode-block" id="Server.wait_for_respawn"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.wait_for_respawn">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">wait_for_respawn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">team</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="n">margs</span> <span class="o">=</span> <span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">)</span>
+        <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">RESPAWN</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">predicate</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span>
+                                               <span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="Server.wait_for_elim"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.wait_for_elim">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">wait_for_elim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">killer_nick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">killer_weapon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">victim_nick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">victim_weapon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                      <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="n">margs</span> <span class="o">=</span> <span class="p">(</span><span class="n">killer_nick</span><span class="p">,</span> <span class="n">killer_weapon</span><span class="p">,</span> <span class="n">victim_nick</span><span class="p">,</span> <span class="n">victim_weapon</span><span class="p">)</span>
+        <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">predicate</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">elim_info</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span>
+                                                  <span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="n">elim_info</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">elim_info</span></div>
+
+<div class="viewcode-block" id="Server.wait_for_message"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.wait_for_message">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">wait_for_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="n">margs</span> <span class="o">=</span> <span class="p">(</span><span class="n">nick</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+        <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">predicate</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span>
+                                                  <span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">message</span></div>
+
+<div class="viewcode-block" id="Server.start"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan_old</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">realtime</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        :param scan_old:</span>
+<span class="sd">        :param realtime:</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__alive</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__logfile_name</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">scan_old</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">realtime</span><span class="p">:</span>
+            <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__alive</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_line</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">))</span>
+                <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Server.get_players"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.get_players">[docs]</a>    <span class="k">def</span> <span class="nf">get_players</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;sv players&#39;</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;(\d+)</span><span class="se">\\</span><span class="s1"> </span><span class="se">\\</span><span class="s1">(?(.*?)</span><span class="se">\\</span><span class="s1">)?</span><span class="se">\\</span><span class="s1">]</span><span class="se">\\</span><span class="s1"> </span><span class="se">\\</span><span class="s1">*</span><span class="se">\\</span><span class="s1"> (?:OP</span><span class="se">\\</span><span class="s1"> \d+</span><span class="se">\\</span><span class="s1">,</span><span class="se">\\</span><span class="s1"> )?(.+)</span><span class="se">\\</span><span class="s1"> </span><span class="se">\\</span><span class="s1">((b\d+)</span><span class="se">\\</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+        <span class="n">players</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">p_data</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+            <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="n">nick</span><span class="o">=</span><span class="n">p_data</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                            <span class="nb">id</span><span class="o">=</span><span class="n">p_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                            <span class="n">dplogin</span><span class="o">=</span><span class="n">p_data</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                            <span class="n">build</span><span class="o">=</span><span class="n">p_data</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                            <span class="n">server</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">players</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">players</span></div>
+
+<div class="viewcode-block" id="Server.get_ingame_info"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.get_ingame_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_ingame_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nick</span><span class="p">):</span>
+        <span class="n">players</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_players</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">players</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">nick</span> <span class="o">==</span> <span class="n">nick</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">p</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="Server.run"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">())</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">DPLib 1.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2017, Michał Rokita.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.2.
+    </div>
+  </body>
+</html>
