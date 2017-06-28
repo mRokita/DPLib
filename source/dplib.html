@@ -569,12 +569,41 @@ Used at log in when no plaintext password is specified
 <dt id="dplib.server.Player">
 <em class="property">class </em><code class="descclassname">dplib.server.</code><code class="descname">Player</code><span class="sig-paren">(</span><em>server</em>, <em>id</em>, <em>dplogin</em>, <em>nick</em>, <em>build</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Player"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Player" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Player info from sv players command</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>server</strong> – Instance of <a class="reference internal" href="#dplib.server.Server" title="dplib.server.Server"><code class="xref py py-class docutils literal"><span class="pre">Server</span></code></a></li>
+<li><strong>id</strong> – Player’s ingame id</li>
+<li><strong>dplogin</strong> – Dplogin.com account id, None when Player has no account</li>
+<li><strong>nick</strong> – nickname:</li>
+<li><strong>build</strong> – Game build</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="class">
 <dt id="dplib.server.Server">
-<em class="property">class </em><code class="descclassname">dplib.server.</code><code class="descname">Server</code><span class="sig-paren">(</span><em>hostname</em>, <em>port</em>, <em>logfile=None</em>, <em>rcon_password=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">dplib.server.</code><code class="descname">Server</code><span class="sig-paren">(</span><em>hostname</em>, <em>port=27910</em>, <em>logfile=None</em>, <em>rcon_password=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Represents a DP:PB2 server</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>hostname</strong> (<em>str</em>) – Server hostname, for example ‘127.0.0.1’</li>
+<li><strong>port</strong> (<em>str</em>) – Server port, default 27910</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="dplib.server.Server.event">
 <code class="descname">event</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.event" title="Permalink to this definition">¶</a></dt>
