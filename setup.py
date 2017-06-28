@@ -14,11 +14,6 @@ setup(name='DPLib',
       classifiers=[
             'Programming Language :: Python :: 3',
             'Intended Audience :: Developers',
-            'Intended Audience :: Gamers',
-            'Operating System :: MacOS',
-            'Operating System :: Unix',
-            'Operating System :: Windows',
-            'Topic :: Gaming',
             'Topic :: Utilities',
       ]
      )
