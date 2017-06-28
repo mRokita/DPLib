@@ -7,7 +7,10 @@ Welcome to DPLib's documentation!
 =================================
 
 .. toctree::
-   :maxdepth: 2
+
+   gettingstarted
+   includeme
+
    :caption: Contents:
 
 
@@ -18,3 +21,4 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+* :ref:`includeme`
