@@ -12,6 +12,14 @@ dplib\.dplogin module
     :undoc-members:
     :show-inheritance:
 
+dplib\.parse module
+-------------------
+
+.. automodule:: dplib.parse
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 dplib\.server module
 --------------------
 

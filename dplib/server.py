@@ -3,6 +3,8 @@ from enum import Enum
 import asyncio
 from socket import socket, AF_INET, SOCK_DGRAM
 
+from dplib.parse import render_text
+
 
 class ServerEvent(Enum):
     TIMEOUT = 0
@@ -62,6 +64,7 @@ class Player(object):
         self.nick = nick
         self.build = build
 
+
 class Server(object):
     """
     Represents a DP:PB2 server
@@ -69,7 +72,7 @@ class Server(object):
     :param hostname: Server hostname, for example '127.0.0.1'
     :type hostname: str
     :param port: Server port, default 27910
-    :type port: str
+    :type port: int
     :param logfile: Path to logfile
     :param rcon_password: rcon password
     """
@@ -272,7 +275,6 @@ class Server(object):
 
         :return: Rcon response
         :rtype: str
-
         """
         if ip:
             resp = self.rcon('addip %s' % ip)
@@ -350,7 +352,7 @@ class Server(object):
         """
         Say a message
 
-        :param message: text, can contain {C} - color char {U} - underline char {I} italic
+        :param message: Text, can contain {C} - color char {U} - underline char {I} italic. Remember to escape user input using :func:`dplib.parse.escape_braces`.
 
         :rtype: str
         :return: Rcon response
@@ -369,7 +371,18 @@ class Server(object):
 
         .. image:: ..\..\doc\images\say_test.png
         """
-        return self.rcon('say "%s"' % message.format(C=chr(136), U=chr(134), I=chr(135)))
+        return self.rcon('say "%s"' % render_text(message))
+
+    def cprint(self, message):
+        """
+        Cprints a message.
+
+        :param message: Text, can contain {C} - color char {U} - underline char {I} italic. Remember to escape user input using :func:`dplib.parse.escape_brac
+
+        :return: Rcon response
+        :rtype: str
+        """
+        return self.rcon('sv cprint "%s"' % render_text(message))
 
     def set_cvar(self, var, value):
         """

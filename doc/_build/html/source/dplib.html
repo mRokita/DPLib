@@ -653,6 +653,45 @@ Used at log in when no plaintext password is specified
 </dd></dl>
 
 </div>
+<div class="section" id="module-dplib.parse">
+<span id="dplib-parse-module"></span><h2>dplib.parse module<a class="headerlink" href="#module-dplib.parse" title="Permalink to this headline">¶</a></h2>
+<p>A module for parsing DP data</p>
+<dl class="function">
+<dt id="dplib.parse.escape_braces">
+<code class="descclassname">dplib.parse.</code><code class="descname">escape_braces</code><span class="sig-paren">(</span><em>string</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/parse.html#escape_braces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.parse.escape_braces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Escapes braces, use for user-input in <a class="reference internal" href="#dplib.parse.render_text" title="dplib.parse.render_text"><code class="xref py py-func docutils literal"><span class="pre">render_text()</span></code></a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>string</strong> – string to escape</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">escaped string</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="dplib.parse.render_text">
+<code class="descclassname">dplib.parse.</code><code class="descname">render_text</code><span class="sig-paren">(</span><em>text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/parse.html#render_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.parse.render_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renders some text with formatting to a DP message.
+Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I} with italic (ASCII 135)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>text</strong> (<em>str</em>) – Text to render</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">DP message</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
 <div class="section" id="module-dplib.server">
 <span id="dplib-server-module"></span><h2>dplib.server module<a class="headerlink" href="#module-dplib.server" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -704,7 +743,7 @@ Used at log in when no plaintext password is specified
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>hostname</strong> (<em>str</em>) – Server hostname, for example ‘127.0.0.1’</li>
-<li><strong>port</strong> (<em>str</em>) – Server port, default 27910</li>
+<li><strong>port</strong> (<em>int</em>) – Server port, default 27910</li>
 <li><strong>logfile</strong> – Path to logfile</li>
 <li><strong>rcon_password</strong> – rcon password</li>
 </ul>
@@ -712,6 +751,24 @@ Used at log in when no plaintext password is specified
 </tr>
 </tbody>
 </table>
+<dl class="method">
+<dt id="dplib.server.Server.cprint">
+<code class="descname">cprint</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.cprint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.cprint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cprints a message.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>message</strong> – Text, can contain {C} - color char {U} - underline char {I} italic. Remember to escape user input using :func:<a href="#id1"><span class="problematic" id="id2">`</span></a>dplib.parse.escape_brac</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Rcon response</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="method">
 <dt id="dplib.server.Server.event">
 <code class="descname">event</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.event" title="Permalink to this definition">¶</a></dt>
@@ -984,7 +1041,7 @@ Used at log in when no plaintext password is specified
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>message</strong> – text, can contain {C} - color char {U} - underline char {I} italic</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>message</strong> – Text, can contain {C} - color char {U} - underline char {I} italic. Remember to escape user input using <a class="reference internal" href="#dplib.parse.escape_braces" title="dplib.parse.escape_braces"><code class="xref py py-func docutils literal"><span class="pre">dplib.parse.escape_braces()</span></code></a>.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
 </tr>
