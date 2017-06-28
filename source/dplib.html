@@ -599,6 +599,8 @@ Used at log in when no plaintext password is specified
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>hostname</strong> (<em>str</em>) – Server hostname, for example ‘127.0.0.1’</li>
 <li><strong>port</strong> (<em>str</em>) – Server port, default 27910</li>
+<li><strong>logfile</strong> – Path to logfile</li>
+<li><strong>rcon_password</strong> – rcon password</li>
 </ul>
 </td>
 </tr>
@@ -632,7 +634,14 @@ Used at log in when no plaintext password is specified
 <dl class="method">
 <dt id="dplib.server.Server.on_chat">
 <code class="descname">on_chat</code><span class="sig-paren">(</span><em>nick</em>, <em>message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_chat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_chat" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>On chat, can be overridden using the <code class="xref py py-func docutils literal"><span class="pre">Server.event()</span></code>
+:param nick: Player’s nick
+:type nicks: str
+:param message: Message
+:type message: str
+:return: None
+:rtype: NoneType</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="dplib.server.Server.on_elim">
