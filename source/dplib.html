@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>dplib package &mdash; DPLib 1.0 documentation</title>
+  <title>dplib package &mdash; DPLib 1.1 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="DPLib 1.0 documentation" href="../index.html"/> 
+    <link rel="top" title="DPLib 1.1 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                1.0
+                1.1
               </div>
             
           
@@ -89,7 +89,8 @@
             
             
               <ul>
-<li class="toctree-l1"><a class="reference internal" href="includeme.html">Welcome to DPLib’s documentation!</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gettingstarted.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../includeme.html">README</a></li>
 </ul>
 
             
@@ -877,6 +878,24 @@ Used at log in when no plaintext password is specified
 </dd></dl>
 
 <dl class="method">
+<dt id="dplib.server.Server.permaban">
+<code class="descname">permaban</code><span class="sig-paren">(</span><em>ip=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.permaban"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.permaban" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bans IP address or range of adresses and saves ban list to disk.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ip</strong> – IP address to ban</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Rcon response</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="dplib.server.Server.rcon">
 <code class="descname">rcon</code><span class="sig-paren">(</span><em>command</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.rcon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.rcon" title="Permalink to this definition">¶</a></dt>
 <dd><p>Execute a console command using RCON.</p>
@@ -903,6 +922,40 @@ Used at log in when no plaintext password is specified
 <span class="go">&#39;ÿÿÿÿprint\n mRokita [127.0.0.1:9419]\nadmin is listing IP for mRokita [127.0.0.1:9419]\n&#39;</span>
 </pre></div>
 </td></tr></table></div>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.remove_permaban">
+<code class="descname">remove_permaban</code><span class="sig-paren">(</span><em>ip=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.remove_permaban"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.remove_permaban" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes ban on IP address and saves ban list to disk.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ip</strong> – IP address to unban</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Rcon response</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.remove_tempobans">
+<code class="descname">remove_tempobans</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.remove_tempobans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.remove_tempobans" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes all temporary bans</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Rcon response</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1009,6 +1062,31 @@ Used at log in when no plaintext password is specified
 <dt id="dplib.server.Server.stop_listening">
 <code class="descname">stop_listening</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.stop_listening"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.stop_listening" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stop the main loop</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.tempoban">
+<code class="descname">tempoban</code><span class="sig-paren">(</span><em>id=None</em>, <em>nick=None</em>, <em>duration=3</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.tempoban"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.tempoban" title="Permalink to this definition">¶</a></dt>
+<dd><p>Temporarily bans a player with specified id using rcon</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>id</strong> – Player’s id</li>
+<li><strong>nick</strong> – Player’s nick</li>
+<li><strong>duration</strong> – Ban duration in minutes (defaults to 3)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Rcon response</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">str</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1189,7 +1267,7 @@ Used at log in when no plaintext password is specified
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.0',
+            VERSION:'1.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
