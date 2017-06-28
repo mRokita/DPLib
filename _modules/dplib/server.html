@@ -99,11 +99,12 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Player info from sv players command</span>
 
-<span class="sd">    :param server: Instance of :class:`.Server`</span>
-<span class="sd">    :param id: Player&#39;s ingame id</span>
-<span class="sd">    :param dplogin: Dplogin.com account id, None when Player has no account</span>
-<span class="sd">    :param nick: nickname:</span>
-<span class="sd">    :param build: Game build</span>
+<span class="sd">    :Attributes:</span>
+
+<span class="sd">        * dplogin - dplogin.com account id, None when Player has no account</span>
+<span class="sd">        * nick - nickname:</span>
+<span class="sd">        * build - game build</span>
+<span class="sd">        * server - an instance of :class:`Server`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">dplogin</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">build</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="n">server</span>
@@ -145,31 +146,74 @@
 <div class="viewcode-block" id="Server.on_chat"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_chat">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
     <span class="k">def</span> <span class="nf">on_chat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        On chat, can be overridden using the :func:`.Server.event`</span>
+<span class="sd">        On chat, can be overridden using the :func:`.Server.event`.</span>
 
 <span class="sd">        :param nick: Player&#39;s nick</span>
-<span class="sd">        :type nicks: str</span>
+<span class="sd">        :type nick: str</span>
 <span class="sd">        :param message: Message</span>
 <span class="sd">        :type message: str</span>
-
-<span class="sd">        :return: None</span>
-<span class="sd">        :rtype: NoneType</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Server.on_elim"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_elim">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
     <span class="k">def</span> <span class="nf">on_elim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">killer_nick</span><span class="p">,</span> <span class="n">killer_weapon</span><span class="p">,</span> <span class="n">victim_nick</span><span class="p">,</span> <span class="n">victim_weapon</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        On elim can be overridden using the :func:`.Server.event`.</span>
+
+<span class="sd">        :param killer_nick: Killer&#39;s nick</span>
+<span class="sd">        :type killer_nick: str</span>
+<span class="sd">        :param killer_weapon: Killer&#39;s weapon</span>
+<span class="sd">        :type killer_weapon: str</span>
+<span class="sd">        :param victim_nick: Victim&#39;s nick</span>
+<span class="sd">        :type victim_nick: str</span>
+<span class="sd">        :param victim_weapon: Victim&#39;s weapon</span>
+<span class="sd">        :type victim_weapon: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Server.on_entered"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_entered">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
     <span class="k">def</span> <span class="nf">on_entered</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">ip</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Not implemented yet.</span>
+
+<span class="sd">        :param nick:</span>
+<span class="sd">        :param ip:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Server.on_respawn"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_respawn">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
     <span class="k">def</span> <span class="nf">on_respawn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">):</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">)</span></div>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        On respawn, can be overridden using the :func:`.Server.event`.</span>
+
+<span class="sd">        :param team: Player&#39;s team (Blue|Red|Yellow|Purple)</span>
+<span class="sd">        :type team: str</span>
+<span class="sd">        :param nick: Player&#39;s nick</span>
+<span class="sd">        :type nick: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Server.event"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.event">[docs]</a>    <span class="k">def</span> <span class="nf">event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Decorator, used for event registration.</span>
+
+<span class="sd">        :param func: function to register</span>
+
+<span class="sd">        :rtype: builtin_function_or_method</span>
+
+<span class="sd">        :example:</span>
+<span class="sd">        .. code-block:: python</span>
+<span class="sd">            :linenos:</span>
+
+<span class="sd">            &gt;&gt;&gt; from dplib.server import Server</span>
+<span class="sd">            &gt;&gt;&gt; s = Server(hostname=&#39;127.0.0.1&#39;, port=27910, logfile=r&#39;C:\Games\Paintball2\pball\qconsole27910.log&#39;, rcon_password=&#39;hello&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; @s.event</span>
+<span class="sd">            ... def on_chat(nick, message):</span>
+<span class="sd">            ...     print((nick, message))</span>
+<span class="sd">            ...</span>
+<span class="sd">            &gt;&gt;&gt; s.run()</span>
+<span class="sd">            (&#39;mRokita&#39;, &#39;Hi&#39;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ALLOWED_EVENTS</span><span class="p">:</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">coroutine</span><span class="p">(</span><span class="n">func</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">func</span>
@@ -177,9 +221,21 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Event </span><span class="se">\&#39;</span><span class="si">%s</span><span class="se">\&#39;</span><span class="s1"> doesn</span><span class="se">\&#39;</span><span class="s1">t exist&#39;</span> <span class="o">%</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Server.stop_listening"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.stop_listening">[docs]</a>    <span class="k">def</span> <span class="nf">stop_listening</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Stop the main loop</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__alive</span> <span class="o">=</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="Server.perform_listeners"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.perform_listeners">[docs]</a>    <span class="k">def</span> <span class="nf">perform_listeners</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_type</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__perform_listeners</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_type</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Performs all pending listeners.</span>
+
+<span class="sd">        :param event_type: Event type, one of members :class:`ServerEvent`</span>
+<span class="sd">        :param args: Event info</span>
+<span class="sd">        :type args: tuple</span>
+<span class="sd">        :param kwargs: Event info</span>
+<span class="sd">        :type kwargs: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">to_remove</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">check</span><span class="p">,</span> <span class="n">future</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">event_type</span><span class="p">]):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">future</span><span class="o">.</span><span class="n">cancelled</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">future</span><span class="o">.</span><span class="n">done</span><span class="p">():</span>
@@ -188,17 +244,23 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">to_remove</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">to_remove</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">event_type</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">event_type</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 
     <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
     <span class="k">def</span> <span class="nf">__handle_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_type</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Handles an event.</span>
+
+<span class="sd">        :param event_type: Event type, one of members :class:`ServerEvent`</span>
+<span class="sd">        :param args: Event info (re.findall() results)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">:</span>
             <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s1">&#39;nick&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                 <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="p">}</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">perform_listeners</span><span class="p">(</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__perform_listeners</span><span class="p">(</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM</span><span class="p">:</span>
             <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s1">&#39;killer_nick&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
@@ -206,23 +268,47 @@
                 <span class="s1">&#39;victim_nick&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
                 <span class="s1">&#39;victim_weapon&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
             <span class="p">}</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">perform_listeners</span><span class="p">(</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__perform_listeners</span><span class="p">(</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">RESPAWN</span><span class="p">:</span>
             <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s1">&#39;team&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                 <span class="s1">&#39;nick&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
             <span class="p">}</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">perform_listeners</span><span class="p">(</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">RESPAWN</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__perform_listeners</span><span class="p">(</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">RESPAWN</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="k">async</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">event_type</span><span class="p">])(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
 
     <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
     <span class="k">def</span> <span class="nf">__parse_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Tries to match line with all event regexps.</span>
+
+<span class="sd">        :param line: Line from logs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">REGEXPS</span><span class="p">:</span>
             <span class="n">results</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
                 <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">__handle_event</span><span class="p">(</span><span class="n">event_type</span><span class="o">=</span><span class="n">REGEXPS</span><span class="p">[</span><span class="n">r</span><span class="p">],</span> <span class="n">args</span><span class="o">=</span><span class="n">res</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Server.rcon"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.rcon">[docs]</a>    <span class="k">def</span> <span class="nf">rcon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Execute a console command using RCON.</span>
+
+<span class="sd">        :param command: Command</span>
+
+<span class="sd">        :return: Response from server</span>
+
+<span class="sd">        :rtype: str</span>
+
+<span class="sd">        :example:</span>
+<span class="sd">        .. code-block:: python</span>
+<span class="sd">            :linenos:</span>
+
+<span class="sd">            &gt;&gt;&gt; from dplib.server import Server</span>
+<span class="sd">            &gt;&gt;&gt; s = Server(hostname=&#39;127.0.0.1&#39;, port=27910, logfile=r&#39;C:\Games\Paintball2\pball\qconsole27910.log&#39;, rcon_password=&#39;hello&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; s.rcon(&#39;sv listuserip&#39;)</span>
+<span class="sd">            &#39;ÿÿÿÿprint\\n mRokita [127.0.0.1:9419]\\nadmin is listing IP for mRokita [127.0.0.1:9419]\\n&#39;</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">sock</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_DGRAM</span><span class="p">)</span>
         <span class="n">sock</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">__hostname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__port</span><span class="p">))</span>
         <span class="n">sock</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
@@ -230,20 +316,68 @@
         <span class="k">return</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">2048</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Server.kick"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.kick">[docs]</a>    <span class="k">def</span> <span class="nf">kick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nick</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Kicks a player with id using rcon.</span>
+
+<span class="sd">        :param id: Player&#39;s id</span>
+<span class="sd">        :param nick: Player&#39;s nick</span>
+
+<span class="sd">        :return: Rcon response</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">nick</span><span class="p">:</span>
             <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ingame_info</span><span class="p">(</span><span class="n">nick</span><span class="p">)</span><span class="o">.</span><span class="n">id</span>
         <span class="k">if</span> <span class="nb">id</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;kick </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">id</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;kick </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="nb">id</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Player id or nick is required.&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Server.say"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.say">[docs]</a>    <span class="k">def</span> <span class="nf">say</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;say &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">message</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="nb">chr</span><span class="p">(</span><span class="mi">136</span><span class="p">),</span> <span class="n">U</span><span class="o">=</span><span class="nb">chr</span><span class="p">(</span><span class="mi">134</span><span class="p">),</span> <span class="n">I</span><span class="o">=</span><span class="nb">chr</span><span class="p">(</span><span class="mi">135</span><span class="p">)))</span></div>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Say a message</span>
+
+<span class="sd">        :param message: text, can contain {C} - color char {U} - underline char {I} italic</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        :return: Rcon response</span>
+
+<span class="sd">        :example:</span>
+<span class="sd">        .. code-block:: python</span>
+<span class="sd">            :linenos:</span>
+
+<span class="sd">            &gt;&gt;&gt; from dplib.server import Server</span>
+<span class="sd">            &gt;&gt;&gt; s = Server(hostname=&#39;127.0.0.1&#39;, port=27910, logfile=r&#39;C:\Games\Paintball2\pball\qconsole27910.log&#39;, rcon_password=&#39;hello&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; s.say(&#39;{C}ARed text&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; s.say(&#39;{U}Underline{U}&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; s.say(&#39;{I}Italic{I}&#39;)</span>
+
+<span class="sd">        :ingame result:</span>
+
+<span class="sd">        .. image:: ..\..\doc\images\say_test.png</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;say &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">message</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="nb">chr</span><span class="p">(</span><span class="mi">136</span><span class="p">),</span> <span class="n">U</span><span class="o">=</span><span class="nb">chr</span><span class="p">(</span><span class="mi">134</span><span class="p">),</span> <span class="n">I</span><span class="o">=</span><span class="nb">chr</span><span class="p">(</span><span class="mi">135</span><span class="p">)))</span></div>
 
 <div class="viewcode-block" id="Server.set_cvar"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.set_cvar">[docs]</a>    <span class="k">def</span> <span class="nf">set_cvar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;set </span><span class="si">%s</span><span class="s1"> &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set a server cvar</span>
 
-<div class="viewcode-block" id="Server.get_predicate"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.get_predicate">[docs]</a>    <span class="k">def</span> <span class="nf">get_predicate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">):</span>
+<span class="sd">        :param var: cvar name</span>
+<span class="sd">        :param value: value to set</span>
+
+<span class="sd">        :return: Rcon response</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;set </span><span class="si">%s</span><span class="s1"> &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
+
+    <span class="k">def</span> <span class="nf">__get_predicate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a comparator.</span>
+
+<span class="sd">        :param margs: Args to check</span>
+<span class="sd">        :param check: Check function</span>
+
+<span class="sd">        :return: Returns a function that compiles the check function and comparision strings</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">predicate</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">margs</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;predicate() takes </span><span class="si">%d</span><span class="s1"> positional arguments but </span><span class="si">%d</span><span class="s1"> were given&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">margs</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)))</span>
@@ -254,10 +388,21 @@
             <span class="k">if</span> <span class="n">callable</span><span class="p">(</span><span class="n">check</span><span class="p">):</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="n">result</span> <span class="ow">and</span> <span class="n">check</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">result</span>
-        <span class="k">return</span> <span class="n">predicate</span></div>
+        <span class="k">return</span> <span class="n">predicate</span>
 
 <div class="viewcode-block" id="Server.wait_for_respawn"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.wait_for_respawn">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
     <span class="k">def</span> <span class="nf">wait_for_respawn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">team</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Waits for respawn event.</span>
+
+<span class="sd">        :param timeout: Time to wait for respawn event, if exceeded, returns None.</span>
+<span class="sd">        :param team:</span>
+<span class="sd">        :param nick:</span>
+<span class="sd">        :param check: Check function, ignored if none</span>
+
+<span class="sd">        :return: Returns message info dict keys: (&#39;killer_nick&#39;, &#39;message&#39;)(&#39;killer_nick&#39;, &#39;killer_weapon&#39;, &#39;victim_nick&#39;, &#39;victim_weapon&#39;)</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
         <span class="n">margs</span> <span class="o">=</span> <span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">)</span>
         <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
@@ -272,6 +417,19 @@
 <div class="viewcode-block" id="Server.wait_for_elim"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.wait_for_elim">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
     <span class="k">def</span> <span class="nf">wait_for_elim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">killer_nick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">killer_weapon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">victim_nick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">victim_weapon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                       <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Waits for elimination event.</span>
+
+<span class="sd">        :param timeout: Time to wait for elimination event, if exceeded, returns None.</span>
+<span class="sd">        :param killer_nick: Killer&#39;s nick to match, ignored if None</span>
+<span class="sd">        :param killer_weapon: Killer&#39;s weapon to match, ignored if None</span>
+<span class="sd">        :param victim_nick:  Victim&#39;s nick to match, ignored if None</span>
+<span class="sd">        :param victim_weapon: Victim&#39;s weapon to match, ignored if None</span>
+<span class="sd">        :param check: Check function, ignored if none</span>
+
+<span class="sd">        :return: Returns message info dict keys: (&#39;killer_nick&#39;, &#39;message&#39;)(&#39;killer_nick&#39;, &#39;killer_weapon&#39;, &#39;victim_nick&#39;, &#39;victim_weapon&#39;)</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
         <span class="n">margs</span> <span class="o">=</span> <span class="p">(</span><span class="n">killer_nick</span><span class="p">,</span> <span class="n">killer_weapon</span><span class="p">,</span> <span class="n">victim_nick</span><span class="p">,</span> <span class="n">victim_weapon</span><span class="p">)</span>
         <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
@@ -285,6 +443,30 @@
 
 <div class="viewcode-block" id="Server.wait_for_message"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.wait_for_message">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
     <span class="k">def</span> <span class="nf">wait_for_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Waits for a message.</span>
+
+<span class="sd">        :param timeout: Time to wait for message, if exceeded, returns None.</span>
+<span class="sd">        :param nick: Player&#39;s nick to match, ignored if None</span>
+<span class="sd">        :type nick: str</span>
+<span class="sd">        :param message: Message text to match, ignored if None</span>
+<span class="sd">        :type messsage: str</span>
+<span class="sd">        :param check: Check function, ignored if None</span>
+<span class="sd">        :return: Returns message info dict keys: (&#39;nick&#39;, &#39;message&#39;)</span>
+<span class="sd">        :rtype: dict</span>
+
+<span class="sd">        :example:</span>
+
+<span class="sd">        .. code-block:: python</span>
+<span class="sd">            :linenos:</span>
+
+<span class="sd">            @s.event</span>
+<span class="sd">            def on_chat(nick, message):</span>
+<span class="sd">                if message == &#39;!start&#39; and not elim_active:</span>
+<span class="sd">                    msg = yield from s.wait_for_message(check=lambda n, m: m.startswith(&#39;!hi &#39;))</span>
+<span class="sd">                    s.say(&#39;Hi &#39; + msg[&#39;message&#39;].split(&#39;!hi &#39;)[1] + &#39;!&#39;)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
         <span class="n">margs</span> <span class="o">=</span> <span class="p">(</span><span class="n">nick</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
         <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
@@ -298,10 +480,12 @@
 
 <div class="viewcode-block" id="Server.start"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan_old</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">realtime</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Main loop.</span>
 
-<span class="sd">        :param scan_old:</span>
-<span class="sd">        :param realtime:</span>
-<span class="sd">        :return:</span>
+<span class="sd">        :param scan_old: Scan present logfile data</span>
+<span class="sd">        :type scan_old: bool</span>
+<span class="sd">        :param realtime: Wait for incoming logfile data</span>
+<span class="sd">        :type realtime: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__alive</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__logfile_name</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
@@ -316,6 +500,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Server.get_players"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.get_players">[docs]</a>    <span class="k">def</span> <span class="nf">get_players</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets playerlist.</span>
+
+<span class="sd">        :return: List of :class:`.Player` instances</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;sv players&#39;</span><span class="p">)</span>
         <span class="n">response</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;(\d+)</span><span class="se">\\</span><span class="s1"> </span><span class="se">\\</span><span class="s1">(?(.*?)</span><span class="se">\\</span><span class="s1">)?</span><span class="se">\\</span><span class="s1">]</span><span class="se">\\</span><span class="s1"> </span><span class="se">\\</span><span class="s1">*</span><span class="se">\\</span><span class="s1"> (?:OP</span><span class="se">\\</span><span class="s1"> \d+</span><span class="se">\\</span><span class="s1">,</span><span class="se">\\</span><span class="s1"> )?(.+)</span><span class="se">\\</span><span class="s1"> </span><span class="se">\\</span><span class="s1">((b\d+)</span><span class="se">\\</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
         <span class="n">players</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
@@ -329,14 +519,29 @@
         <span class="k">return</span> <span class="n">players</span></div>
 
 <div class="viewcode-block" id="Server.get_ingame_info"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.get_ingame_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_ingame_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nick</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get ingame info about a player with nickname</span>
+
+<span class="sd">        :param nick: Nick</span>
+
+<span class="sd">        :return: An instance of :class:`.Player`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">players</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_players</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">players</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">p</span><span class="o">.</span><span class="n">nick</span> <span class="o">==</span> <span class="n">nick</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">p</span>
         <span class="k">return</span> <span class="kc">None</span></div>
 
-<div class="viewcode-block" id="Server.run"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">())</span></div></div>
+<div class="viewcode-block" id="Server.run"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan_old</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">realtime</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Runs the main loop using asyncio.</span>
+
+<span class="sd">        :param scan_old: Scan present logfile data</span>
+<span class="sd">        :type scan_old: bool</span>
+<span class="sd">        :param realtime: Wait for incoming logfile data</span>
+<span class="sd">        :type realtime: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">scan_old</span><span class="p">,</span> <span class="n">realtime</span><span class="p">))</span></div></div>
 </pre></div>
 
           </div>
