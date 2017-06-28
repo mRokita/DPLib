@@ -6,10 +6,8 @@ SPHINXOPTS    =
 SPHINXBUILD   = python -msphinx
 SPHINXPROJ    = DPLib
 SOURCEDIR     = .
-BUILDDIR      = ..\..\dplib-docs
-
-all:
-   sphinx-apidoc -f -o source/ ../dplib
+BUILDDIR      = _build
+BUILDDIR_EXT  = ../../dplib-docs
 
 # Put it first so that "make" without argument is like "make help".
 help:
@@ -20,4 +18,6 @@ help:
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
+    sphinx-apidoc -f -o source/ ../dplib
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR_EXT)" $(SPHINXOPTS) $(O)

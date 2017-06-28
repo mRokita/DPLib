@@ -10,7 +10,8 @@ if "%SPHINXBUILD%" == "" (
 	set SPHINXBUILD=python -msphinx
 )
 set SOURCEDIR=.
-set BUILDDIR=..\..\dplib-docs
+set BUILDDIR_EXT=..\..\dplib-docs
+set BUILDDIR=_build
 set SPHINXPROJ=DPLib
 
 if "%1" == "" goto help
@@ -29,6 +30,7 @@ if errorlevel 9009 (
 )
 
 %SPHINXBUILD% -M %1 %SOURCEDIR% %BUILDDIR% %SPHINXOPTS%
+%SPHINXBUILD% -M %1 %SOURCEDIR% %BUILDDIR_EXT% %SPHINXOPTS%
 goto end
 
 :help
