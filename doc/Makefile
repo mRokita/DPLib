@@ -6,7 +6,7 @@ SPHINXOPTS    =
 SPHINXBUILD   = python -msphinx
 SPHINXPROJ    = DPLib
 SOURCEDIR     = .
-BUILDDIR      = _build
+BUILDDIR      = ..\..\dplib-docs
 
 all:
    sphinx-apidoc -f -o source/ ../dplib

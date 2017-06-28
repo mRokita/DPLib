@@ -10,7 +10,7 @@ if "%SPHINXBUILD%" == "" (
 	set SPHINXBUILD=python -msphinx
 )
 set SOURCEDIR=.
-set BUILDDIR=_build
+set BUILDDIR=..\..\dplib-docs
 set SPHINXPROJ=DPLib
 
 if "%1" == "" goto help
