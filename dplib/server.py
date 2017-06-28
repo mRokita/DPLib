@@ -263,6 +263,71 @@ class Server(object):
         sock.settimeout(3)
         sock.send(bytes('\xFF\xFF\xFF\xFFrcon {} {}\n'.format(self.__rcon_password, command), 'latin-1'))
         return sock.recv(2048).decode('latin-1')
+    
+    def permaban(self, ip=None):
+        """
+        Bans IP address or range of adresses and saves ban list to disk.
+
+        :param ip: IP address to ban
+
+        :return: Rcon response
+        :rtype: str
+
+        """
+        if ip:
+            resp = self.rcon('addip %s' % ip)
+            resp += '\n' + self.rcon('writeban')
+            return resp 
+        else:
+            raise TypeError('IP address is required.')
+
+    def remove_permaban(self, ip=None):
+        """
+        Removes ban on IP address and saves ban list to disk.
+
+        :param ip: IP address to unban
+
+        :return: Rcon response
+        :rtype: str
+        """
+        if ip:
+            resp = self.rcon('removeip %s' %ip)
+            resp += '\n' + self.rcon('writeban')
+            return resp
+        else:
+            raise TypeError('IP address is required.')
+
+
+    def tempoban(self, id=None, nick=None, duration=3):
+        """
+        Temporarily bans a player with specified id using rcon
+
+        :param id: Player's id
+        :param nick: Player's nick
+        :param duration: Ban duration in minutes (defaults to 3)
+        
+        :return: Rcon response
+        :rtype: str
+        """
+        if type(duration) != int:
+            raise TypeError('Ban duration should be an integer, not a ' +
+                                                        str(type(duration)))
+        if nick:
+            id = self.get_ingame_info(nick).id
+        if id:
+            return self.rcon('tban %s %s' %(id, str(duration)))
+        else:
+            raise TypeError('Player id or nick is required.')
+
+    def remove_tempobans(self):
+        """
+        Removes all temporary bans
+
+        :return: Rcon response
+        :rtype: str
+        """
+        return self.rcon("removetbans")
+
 
     def kick(self, id=None, nick=None):
         """
