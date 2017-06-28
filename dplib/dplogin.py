@@ -71,7 +71,7 @@ def hex_md5(string):
     :return: MD5 hash of string
     :rtype: str
     """
-    return md5(string).hexdigest()
+    return md5(string.encode('utf-8')).hexdigest()
 
 
 class DPLogin:
@@ -111,7 +111,7 @@ class DPLogin:
         response = self.__opener.open("http://dplogin.com/index.php",
                                       data=urlencode({"action": "weblogin1",
                                                       "username": username,
-                                                      "pwhash": ""})).read()
+                                                      "pwhash": ""}).encode('utf-8')).read().decode('utf-8')
         try:
             self.user_id = PATTERN_USER_ID.findall(response)[0]
         except IndexError:
@@ -135,7 +135,7 @@ class DPLogin:
                                       data=urlencode({"action": "weblogin2",
                                                       "username": username,
                                                       "pwhash": pwhash,
-                                                      "password": ""})).read()
+                                                      "password": ""}).encode('utf-8')).read().decode('utf-8')
         if "Invalid password" in response:
             raise TypeError("Wrong password.")
 
@@ -168,7 +168,7 @@ class DPLogin:
         :rtype: list
         """
         response = self.__opener.open("http://dplogin.com/index.php?"
-                                      "action=main").read()
+                                      "action=main").read().decode('utf-8')
         data = PATTERN_CLANS.findall(response)
         has_active_clan = len(data) and ">Active Clan<" in response
         clans = []
@@ -203,7 +203,7 @@ class DPLogin:
         """
         return self.__opener.open("http://dplogin.com/index.php?"
                                   "action=leaveclan&clanid={}"
-                                  .format(clan_id)).read()
+                                  .format(clan_id)).read().decode('utf-8')
 
     def join_clan(self, clan_id=None, clan_name=None):
         """
@@ -220,12 +220,12 @@ class DPLogin:
         if clan_id:
             return self.__opener.open("http://dplogin.com/index.php?action="
                                       "joinclan&clanid={}".
-                                      format(clan_id)).read()
+                                      format(clan_id)).read().decode('utf-8')
         else:
             return self.__opener.open("http://dplogin.com/index.php",
                                       urlencode(
                                           {"action": "joinclan",
-                                           "clanname": "clan_name"})).read()
+                                           "clanname": "clan_name"}).encode('utf-8')).read().decode('utf-8')
 
     def get_profile_data(self):
         """
@@ -235,7 +235,7 @@ class DPLogin:
         :rtype: dict
         """
         response = self.__opener.open("http://dplogin.com/index.php?"
-                                      "action=editprofile").read()
+                                      "action=editprofile").read().decode('utf-8')
         data = PATTERN_PROFILE_DATA.findall(response)
         data.extend(PATTERN_PROFILE_BIO.findall(response))
         return dict([tuple(i) for i in data])
@@ -289,7 +289,7 @@ class DPLogin:
         form_data["newpassword"] = ""
         form_data["newpassword2"] = ""
         return self.__opener.open("http://dplogin.com/index.php",
-                                  urlencode(form_data)).read()
+                                  urlencode(form_data).encode('utf-8')).read().decode('utf-8')
 
     def del_name(self, name):
         """
@@ -302,7 +302,7 @@ class DPLogin:
         """
         return self.__opener.open("http://dplogin.com/index.php?"
                                   "action=deletemyname&name={}"
-                                  .format(name)).read()
+                                  .format(name)).read().decode('utf-8')
 
     def add_name(self, name):
         """
@@ -315,7 +315,7 @@ class DPLogin:
         """
         return self.__opener.open("http://dplogin.com/index.php",
                                   urlencode({"action": "addnewname",
-                                             "newname": name})).read()
+                                             "newname": name}).encode('utf-8')).read().decode('utf-8')
 
     def create_clan(self, name, tag):
         """
@@ -330,7 +330,7 @@ class DPLogin:
         return self.__opener.open("http://dplogin.com/index.php",
                                   urlencode({"action": "createclan2",
                                              "clanname": name,
-                                             "clantag": tag})).read()
+                                             "clantag": tag}).encode('utf-8')).read().decode('utf-8')
 
     def invite_member(self, clanid, playerid=None, name=None):
         """
@@ -349,7 +349,7 @@ class DPLogin:
             return self.__opener.open("http://dplogin.com/index.php",
                                       urlencode({"action": "inviteclanmember",
                                                  "clanid": clanid,
-                                                 "playername": name})).read()
+                                                 "playername": name}).encode('utf-8')).read().decode('utf-8')
         else:
             return self.__opener.open("http://dplogin.com/index.php?"
                                       "action=inviteclanmember"
@@ -367,7 +367,7 @@ class DPLogin:
         """
         return self.__opener.open("http://dplogin.com/index.php?"
                                   "action=cancelclanjoinrequest&clanid={}"
-                                  .format(clanid)).read()
+                                  .format(clanid)).read().decode('utf-8')
 
     def reject_join_request(self, clanid, playerid):
         """
@@ -382,7 +382,7 @@ class DPLogin:
         return self.__opener.open("http://dplogin.com/index.php?"
                                   "action=rejectclanjoinrequest"
                                   "&clanid={}&playerid={}"
-                                  .format(clanid, playerid)).read()
+                                  .format(clanid, playerid)).read().decode('utf-8')
 
     def make_leader(self, clanid, playerid):
         """
@@ -396,7 +396,7 @@ class DPLogin:
         """
         return self.__opener.open("http://dplogin.com/index.php?action="
                                   "makeclanleader&clanid={}&playerid={}"
-                                  .format(clanid, playerid)).read()
+                                  .format(clanid, playerid)).read().decode('utf-8')
 
     def kick_from_clan(self, clanid, playerid):
         """
@@ -411,7 +411,7 @@ class DPLogin:
         return self.__opener.open("http://dplogin.com/index.php?"
                                   "action=kickclanmember"
                                   "&clanid={}&playerid={}"
-                                  .format(clanid, playerid)).read()
+                                  .format(clanid, playerid)).read().decode('utf-8')
 
     def remove_clan_leader(self, clanid, playerid):
         """
@@ -426,7 +426,7 @@ class DPLogin:
         return self.__opener.open("http://dplogin.com/index.php?"
                                   "action=removeclanleader"
                                   "&clanid={}&playerid={}"
-                                  .format(clanid, playerid)).read()
+                                  .format(clanid, playerid)).read().decode('utf-8')
 
     def cancel_invite(self, clanid, playerid):
         """
@@ -441,7 +441,7 @@ class DPLogin:
         return self.__opener.open("http://dplogin.com/index.php?"
                                   "action=cancelinviteclanmember"
                                   "&clanid={}&playerid={}"
-                                  .format(clanid, playerid)).read()
+                                  .format(clanid, playerid)).read().decode('utf-8')
 
     def get_clan_members(self, clanid):
         """
@@ -455,7 +455,7 @@ class DPLogin:
         data = PATTERN_MEMBERS.findall(
             self.__opener.open("http://dplogin.com/index.php"
                                "?action=viewclan&clanid={}"
-                               .format(clanid)).read())
+                               .format(clanid)).read().decode('utf-8'))
         members = {}
         current_key = ""
         for member in data:
