@@ -161,6 +161,8 @@
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">from</span> <span class="nn">socket</span> <span class="k">import</span> <span class="n">socket</span><span class="p">,</span> <span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_DGRAM</span>
 
+<span class="kn">from</span> <span class="nn">dplib.parse</span> <span class="k">import</span> <span class="n">render_text</span>
+
 
 <div class="viewcode-block" id="ServerEvent"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.ServerEvent">[docs]</a><span class="k">class</span> <span class="nc">ServerEvent</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">TIMEOUT</span> <span class="o">=</span> <span class="mi">0</span>
@@ -220,6 +222,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">nick</span> <span class="o">=</span> <span class="n">nick</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">build</span> <span class="o">=</span> <span class="n">build</span></div>
 
+
 <div class="viewcode-block" id="Server"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server">[docs]</a><span class="k">class</span> <span class="nc">Server</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Represents a DP:PB2 server</span>
@@ -227,7 +230,7 @@
 <span class="sd">    :param hostname: Server hostname, for example &#39;127.0.0.1&#39;</span>
 <span class="sd">    :type hostname: str</span>
 <span class="sd">    :param port: Server port, default 27910</span>
-<span class="sd">    :type port: str</span>
+<span class="sd">    :type port: int</span>
 <span class="sd">    :param logfile: Path to logfile</span>
 <span class="sd">    :param rcon_password: rcon password</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -430,7 +433,6 @@
 
 <span class="sd">        :return: Rcon response</span>
 <span class="sd">        :rtype: str</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ip</span><span class="p">:</span>
             <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;addip </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">ip</span><span class="p">)</span>
@@ -508,7 +510,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Say a message</span>
 
-<span class="sd">        :param message: text, can contain {C} - color char {U} - underline char {I} italic</span>
+<span class="sd">        :param message: Text, can contain {C} - color char {U} - underline char {I} italic. Remember to escape user input using :func:`dplib.parse.escape_braces`.</span>
 
 <span class="sd">        :rtype: str</span>
 <span class="sd">        :return: Rcon response</span>
@@ -527,7 +529,18 @@
 
 <span class="sd">        .. image:: ..\..\doc\images\say_test.png</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;say &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">message</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">C</span><span class="o">=</span><span class="nb">chr</span><span class="p">(</span><span class="mi">136</span><span class="p">),</span> <span class="n">U</span><span class="o">=</span><span class="nb">chr</span><span class="p">(</span><span class="mi">134</span><span class="p">),</span> <span class="n">I</span><span class="o">=</span><span class="nb">chr</span><span class="p">(</span><span class="mi">135</span><span class="p">)))</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;say &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">render_text</span><span class="p">(</span><span class="n">message</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Server.cprint"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.cprint">[docs]</a>    <span class="k">def</span> <span class="nf">cprint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cprints a message.</span>
+
+<span class="sd">        :param message: Text, can contain {C} - color char {U} - underline char {I} italic. Remember to escape user input using :func:`dplib.parse.escape_brac</span>
+
+<span class="sd">        :return: Rcon response</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;sv cprint &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="n">render_text</span><span class="p">(</span><span class="n">message</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Server.set_cvar"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.set_cvar">[docs]</a>    <span class="k">def</span> <span class="nf">set_cvar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
