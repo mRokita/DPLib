@@ -189,7 +189,7 @@ class Server(object):
         :param nick: Player's nick.
         :type nick: str
         :param points: Points earned.
-        :type flag: int
+        :type points: int
         """
         pass
 

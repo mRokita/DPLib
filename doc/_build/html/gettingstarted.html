@@ -94,6 +94,8 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#first-steps">First steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#waiting-for-future-events">Waiting for future events</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="includeme.html">README</a></li>
@@ -173,6 +175,192 @@
 python3 -m pip install DPLib <span class="c1"># Only python 3 is supported</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="first-steps">
+<h2>First steps<a class="headerlink" href="#first-steps" title="Permalink to this headline">¶</a></h2>
+<p>This code is a basic example of how to use DPLib. It uses all the currently available events.
+You should definitely play around with it. Simply edit the third line to match your server’s config and run it!</p>
+<div class="highlight-default"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dplib.server</span> <span class="k">import</span> <span class="n">Server</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="n">hostname</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27910</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;C:\Games\Paintball2\pball\qconsole27910.log&#39;</span><span class="p">,</span> <span class="n">rcon_password</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
+
+
+<span class="nd">@s</span><span class="o">.</span><span class="n">event</span>
+<span class="k">def</span> <span class="nf">on_chat</span><span class="p">(</span><span class="n">nick</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Chat message. Nick: </span><span class="si">{0}</span><span class="s1">, Message: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nick</span><span class="p">,</span> <span class="n">message</span><span class="p">))</span>
+
+
+<span class="nd">@s</span><span class="o">.</span><span class="n">event</span>
+<span class="k">def</span> <span class="nf">on_team_switched</span><span class="p">(</span><span class="n">nick</span><span class="p">,</span> <span class="n">old_team</span><span class="p">,</span> <span class="n">new_team</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Team switched. Nick: </span><span class="si">{0}</span><span class="s1">, Old team: </span><span class="si">{1}</span><span class="s1">, New team: </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nick</span><span class="p">,</span> <span class="n">old_team</span><span class="p">,</span> <span class="n">new_team</span><span class="p">))</span>
+
+
+<span class="nd">@s</span><span class="o">.</span><span class="n">event</span>
+<span class="k">def</span> <span class="nf">on_round_started</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Round started...&#39;</span><span class="p">)</span>
+
+
+<span class="nd">@s</span><span class="o">.</span><span class="n">event</span>
+<span class="k">def</span> <span class="nf">on_elim</span><span class="p">(</span><span class="n">killer_nick</span><span class="p">,</span> <span class="n">killer_weapon</span><span class="p">,</span> <span class="n">victim_nick</span><span class="p">,</span> <span class="n">victim_weapon</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Elimination. Killer</span><span class="se">\&#39;</span><span class="s1">s nick: </span><span class="si">{0}</span><span class="s1">, Killer</span><span class="se">\&#39;</span><span class="s1">s weapon: </span><span class="si">{1}</span><span class="s1">, Victim</span><span class="se">\&#39;</span><span class="s1">s nick: </span><span class="si">{2}</span><span class="s1">, Victim</span><span class="se">\&#39;</span><span class="s1">s weapon: </span><span class="si">{3}</span><span class="s1">&#39;</span>
+        <span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">killer_nick</span><span class="p">,</span> <span class="n">killer_weapon</span><span class="p">,</span> <span class="n">victim_nick</span><span class="p">,</span> <span class="n">victim_weapon</span>
+    <span class="p">))</span>
+
+
+<span class="nd">@s</span><span class="o">.</span><span class="n">event</span>
+<span class="k">def</span> <span class="nf">on_respawn</span><span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Respawn. Nick: </span><span class="si">{0}</span><span class="s1">, Team: </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nick</span><span class="p">,</span> <span class="n">team</span><span class="p">))</span>
+
+
+<span class="nd">@s</span><span class="o">.</span><span class="n">event</span>
+<span class="k">def</span> <span class="nf">on_entrance</span><span class="p">(</span><span class="n">nick</span><span class="p">,</span> <span class="n">build</span><span class="p">,</span> <span class="n">addr</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Entrance. Nick: </span><span class="si">{0}</span><span class="s1">, Build: </span><span class="si">{1}</span><span class="s1">, Address: </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">nick</span><span class="p">,</span> <span class="n">build</span><span class="p">,</span> <span class="n">addr</span>
+    <span class="p">))</span>
+
+
+<span class="nd">@s</span><span class="o">.</span><span class="n">event</span>
+<span class="k">def</span> <span class="nf">on_elim_teams_flag</span><span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Points for posession of eliminated teams flag. Team: </span><span class="si">{0}</span><span class="s1">, Nick: </span><span class="si">{1}</span><span class="s1">, Points: </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">points</span>
+    <span class="p">))</span>
+
+
+<span class="nd">@s</span><span class="o">.</span><span class="n">event</span>
+<span class="k">def</span> <span class="nf">on_flag_captured</span><span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">flag</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Flag captured. Team: </span><span class="si">{0}</span><span class="s1">, Nick: </span><span class="si">{1}</span><span class="s1">, Flag: </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">flag</span><span class="p">))</span>
+
+
+<span class="n">s</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p>Available event handlers:</p>
+<ul class="simple">
+<li><a class="reference internal" href="source/dplib.html#dplib.server.Server.on_elim" title="dplib.server.Server.on_elim"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.on_elim()</span></code></a></li>
+<li><a class="reference internal" href="source/dplib.html#dplib.server.Server.on_entrance" title="dplib.server.Server.on_entrance"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.on_entrance()</span></code></a></li>
+<li><a class="reference internal" href="source/dplib.html#dplib.server.Server.on_respawn" title="dplib.server.Server.on_respawn"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.on_respawn()</span></code></a></li>
+<li><a class="reference internal" href="source/dplib.html#dplib.server.Server.on_elim_teams_flag" title="dplib.server.Server.on_elim_teams_flag"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.on_elim_teams_flag()</span></code></a></li>
+<li><a class="reference internal" href="source/dplib.html#dplib.server.Server.on_team_switched" title="dplib.server.Server.on_team_switched"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.on_team_switched()</span></code></a></li>
+<li><a class="reference internal" href="source/dplib.html#dplib.server.Server.on_round_started" title="dplib.server.Server.on_round_started"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.on_round_started()</span></code></a></li>
+<li><a class="reference internal" href="source/dplib.html#dplib.server.Server.on_flag_captured" title="dplib.server.Server.on_flag_captured"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.on_flag_captured()</span></code></a></li>
+<li><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.on_message()</span></code></li>
+</ul>
+</div>
+<div class="section" id="waiting-for-future-events">
+<h2>Waiting for future events<a class="headerlink" href="#waiting-for-future-events" title="Permalink to this headline">¶</a></h2>
+<p>DPLib uses Python’s asyncio module so you can wait for incoming events without blocking the whole script.</p>
+<p>Here’s a script that uses these ‘magic’ coroutines.</p>
+<p>It’s a simple spawnkill protection system, it waits for 2 seconds after respawn for elimination event and when the newly respawned player gets killed within these 2 seconds, the spawnkiller gets a warning. After 4 spawnkills she/he gets kicked from the server.</p>
+<p>Check out the 10th line.</p>
+<div class="highlight-default"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">time</span>
+
+<span class="kn">from</span> <span class="nn">dplib.server</span> <span class="k">import</span> <span class="n">Server</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="n">hostname</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27910</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;C:\Games\Paintball2\pball\qconsole27910.log&#39;</span><span class="p">,</span> <span class="n">rcon_password</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
+
+<span class="n">spawnkills</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">spawnkill_last_times</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+<span class="nd">@s</span><span class="o">.</span><span class="n">event</span>
+<span class="k">def</span> <span class="nf">on_respawn</span><span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">):</span>
+    <span class="n">kill</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">s</span><span class="o">.</span><span class="n">wait_for_elim</span><span class="p">(</span><span class="n">victim_nick</span><span class="o">=</span><span class="n">nick</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">kill</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">kill</span><span class="p">[</span><span class="s1">&#39;killer_nick&#39;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">spawnkills</span> <span class="ow">or</span> <span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">spawnkill_last_times</span><span class="p">[</span><span class="n">kill</span><span class="p">[</span><span class="s1">&#39;killer_nick&#39;</span><span class="p">]]</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+        <span class="n">spawnkills</span><span class="p">[</span><span class="n">kill</span><span class="p">[</span><span class="s1">&#39;killer_nick&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">spawnkills</span><span class="p">[</span><span class="n">kill</span><span class="p">[</span><span class="s1">&#39;killer_nick&#39;</span><span class="p">]]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">spawnkill_last_times</span><span class="p">[</span><span class="n">kill</span><span class="p">[</span><span class="s1">&#39;killer_nick&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">time</span><span class="p">()</span>
+    <span class="n">s</span><span class="o">.</span><span class="n">say</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{C}</span><span class="s1">9</span><span class="si">%s</span><span class="s1">, </span><span class="si">{C}</span><span class="s1">A</span><span class="si">{U}</span><span class="s1">STOP SPAWNKILLING</span><span class="si">{U}</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">kill</span><span class="p">[</span><span class="s1">&#39;killer_nick&#39;</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">spawnkills</span><span class="p">[</span><span class="n">kill</span><span class="p">[</span><span class="s1">&#39;killer_nick&#39;</span><span class="p">]]</span> <span class="o">&gt;</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">kick</span><span class="p">(</span><span class="n">nick</span><span class="o">=</span><span class="n">kill</span><span class="p">[</span><span class="s1">&#39;killer_nick&#39;</span><span class="p">])</span>
+<span class="n">s</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</pre></div>
+</td></tr></table></div>
+<p>Available coroutines:</p>
+<ul class="simple">
+<li><a class="reference internal" href="source/dplib.html#dplib.server.Server.wait_for_elim" title="dplib.server.Server.wait_for_elim"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.wait_for_elim()</span></code></a></li>
+<li><a class="reference internal" href="source/dplib.html#dplib.server.Server.wait_for_entrance" title="dplib.server.Server.wait_for_entrance"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.wait_for_entrance()</span></code></a></li>
+<li><a class="reference internal" href="source/dplib.html#dplib.server.Server.wait_for_respawn" title="dplib.server.Server.wait_for_respawn"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.wait_for_respawn()</span></code></a></li>
+<li><a class="reference internal" href="source/dplib.html#dplib.server.Server.wait_for_elim_teams_flag" title="dplib.server.Server.wait_for_elim_teams_flag"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.wait_for_elim_teams_flag()</span></code></a></li>
+<li><a class="reference internal" href="source/dplib.html#dplib.server.Server.wait_for_team_switched" title="dplib.server.Server.wait_for_team_switched"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.wait_for_team_switched()</span></code></a></li>
+<li><a class="reference internal" href="source/dplib.html#dplib.server.Server.wait_for_round_started" title="dplib.server.Server.wait_for_round_started"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.wait_for_round_started()</span></code></a></li>
+<li><a class="reference internal" href="source/dplib.html#dplib.server.Server.wait_for_flag_captured" title="dplib.server.Server.wait_for_flag_captured"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.wait_for_flag_captured()</span></code></a></li>
+<li><a class="reference internal" href="source/dplib.html#dplib.server.Server.wait_for_message" title="dplib.server.Server.wait_for_message"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.wait_for_message()</span></code></a></li>
+</ul>
 </div>
 </div>
 
