@@ -4,6 +4,9 @@ s = Server(hostname='127.0.0.1', port=27910, logfile=r'C:\Games\Paintball2\pball
 
 
 @s.event
+def on_chat(nick, message):
+    print('Chat message. Nick: {0}, Message: {1}'.format(nick, message))
+@s.event
 def on_team_switched(nick, old_team, new_team):
     print('Team switched. Nick: {0}, Old team: {1}, New team: {2}'.format(nick, old_team, new_team))
 

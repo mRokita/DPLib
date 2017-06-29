@@ -759,11 +759,18 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>message</strong> – Text, can contain {C} - color char {U} - underline char {I} italic. Remember to escape user input using :func:<a href="#id1"><span class="problematic" id="id2">`</span></a>dplib.parse.escape_brac</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>message</strong> – Text, can contain {C} - color char {U} - underline char {I} italic.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Rcon response</td>
+</tbody>
+</table>
+<p>Remember to escape user input using :func:<a href="#id1"><span class="problematic" id="id2">`</span></a>dplib.parse.escape_brac</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Rcon response</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
 </tr>
 </tbody>
 </table>
@@ -793,7 +800,7 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 6
 7
 8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">dplib.server</span> <span class="kn">import</span> <span class="n">Server</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="n">hostname</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27910</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;C:\Games\Paintball2\pball\qconsole27910.log&#39;</span><span class="p">,</span> <span class="n">rcon_password</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="n">hostname</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27910</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;qconsole27910.log&#39;</span><span class="p">,</span> <span class="n">rcon_password</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="nd">@s.event</span>
 <span class="gp">... </span><span class="k">def</span> <span class="nf">on_chat</span><span class="p">(</span><span class="n">nick</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
 <span class="gp">... </span>    <span class="k">print</span><span class="p">((</span><span class="n">nick</span><span class="p">,</span> <span class="n">message</span><span class="p">))</span>
@@ -863,14 +870,14 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 <dl class="method">
 <dt id="dplib.server.Server.on_chat">
 <code class="descname">on_chat</code><span class="sig-paren">(</span><em>nick</em>, <em>message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_chat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_chat" title="Permalink to this definition">¶</a></dt>
-<dd><p>On chat, can be overridden using the <code class="xref py py-func docutils literal"><span class="pre">Server.event()</span></code>.</p>
+<dd><p>On chat, can be overridden using the <code class="xref py py-func docutils literal"><span class="pre">Server.event()</span></code> decorator.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>nick</strong> (<em>str</em>) – Player’s nick</li>
-<li><strong>message</strong> (<em>str</em>) – Message</li>
+<li><strong>nick</strong> (<em>str</em>) – Player’s nick.</li>
+<li><strong>message</strong> (<em>str</em>) – Message.</li>
 </ul>
 </td>
 </tr>
@@ -881,7 +888,7 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 <dl class="method">
 <dt id="dplib.server.Server.on_elim">
 <code class="descname">on_elim</code><span class="sig-paren">(</span><em>killer_nick</em>, <em>killer_weapon</em>, <em>victim_nick</em>, <em>victim_weapon</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_elim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_elim" title="Permalink to this definition">¶</a></dt>
-<dd><p>On elim can be overridden using the <code class="xref py py-func docutils literal"><span class="pre">Server.event()</span></code>.</p>
+<dd><p>On elim can be overridden using the <code class="xref py py-func docutils literal"><span class="pre">Server.event()</span></code> decorator.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -899,16 +906,55 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 </dd></dl>
 
 <dl class="method">
-<dt id="dplib.server.Server.on_entered">
-<code class="descname">on_entered</code><span class="sig-paren">(</span><em>nick</em>, <em>ip</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_entered"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_entered" title="Permalink to this definition">¶</a></dt>
-<dd><p>Not implemented yet.</p>
+<dt id="dplib.server.Server.on_elim_teams_flag">
+<code class="descname">on_elim_teams_flag</code><span class="sig-paren">(</span><em>team</em>, <em>nick</em>, <em>points</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_elim_teams_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_elim_teams_flag" title="Permalink to this definition">¶</a></dt>
+<dd><p>On scored points for possession of eliminated teams flag, can be overridden using the <code class="xref py py-func docutils literal"><span class="pre">Server.event()</span></code> decorator.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>nick</strong> – </li>
-<li><strong>ip</strong> – </li>
+<li><strong>team</strong> (<em>str</em>) – Player’s team.</li>
+<li><strong>nick</strong> (<em>str</em>) – Player’s nick.</li>
+<li><strong>points</strong> – Points earned.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_entrance">
+<code class="descname">on_entrance</code><span class="sig-paren">(</span><em>nick</em>, <em>build</em>, <em>addr</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_entrance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_entrance" title="Permalink to this definition">¶</a></dt>
+<dd><p>On entrance, can be overriden using the <code class="xref py py-func docutils literal"><span class="pre">Server.event()</span></code> decorator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>nick</strong> (<em>str</em>) – Player’s nick</li>
+<li><strong>build</strong> (<em>str</em>) – Player’s game version (‘build 41’ for example</li>
+<li><strong>addr</strong> (<em>str</em>) – Player’s address, IP:PORT (‘127.0.0.1:23414’ for example)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_flag_captured">
+<code class="descname">on_flag_captured</code><span class="sig-paren">(</span><em>team</em>, <em>nick</em>, <em>flag</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_flag_captured"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_flag_captured" title="Permalink to this definition">¶</a></dt>
+<dd><p>On flag captured, can be overridden using the <code class="xref py py-func docutils literal"><span class="pre">Server.event()</span></code> decorator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>team</strong> (<em>str</em>) – Player’s team.</li>
+<li><strong>nick</strong> (<em>str</em>) – Player’s nick.</li>
+<li><strong>flag</strong> (<em>str</em>) – Captured flag (Blue|Red|Yellow|Purple|White)</li>
 </ul>
 </td>
 </tr>
@@ -919,7 +965,7 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 <dl class="method">
 <dt id="dplib.server.Server.on_respawn">
 <code class="descname">on_respawn</code><span class="sig-paren">(</span><em>team</em>, <em>nick</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_respawn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_respawn" title="Permalink to this definition">¶</a></dt>
-<dd><p>On respawn, can be overridden using the <code class="xref py py-func docutils literal"><span class="pre">Server.event()</span></code>.</p>
+<dd><p>On respawn, can be overridden using the <code class="xref py py-func docutils literal"><span class="pre">Server.event()</span></code> decorator.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -927,6 +973,31 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>team</strong> (<em>str</em>) – Player’s team (Blue|Red|Yellow|Purple)</li>
 <li><strong>nick</strong> (<em>str</em>) – Player’s nick</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_round_started">
+<code class="descname">on_round_started</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_round_started"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_round_started" title="Permalink to this definition">¶</a></dt>
+<dd><p>On round started, can be overridden using the <code class="xref py py-func docutils literal"><span class="pre">Server.event()</span></code> decorator.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_team_switched">
+<code class="descname">on_team_switched</code><span class="sig-paren">(</span><em>nick</em>, <em>old_team</em>, <em>new_team</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_team_switched"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_team_switched" title="Permalink to this definition">¶</a></dt>
+<dd><p>On team switched, can be overridden using the <code class="xref py py-func docutils literal"><span class="pre">Server.event()</span></code> decorator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>nick</strong> (<em>str</em>) – Player’s nick</li>
+<li><strong>old_team</strong> (<em>str</em>) – Old team (Blue|Red|Yellow|Purple|Observer)</li>
+<li><strong>new_team</strong> (<em>str</em>) – New team (Blue|Red|Yellow|Purple|Observer)</li>
 </ul>
 </td>
 </tr>
@@ -974,7 +1045,7 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 2
 3
 4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">dplib.server</span> <span class="kn">import</span> <span class="n">Server</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="n">hostname</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27910</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;C:\Games\Paintball2\pball\qconsole27910.log&#39;</span><span class="p">,</span> <span class="n">rcon_password</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="n">hostname</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27910</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;qconsole27910.log&#39;</span><span class="p">,</span> <span class="n">rcon_password</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;sv listuserip&#39;</span><span class="p">)</span>
 <span class="go">&#39;ÿÿÿÿprint\n mRokita [127.0.0.1:9419]\nadmin is listing IP for mRokita [127.0.0.1:9419]\n&#39;</span>
 </pre></div>
@@ -1041,13 +1112,20 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>message</strong> – Text, can contain {C} - color char {U} - underline char {I} italic. Remember to escape user input using <a class="reference internal" href="#dplib.parse.escape_braces" title="dplib.parse.escape_braces"><code class="xref py py-func docutils literal"><span class="pre">dplib.parse.escape_braces()</span></code></a>.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>message</strong> – Text, can contain {C} - color char {U} - underline char {I} italic.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">str</td>
+</tbody>
+</table>
+<p>Remember to escape user input using <a class="reference internal" href="#dplib.parse.escape_braces" title="dplib.parse.escape_braces"><code class="xref py py-func docutils literal"><span class="pre">dplib.parse.escape_braces()</span></code></a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">str</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Rcon response</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Rcon response</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Example:</th><td class="field-body"></td>
+<tr class="field-odd field"><th class="field-name">Example:</th><td class="field-body"></td>
 </tr>
 </tbody>
 </table>
@@ -1056,7 +1134,7 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 3
 4
 5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">dplib.server</span> <span class="kn">import</span> <span class="n">Server</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="n">hostname</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27910</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;C:\Games\Paintball2\pball\qconsole27910.log&#39;</span><span class="p">,</span> <span class="n">rcon_password</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="n">hostname</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27910</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;qconsole27910.log&#39;</span><span class="p">,</span> <span class="n">rcon_password</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">say</span><span class="p">(</span><span class="s1">&#39;{C}ARed text&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">say</span><span class="p">(</span><span class="s1">&#39;{U}Underline{U}&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">say</span><span class="p">(</span><span class="s1">&#39;{I}Italic{I}&#39;</span><span class="p">)</span>
@@ -1156,15 +1234,92 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>timeout</strong> – Time to wait for elimination event, if exceeded, returns None.</li>
-<li><strong>killer_nick</strong> – Killer’s nick to match, ignored if None</li>
-<li><strong>killer_weapon</strong> – Killer’s weapon to match, ignored if None</li>
-<li><strong>victim_nick</strong> – Victim’s nick to match, ignored if None</li>
-<li><strong>victim_weapon</strong> – Victim’s weapon to match, ignored if None</li>
-<li><strong>check</strong> – Check function, ignored if none</li>
+<li><strong>killer_nick</strong> – Killer’s nick to match, ignored if None.</li>
+<li><strong>killer_weapon</strong> – Killer’s weapon to match, ignored if None.</li>
+<li><strong>victim_nick</strong> – Victim’s nick to match, ignored if None.</li>
+<li><strong>victim_weapon</strong> – Victim’s weapon to match, ignored if None.</li>
+<li><strong>check</strong> – Check function, ignored if None.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns message info dict keys: (‘killer_nick’, ‘message’)(‘killer_nick’, ‘killer_weapon’, ‘victim_nick’, ‘victim_weapon’)</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns message info dict keys: (‘killer_nick’, ‘killer_weapon’, ‘victim_nick’, ‘victim_weapon’)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_elim_teams_flag">
+<code class="descname">wait_for_elim_teams_flag</code><span class="sig-paren">(</span><em>timeout=None</em>, <em>team=None</em>, <em>nick=None</em>, <em>points=None</em>, <em>check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_elim_teams_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_elim_teams_flag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for elim teams flag event.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>timeout</strong> – Time to wait for event, if exceeded, returns None.</li>
+<li><strong>team</strong> – Player’s team.</li>
+<li><strong>nick</strong> – Player’s nick.</li>
+<li><strong>points</strong> (<em>int</em>) – Points scored.</li>
+<li><strong>check</strong> – Check function, ignored if none.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns message info dict keys: (‘team’, ‘nick’, ‘points’).</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_entrance">
+<code class="descname">wait_for_entrance</code><span class="sig-paren">(</span><em>timeout=None</em>, <em>nick=None</em>, <em>build=None</em>, <em>addr=None</em>, <em>check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_entrance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_entrance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for entrance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>timeout</strong> – Time to wait for entrance event, if exceeded, returns None.</li>
+<li><strong>nick</strong> – Player’s nick.</li>
+<li><strong>build</strong> – Player’s build.</li>
+<li><strong>addr</strong> – Player’s address (IP:PORT)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_flag_captured">
+<code class="descname">wait_for_flag_captured</code><span class="sig-paren">(</span><em>timeout=None</em>, <em>team=None</em>, <em>nick=None</em>, <em>flag=None</em>, <em>check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_flag_captured"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_flag_captured" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for flag capture.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>timeout</strong> – Time to wait for event, if exceeded, returns None.</li>
+<li><strong>team</strong> – Player’s team.</li>
+<li><strong>nick</strong> – Player’s nick.</li>
+<li><strong>flag</strong> – Captured flag.</li>
+<li><strong>check</strong> – Check function, ignored if none.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns an empty dict.</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
@@ -1185,7 +1340,7 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>timeout</strong> – Time to wait for message, if exceeded, returns None.</li>
 <li><strong>nick</strong> (<em>str</em>) – Player’s nick to match, ignored if None</li>
-<li><strong>message</strong> – Message text to match, ignored if None</li>
+<li><strong>message</strong> (<em>str</em>) – Message text to match, ignored if None</li>
 <li><strong>check</strong> – Check function, ignored if None</li>
 </ul>
 </td>
@@ -1223,13 +1378,64 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>timeout</strong> – Time to wait for respawn event, if exceeded, returns None.</li>
-<li><strong>team</strong> – </li>
-<li><strong>nick</strong> – </li>
-<li><strong>check</strong> – Check function, ignored if none</li>
+<li><strong>team</strong> – Player’s team.</li>
+<li><strong>nick</strong> – Player’s nick.</li>
+<li><strong>check</strong> – Check function, ignored if none.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns message info dict keys: (‘killer_nick’, ‘message’)(‘killer_nick’, ‘killer_weapon’, ‘victim_nick’, ‘victim_weapon’)</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns message info dict keys: (‘team’, ‘nick’).</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_round_started">
+<code class="descname">wait_for_round_started</code><span class="sig-paren">(</span><em>timeout=None</em>, <em>check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_round_started"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_round_started" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for round start.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>timeout</strong> – Time to wait for event, if exceeded, returns None.</li>
+<li><strong>check</strong> – Check function, ignored if none.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns an empty dict.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_team_switched">
+<code class="descname">wait_for_team_switched</code><span class="sig-paren">(</span><em>timeout=None</em>, <em>nick=None</em>, <em>old_team=None</em>, <em>new_team=None</em>, <em>check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_team_switched"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_team_switched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for team switch event.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>timeout</strong> – Time to wait for event, if exceeded, returns None.</li>
+<li><strong>old_team</strong> – Player’s old team.</li>
+<li><strong>new_team</strong> – Player’s new team.</li>
+<li><strong>nick</strong> – Player’s nick.</li>
+<li><strong>check</strong> – Check function, ignored if none.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns message info dict keys: (‘nick’, ‘old_team’, ‘new_nick’).</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
@@ -1262,6 +1468,21 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 <dd></dd></dl>
 
 <dl class="attribute">
+<dt id="dplib.server.ServerEvent.ELIM_TEAMS_FLAG">
+<code class="descname">ELIM_TEAMS_FLAG</code><em class="property"> = 9</em><a class="headerlink" href="#dplib.server.ServerEvent.ELIM_TEAMS_FLAG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.ENTRANCE">
+<code class="descname">ENTRANCE</code><em class="property"> = 7</em><a class="headerlink" href="#dplib.server.ServerEvent.ENTRANCE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.FLAG_CAPTURED">
+<code class="descname">FLAG_CAPTURED</code><em class="property"> = 8</em><a class="headerlink" href="#dplib.server.ServerEvent.FLAG_CAPTURED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
 <dt id="dplib.server.ServerEvent.MAPCHANGE">
 <code class="descname">MAPCHANGE</code><em class="property"> = 4</em><a class="headerlink" href="#dplib.server.ServerEvent.MAPCHANGE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -1274,6 +1495,16 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 <dl class="attribute">
 <dt id="dplib.server.ServerEvent.RESPAWN">
 <code class="descname">RESPAWN</code><em class="property"> = 3</em><a class="headerlink" href="#dplib.server.ServerEvent.RESPAWN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.ROUND_STARTED">
+<code class="descname">ROUND_STARTED</code><em class="property"> = 10</em><a class="headerlink" href="#dplib.server.ServerEvent.ROUND_STARTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.TEAM_SWITCHED">
+<code class="descname">TEAM_SWITCHED</code><em class="property"> = 11</em><a class="headerlink" href="#dplib.server.ServerEvent.TEAM_SWITCHED" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">

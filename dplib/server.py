@@ -27,7 +27,7 @@ class ListenerType(Enum):
 
 
 REGEXPS = {
-    re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?): (.+).'): ServerEvent.CHAT,
+    re.compile('^\\[\d\d:\d\d:\d\d\\] (?:(?:\\[OBS\\] )|(?:\\[ELIM\\] ))?(.*?): (.+).'): ServerEvent.CHAT,
     # [19:54:18] hTml: test
     re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?) \\((.*?)\\) eliminated \\*(.*?) \\((.*?)\\).'): ServerEvent.ELIM,
     # [18:54:24] *|ACEBot_1| (Spyder SE) eliminated *|herself| (Spyder SE).
@@ -547,7 +547,7 @@ class Server(object):
         """
         Waits for entrance.
 
-        :param timeout:  Time to wait for respawn event, if exceeded, returns None.
+        :param timeout:  Time to wait for entrance event, if exceeded, returns None.
         :param nick: Player's nick.
         :param build: Player's build.
         :param addr: Player's address (IP:PORT)
@@ -581,6 +581,104 @@ class Server(object):
         margs = (team, nick)
         predicate = self.__get_predicate(margs, check)
         self.__listeners[ServerEvent.RESPAWN].append((predicate, future))
+        try:
+            data = yield from asyncio.wait_for(future, timeout,
+                                               loop=self.loop)
+        except asyncio.TimeoutError:
+            data = None
+        return data
+
+    @asyncio.coroutine
+    def wait_for_elim_teams_flag(self, timeout=None, team=None, nick=None, points=None, check=None):
+        """
+        Waits for elim teams flag event.
+
+        :param timeout: Time to wait for event, if exceeded, returns None.
+        :param team: Player's team.
+        :param nick: Player's nick.
+        :param points: Points scored.
+        :type points: int
+        :param check: Check function, ignored if none.
+
+        :return: Returns message info dict keys: ('team', 'nick', 'points').
+        :rtype: dict
+        """
+        future = asyncio.Future(loop=self.loop)
+        margs = (team, nick, points)
+        predicate = self.__get_predicate(margs, check)
+        self.__listeners[ServerEvent.ELIM_TEAMS_FLAG].append((predicate, future))
+        try:
+            data = yield from asyncio.wait_for(future, timeout,
+                                               loop=self.loop)
+        except asyncio.TimeoutError:
+            data = None
+        return data
+
+    @asyncio.coroutine
+    def wait_for_team_switched(self, timeout=None, nick=None, old_team=None, new_team=None, check=None):
+        """
+        Waits for team switch event.
+
+        :param timeout: Time to wait for event, if exceeded, returns None.
+        :param old_team: Player's old team.
+        :param new_team: Player's new team.
+        :param nick: Player's nick.
+        :param check: Check function, ignored if none.
+
+        :return: Returns message info dict keys: ('nick', 'old_team', 'new_nick').
+        :rtype: dict
+        """
+        future = asyncio.Future(loop=self.loop)
+        margs = (nick, old_team, new_team)
+        predicate = self.__get_predicate(margs, check)
+        self.__listeners[ServerEvent.TEAM_SWITCHED].append((predicate, future))
+        try:
+            data = yield from asyncio.wait_for(future, timeout,
+                                               loop=self.loop)
+        except asyncio.TimeoutError:
+            data = None
+        return data
+
+    @asyncio.coroutine
+    def wait_for_round_started(self, timeout=None, check=None):
+        """
+        Waits for round start.
+
+        :param timeout: Time to wait for event, if exceeded, returns None.
+        :param check: Check function, ignored if none.
+
+        :return: Returns an empty dict.
+        :rtype: dict
+        """
+        future = asyncio.Future(loop=self.loop)
+        margs = tuple()
+        predicate = self.__get_predicate(margs, check)
+        self.__listeners[ServerEvent.ROUND_STARTED].append((predicate, future))
+        try:
+            data = yield from asyncio.wait_for(future, timeout,
+                                               loop=self.loop)
+        except asyncio.TimeoutError:
+            data = None
+        return data
+
+    @asyncio.coroutine
+    def wait_for_flag_captured(self, timeout=None, team=None, nick=None, flag=None, check=None):
+        """
+        Waits for flag capture.
+
+        :param timeout: Time to wait for event, if exceeded, returns None.
+        :param team: Player's team.
+        :param nick: Player's nick.
+        :param flag: Captured flag.
+        :param check: Check function, ignored if none.
+
+        :return: Returns an empty dict.
+        :rtype: dict
+        """
+        future = asyncio.Future(loop=self.loop)
+        margs = tuple()
+        predicate = self.__get_predicate(margs, check)
+        self.__listeners[ServerEvent.FLAG_CAPTURED].append((predicate, future))
         try:
             data = yield from asyncio.wait_for(future, timeout,
                                                loop=self.loop)
@@ -667,8 +765,12 @@ class Server(object):
         if realtime:
             while self.__alive:
                 line = self.__log_file.readline()
+                while line and line.decode('latin-1')[-1] != '\n':
+                    yield from asyncio.sleep(0.05)
+                    line += self.__log_file.readline()
                 if line:
                     yield from self.__parse_line(line.decode('latin-1'))
+
                 yield from asyncio.sleep(0.05)
         self.__log_file.close()
 

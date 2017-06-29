@@ -171,37 +171,63 @@
     <span class="n">RESPAWN</span> <span class="o">=</span> <span class="mi">3</span>
     <span class="n">MAPCHANGE</span> <span class="o">=</span> <span class="mi">4</span>
     <span class="n">DATE</span> <span class="o">=</span> <span class="mi">5</span>
-    <span class="n">NAMECHANGE</span> <span class="o">=</span> <span class="mi">6</span></div>
+    <span class="n">NAMECHANGE</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">ENTRANCE</span> <span class="o">=</span> <span class="mi">7</span>
+    <span class="n">FLAG_CAPTURED</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">ELIM_TEAMS_FLAG</span> <span class="o">=</span> <span class="mi">9</span>
+    <span class="n">ROUND_STARTED</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">TEAM_SWITCHED</span> <span class="o">=</span> <span class="mi">11</span></div>
+
 
 <div class="viewcode-block" id="ListenerType"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.ListenerType">[docs]</a><span class="k">class</span> <span class="nc">ListenerType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">PERMANENT</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">TRIGGER_ONCE</span> <span class="o">=</span> <span class="mi">1</span></div>
 
-<span class="n">REGEXPS</span> <span class="o">=</span>  <span class="p">{</span>
-    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d</span><span class="se">\\</span><span class="s1">:\d\d</span><span class="se">\\</span><span class="s1">:\d\d</span><span class="se">\\</span><span class="s1">]</span><span class="se">\\</span><span class="s1"> (.*?)</span><span class="se">\\</span><span class="s1">: (.+).&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">,</span>
+
+<span class="n">REGEXPS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] (?:(?:</span><span class="se">\\</span><span class="s1">[OBS</span><span class="se">\\</span><span class="s1">] )|(?:</span><span class="se">\\</span><span class="s1">[ELIM</span><span class="se">\\</span><span class="s1">] ))?(.*?): (.+).&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">,</span>
     <span class="c1"># [19:54:18] hTml: test</span>
-    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d</span><span class="se">\\</span><span class="s1">:\d\d</span><span class="se">\\</span><span class="s1">:\d\d</span><span class="se">\\</span><span class="s1">]</span><span class="se">\\</span><span class="s1"> </span><span class="se">\\</span><span class="s1">*(.*?)</span><span class="se">\\</span><span class="s1"> </span><span class="se">\\</span><span class="s1">((.*?)</span><span class="se">\\</span><span class="s1">)</span><span class="se">\\</span><span class="s1"> eliminated</span><span class="se">\\</span><span class="s1"> </span><span class="se">\\</span><span class="s1">*(.*?)</span><span class="se">\\</span><span class="s1"> </span><span class="se">\\</span><span class="s1">((.*?)</span><span class="se">\\</span><span class="s1">).&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM</span><span class="p">,</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] </span><span class="se">\\</span><span class="s1">*(.*?) </span><span class="se">\\</span><span class="s1">((.*?)</span><span class="se">\\</span><span class="s1">) eliminated </span><span class="se">\\</span><span class="s1">*(.*?) </span><span class="se">\\</span><span class="s1">((.*?)</span><span class="se">\\</span><span class="s1">).&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM</span><span class="p">,</span>
     <span class="c1"># [18:54:24] *|ACEBot_1| (Spyder SE) eliminated *|herself| (Spyder SE).</span>
-    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d</span><span class="se">\\</span><span class="s1">:\d\d</span><span class="se">\\</span><span class="s1">:\d\d</span><span class="se">\\</span><span class="s1">]</span><span class="se">\\</span><span class="s1"> </span><span class="se">\\</span><span class="s1">*(.*?)</span><span class="se">\\\&#39;</span><span class="s1">s</span><span class="se">\\</span><span class="s1"> (.*?)</span><span class="se">\\</span><span class="s1"> revived</span><span class="se">\\</span><span class="s1">!&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">RESPAWN</span><span class="p">,</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] </span><span class="se">\\</span><span class="s1">*(.*?)</span><span class="se">\\\&#39;</span><span class="s1">s (.*?) revived!&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">RESPAWN</span><span class="p">,</span>
     <span class="c1"># [19:03:57] *Red&#39;s ACEBot_6 revived!</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] (.*?) entered the game </span><span class="se">\\</span><span class="s1">((.*?)</span><span class="se">\\</span><span class="s1">) </span><span class="se">\\</span><span class="s1">[(.*?)</span><span class="se">\\</span><span class="s1">]&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ENTRANCE</span><span class="p">,</span>
+    <span class="c1"># [19:03:57] mRokita entered the game (build 41) [127.0.0.1:22345]</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] </span><span class="se">\\</span><span class="s1">*(.*?)</span><span class="se">\\\&#39;</span><span class="s1">s (.*?) returned the(?: </span><span class="se">\\</span><span class="s1">*(.*?))? flag!&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">FLAG_CAPTURED</span><span class="p">,</span>
+    <span class="c1"># [18:54:24] *Red&#39;s hTml returned the *Blue flag!</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] </span><span class="se">\\</span><span class="s1">*(.*?)</span><span class="se">\\\&#39;</span><span class="s1">s (.*?) earned (\d+) points for possesion of eliminated teams flag!&#39;</span><span class="p">):</span>
+        <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM_TEAMS_FLAG</span><span class="p">,</span>
+    <span class="c1"># [19:30:23] *Blue&#39;s mRokita earned 3 points for possesion of eliminated teams flag!</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] Round started</span><span class="se">\\</span><span class="s1">.</span><span class="se">\\</span><span class="s1">.</span><span class="se">\\</span><span class="s1">.&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ROUND_STARTED</span><span class="p">,</span>
+    <span class="c1"># [10:20:11] Round started...</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+        <span class="s1">&#39;(?:^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] (.*?) switched from </span><span class="se">\\</span><span class="s1">*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow))&#39;</span>
+        <span class="s1">&#39; to </span><span class="se">\\</span><span class="s1">*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow))</span><span class="se">\\</span><span class="s1">.)|&#39;</span>
+        <span class="s1">&#39;(?:^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] (.*?) joined the </span><span class="se">\\</span><span class="s1">*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow)) team</span><span class="se">\\</span><span class="s1">.)|&#39;</span>
+        <span class="s1">&#39;(?:^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] (.*?) is now (observing)?</span><span class="se">\\</span><span class="s1">.)&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">TEAM_SWITCHED</span><span class="p">,</span>
+    <span class="c1"># [10:20:11] mRokita switched from Blue to Red.</span>
+    <span class="c1"># [10:20:11] mRokita is now observing.</span>
+    <span class="c1"># [10:20:11] mRokita joined the Blue team.</span>
+
+
 <span class="p">}</span>
 
 <span class="n">CHAR_TAB</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="se">\0</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span>
-                <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\&quot;</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="s1">&#39;$&#39;</span><span class="p">,</span> <span class="s1">&#39;%&#39;</span><span class="p">,</span> <span class="s1">&#39;&amp;&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="s1">&#39;4&#39;</span><span class="p">,</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;9&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;?&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;W&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;`&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;{&#39;</span><span class="p">,</span> <span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;}&#39;</span><span class="p">,</span> <span class="s1">&#39;~&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span>
-                <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\&quot;</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="s1">&#39;$&#39;</span><span class="p">,</span> <span class="s1">&#39;%&#39;</span><span class="p">,</span> <span class="s1">&#39;&amp;&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="s1">&#39;4&#39;</span><span class="p">,</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;9&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;?&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;W&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;`&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;W&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="s1">&#39;{&#39;</span><span class="p">,</span> <span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;}&#39;</span><span class="p">,</span> <span class="s1">&#39;~&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">]</span>
+            <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span>
+            <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\&quot;</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="s1">&#39;$&#39;</span><span class="p">,</span> <span class="s1">&#39;%&#39;</span><span class="p">,</span> <span class="s1">&#39;&amp;&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="s1">&#39;4&#39;</span><span class="p">,</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;9&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;?&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;W&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;`&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">,</span> <span class="s1">&#39;e&#39;</span><span class="p">,</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s1">&#39;j&#39;</span><span class="p">,</span> <span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">,</span> <span class="s1">&#39;o&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;p&#39;</span><span class="p">,</span> <span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;u&#39;</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="s1">&#39;{&#39;</span><span class="p">,</span> <span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;}&#39;</span><span class="p">,</span> <span class="s1">&#39;~&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span>
+            <span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;!&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\&quot;</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;#&#39;</span><span class="p">,</span> <span class="s1">&#39;$&#39;</span><span class="p">,</span> <span class="s1">&#39;%&#39;</span><span class="p">,</span> <span class="s1">&#39;&amp;&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;(&#39;</span><span class="p">,</span> <span class="s1">&#39;)&#39;</span><span class="p">,</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;+&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;2&#39;</span><span class="p">,</span> <span class="s1">&#39;3&#39;</span><span class="p">,</span> <span class="s1">&#39;4&#39;</span><span class="p">,</span> <span class="s1">&#39;5&#39;</span><span class="p">,</span> <span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="s1">&#39;8&#39;</span><span class="p">,</span> <span class="s1">&#39;9&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="s1">&#39;;&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="p">,</span> <span class="s1">&#39;&gt;&#39;</span><span class="p">,</span> <span class="s1">&#39;?&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;@&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;W&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="s1">&#39;[&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;]&#39;</span><span class="p">,</span> <span class="s1">&#39;^&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;`&#39;</span><span class="p">,</span> <span class="s1">&#39;A&#39;</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="s1">&#39;D&#39;</span><span class="p">,</span> <span class="s1">&#39;E&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;J&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="s1">&#39;T&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">,</span> <span class="s1">&#39;W&#39;</span><span class="p">,</span> <span class="s1">&#39;X&#39;</span><span class="p">,</span> <span class="s1">&#39;Y&#39;</span><span class="p">,</span> <span class="s1">&#39;Z&#39;</span><span class="p">,</span> <span class="s1">&#39;{&#39;</span><span class="p">,</span> <span class="s1">&#39;|&#39;</span><span class="p">,</span> <span class="s1">&#39;}&#39;</span><span class="p">,</span> <span class="s1">&#39;~&#39;</span><span class="p">,</span> <span class="s1">&#39;&lt;&#39;</span><span class="p">]</span>
 
 
 <div class="viewcode-block" id="Player"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Player">[docs]</a><span class="k">class</span> <span class="nc">Player</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -234,41 +260,115 @@
 <span class="sd">    :param logfile: Path to logfile</span>
 <span class="sd">    :param rcon_password: rcon password</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">__ALLOWED_EVENTS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;on_chat&#39;</span><span class="p">,</span> <span class="s1">&#39;on_elim&#39;</span><span class="p">,</span> <span class="s1">&#39;on_respawn&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27910</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rcon_password</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__rcon_password</span> <span class="o">=</span> <span class="n">rcon_password</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__hostname</span> <span class="o">=</span> <span class="n">hostname</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__port</span> <span class="o">=</span> <span class="n">port</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__logfile_name</span> <span class="o">=</span> <span class="n">logfile</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__alive</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">:</span> <span class="s1">&#39;on_chat&#39;</span><span class="p">,</span>
             <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM</span><span class="p">:</span> <span class="s1">&#39;on_elim&#39;</span><span class="p">,</span>
             <span class="n">ServerEvent</span><span class="o">.</span><span class="n">RESPAWN</span><span class="p">:</span> <span class="s1">&#39;on_respawn&#39;</span><span class="p">,</span>
+            <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ENTRANCE</span><span class="p">:</span> <span class="s1">&#39;on_entrance&#39;</span><span class="p">,</span>
+            <span class="n">ServerEvent</span><span class="o">.</span><span class="n">FLAG_CAPTURED</span><span class="p">:</span> <span class="s1">&#39;on_flag_captured&#39;</span><span class="p">,</span>
+            <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM_TEAMS_FLAG</span><span class="p">:</span> <span class="s1">&#39;on_elim_teams_flag&#39;</span><span class="p">,</span>
+            <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ROUND_STARTED</span><span class="p">:</span> <span class="s1">&#39;on_round_started&#39;</span><span class="p">,</span>
+            <span class="n">ServerEvent</span><span class="o">.</span><span class="n">TEAM_SWITCHED</span><span class="p">:</span> <span class="s1">&#39;on_team_switched&#39;</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">:</span> <span class="p">[],</span>
             <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM</span><span class="p">:</span> <span class="p">[],</span>
             <span class="n">ServerEvent</span><span class="o">.</span><span class="n">RESPAWN</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ENTRANCE</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="n">ServerEvent</span><span class="o">.</span><span class="n">FLAG_CAPTURED</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM_TEAMS_FLAG</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ROUND_STARTED</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="n">ServerEvent</span><span class="o">.</span><span class="n">TEAM_SWITCHED</span><span class="p">:</span> <span class="p">[],</span>
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Server.on_chat"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_chat">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
     <span class="k">def</span> <span class="nf">on_chat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        On chat, can be overridden using the :func:`.Server.event`.</span>
+<span class="sd">        On chat, can be overridden using the :func:`.Server.event` decorator.</span>
+
+<span class="sd">        :param nick: Player&#39;s nick.</span>
+<span class="sd">        :type nick: str</span>
+<span class="sd">        :param message: Message.</span>
+<span class="sd">        :type message: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Server.on_flag_captured"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_flag_captured">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">on_flag_captured</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">flag</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        On flag captured, can be overridden using the :func:`.Server.event` decorator.</span>
+
+<span class="sd">        :param team: Player&#39;s team.</span>
+<span class="sd">        :type team: str</span>
+<span class="sd">        :param nick: Player&#39;s nick.</span>
+<span class="sd">        :type nick: str</span>
+<span class="sd">        :param flag: Captured flag (Blue|Red|Yellow|Purple|White)</span>
+<span class="sd">        :type flag: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Server.on_team_switched"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_team_switched">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">on_team_switched</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">old_team</span><span class="p">,</span> <span class="n">new_team</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        On team switched, can be overridden using the :func:`.Server.event` decorator.</span>
 
 <span class="sd">        :param nick: Player&#39;s nick</span>
 <span class="sd">        :type nick: str</span>
-<span class="sd">        :param message: Message</span>
-<span class="sd">        :type message: str</span>
+<span class="sd">        :param old_team: Old team (Blue|Red|Yellow|Purple|Observer)</span>
+<span class="sd">        :type old_team: str</span>
+<span class="sd">        :param new_team: New team (Blue|Red|Yellow|Purple|Observer)</span>
+<span class="sd">        :type new_team: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Server.on_round_started"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_round_started">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">on_round_started</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        On round started, can be overridden using the :func:`.Server.event` decorator.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Server.on_elim_teams_flag"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_elim_teams_flag">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">on_elim_teams_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">points</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        On scored points for possession of eliminated teams flag, can be overridden using the :func:`.Server.event` decorator.</span>
+
+<span class="sd">        :param team: Player&#39;s team.</span>
+<span class="sd">        :type team: str</span>
+<span class="sd">        :param nick: Player&#39;s nick.</span>
+<span class="sd">        :type nick: str</span>
+<span class="sd">        :param points: Points earned.</span>
+<span class="sd">        :type flag: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Server.on_entrance"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_entrance">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">on_entrance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">build</span><span class="p">,</span> <span class="n">addr</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        On entrance, can be overriden using the :func:`.Server.event` decorator.</span>
+
+<span class="sd">        :param nick: Player&#39;s nick</span>
+<span class="sd">        :type nick: str</span>
+<span class="sd">        :param build: Player&#39;s game version (&#39;build 41&#39; for example</span>
+<span class="sd">        :type build: str</span>
+<span class="sd">        :param addr: Player&#39;s address, IP:PORT (&#39;127.0.0.1:23414&#39; for example)</span>
+<span class="sd">        :type addr: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="Server.on_elim"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_elim">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
     <span class="k">def</span> <span class="nf">on_elim</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">killer_nick</span><span class="p">,</span> <span class="n">killer_weapon</span><span class="p">,</span> <span class="n">victim_nick</span><span class="p">,</span> <span class="n">victim_weapon</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        On elim can be overridden using the :func:`.Server.event`.</span>
+<span class="sd">        On elim can be overridden using the :func:`.Server.event` decorator.</span>
 
 <span class="sd">        :param killer_nick: Killer&#39;s nick</span>
 <span class="sd">        :type killer_nick: str</span>
@@ -281,20 +381,10 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="Server.on_entered"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_entered">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
-    <span class="k">def</span> <span class="nf">on_entered</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">ip</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Not implemented yet.</span>
-
-<span class="sd">        :param nick:</span>
-<span class="sd">        :param ip:</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">pass</span></div>
-
 <div class="viewcode-block" id="Server.on_respawn"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_respawn">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
     <span class="k">def</span> <span class="nf">on_respawn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        On respawn, can be overridden using the :func:`.Server.event`.</span>
+<span class="sd">        On respawn, can be overridden using the :func:`.Server.event` decorator.</span>
 
 <span class="sd">        :param team: Player&#39;s team (Blue|Red|Yellow|Purple)</span>
 <span class="sd">        :type team: str</span>
@@ -316,7 +406,7 @@
 <span class="sd">            :linenos:</span>
 
 <span class="sd">            &gt;&gt;&gt; from dplib.server import Server</span>
-<span class="sd">            &gt;&gt;&gt; s = Server(hostname=&#39;127.0.0.1&#39;, port=27910, logfile=r&#39;C:\Games\Paintball2\pball\qconsole27910.log&#39;, rcon_password=&#39;hello&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; s = Server(hostname=&#39;127.0.0.1&#39;, port=27910, logfile=r&#39;qconsole27910.log&#39;, rcon_password=&#39;hello&#39;)</span>
 <span class="sd">            &gt;&gt;&gt; @s.event</span>
 <span class="sd">            ... def on_chat(nick, message):</span>
 <span class="sd">            ...     print((nick, message))</span>
@@ -324,7 +414,7 @@
 <span class="sd">            &gt;&gt;&gt; s.run()</span>
 <span class="sd">            (&#39;mRokita&#39;, &#39;Hi&#39;)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__ALLOWED_EVENTS</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">coroutine</span><span class="p">(</span><span class="n">func</span><span class="p">))</span>
             <span class="k">return</span> <span class="n">func</span>
         <span class="k">else</span><span class="p">:</span>
@@ -368,7 +458,7 @@
         <span class="k">if</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">:</span>
             <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s1">&#39;nick&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
-                <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
             <span class="p">}</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__perform_listeners</span><span class="p">(</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM</span><span class="p">:</span>
@@ -376,7 +466,7 @@
                 <span class="s1">&#39;killer_nick&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                 <span class="s1">&#39;killer_weapon&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                 <span class="s1">&#39;victim_nick&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
-                <span class="s1">&#39;victim_weapon&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+                <span class="s1">&#39;victim_weapon&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
             <span class="p">}</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__perform_listeners</span><span class="p">(</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">RESPAWN</span><span class="p">:</span>
@@ -385,6 +475,40 @@
                 <span class="s1">&#39;nick&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
             <span class="p">}</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__perform_listeners</span><span class="p">(</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">RESPAWN</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ENTRANCE</span><span class="p">:</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;nick&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s1">&#39;build&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="s1">&#39;addr&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+            <span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__perform_listeners</span><span class="p">(</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">ENTRANCE</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">FLAG_CAPTURED</span><span class="p">:</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;team&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s1">&#39;nick&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="s1">&#39;flag&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+            <span class="p">}</span>
+        <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM_TEAMS_FLAG</span><span class="p">:</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;team&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s1">&#39;nick&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                <span class="s1">&#39;points&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
+            <span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__perform_listeners</span><span class="p">(</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM_TEAMS_FLAG</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ROUND_STARTED</span><span class="p">:</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__perform_listeners</span><span class="p">(</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">ROUND_STARTED</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">TEAM_SWITCHED</span><span class="p">:</span>
+            <span class="n">new_args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span> <span class="k">if</span> <span class="n">arg</span><span class="p">]</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;nick&#39;</span><span class="p">:</span> <span class="n">new_args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s1">&#39;old_team&#39;</span><span class="p">:</span> <span class="n">new_args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="s1">&#39;Observer&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;new_team&#39;</span><span class="p">:</span> <span class="n">new_args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">new_args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="p">}</span>
+            <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;new_team&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;observing&#39;</span><span class="p">:</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;new_team&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Observer&#39;</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;old_team&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__perform_listeners</span><span class="p">(</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">TEAM_SWITCHED</span><span class="p">,</span> <span class="n">new_args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
         <span class="n">asyncio</span><span class="o">.</span><span class="k">async</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">event_type</span><span class="p">])(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
 
     <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
@@ -394,6 +518,7 @@
 
 <span class="sd">        :param line: Line from logs</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">print</span><span class="p">([</span><span class="n">line</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">REGEXPS</span><span class="p">:</span>
             <span class="n">results</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
@@ -414,7 +539,7 @@
 <span class="sd">            :linenos:</span>
 
 <span class="sd">            &gt;&gt;&gt; from dplib.server import Server</span>
-<span class="sd">            &gt;&gt;&gt; s = Server(hostname=&#39;127.0.0.1&#39;, port=27910, logfile=r&#39;C:\Games\Paintball2\pball\qconsole27910.log&#39;, rcon_password=&#39;hello&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; s = Server(hostname=&#39;127.0.0.1&#39;, port=27910, logfile=r&#39;qconsole27910.log&#39;, rcon_password=&#39;hello&#39;)</span>
 <span class="sd">            &gt;&gt;&gt; s.rcon(&#39;sv listuserip&#39;)</span>
 <span class="sd">            &#39;ÿÿÿÿprint\\n mRokita [127.0.0.1:9419]\\nadmin is listing IP for mRokita [127.0.0.1:9419]\\n&#39;</span>
 
@@ -451,12 +576,11 @@
 <span class="sd">        :rtype: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ip</span><span class="p">:</span>
-            <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;removeip </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span><span class="n">ip</span><span class="p">)</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;removeip </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">ip</span><span class="p">)</span>
             <span class="n">resp</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;writeban&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">resp</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;IP address is required.&#39;</span><span class="p">)</span></div>
-
 
 <div class="viewcode-block" id="Server.tempoban"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.tempoban">[docs]</a>    <span class="k">def</span> <span class="nf">tempoban</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -470,12 +594,11 @@
 <span class="sd">        :rtype: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">duration</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Ban duration should be an integer, not a &#39;</span> <span class="o">+</span>
-                                                        <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">duration</span><span class="p">)))</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Ban duration should be an integer, not a &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">duration</span><span class="p">)))</span>
         <span class="k">if</span> <span class="n">nick</span><span class="p">:</span>
             <span class="nb">id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ingame_info</span><span class="p">(</span><span class="n">nick</span><span class="p">)</span><span class="o">.</span><span class="n">id</span>
         <span class="k">if</span> <span class="nb">id</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;tban </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span><span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">duration</span><span class="p">)))</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;tban </span><span class="si">%s</span><span class="s1"> </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">id</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">duration</span><span class="p">)))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Player id or nick is required.&#39;</span><span class="p">)</span></div>
 
@@ -487,7 +610,6 @@
 <span class="sd">        :rtype: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s2">&quot;removetbans&quot;</span><span class="p">)</span></div>
-
 
 <div class="viewcode-block" id="Server.kick"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.kick">[docs]</a>    <span class="k">def</span> <span class="nf">kick</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nick</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -510,7 +632,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Say a message</span>
 
-<span class="sd">        :param message: Text, can contain {C} - color char {U} - underline char {I} italic. Remember to escape user input using :func:`dplib.parse.escape_braces`.</span>
+<span class="sd">        :param message: Text, can contain {C} - color char {U} - underline char {I} italic.</span>
+<span class="sd">        Remember to escape user input using :func:`dplib.parse.escape_braces`.</span>
 
 <span class="sd">        :rtype: str</span>
 <span class="sd">        :return: Rcon response</span>
@@ -520,7 +643,7 @@
 <span class="sd">            :linenos:</span>
 
 <span class="sd">            &gt;&gt;&gt; from dplib.server import Server</span>
-<span class="sd">            &gt;&gt;&gt; s = Server(hostname=&#39;127.0.0.1&#39;, port=27910, logfile=r&#39;C:\Games\Paintball2\pball\qconsole27910.log&#39;, rcon_password=&#39;hello&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; s = Server(hostname=&#39;127.0.0.1&#39;, port=27910, logfile=r&#39;qconsole27910.log&#39;, rcon_password=&#39;hello&#39;)</span>
 <span class="sd">            &gt;&gt;&gt; s.say(&#39;{C}ARed text&#39;)</span>
 <span class="sd">            &gt;&gt;&gt; s.say(&#39;{U}Underline{U}&#39;)</span>
 <span class="sd">            &gt;&gt;&gt; s.say(&#39;{I}Italic{I}&#39;)</span>
@@ -535,7 +658,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Cprints a message.</span>
 
-<span class="sd">        :param message: Text, can contain {C} - color char {U} - underline char {I} italic. Remember to escape user input using :func:`dplib.parse.escape_brac</span>
+<span class="sd">        :param message: Text, can contain {C} - color char {U} - underline char {I} italic.</span>
+<span class="sd">        Remember to escape user input using :func:`dplib.parse.escape_brac</span>
 
 <span class="sd">        :return: Rcon response</span>
 <span class="sd">        :rtype: str</span>
@@ -554,7 +678,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;set </span><span class="si">%s</span><span class="s1"> &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
 
-    <span class="k">def</span> <span class="nf">__get_predicate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">):</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">__get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a comparator.</span>
 
@@ -575,23 +700,143 @@
             <span class="k">return</span> <span class="n">result</span>
         <span class="k">return</span> <span class="n">predicate</span>
 
+<div class="viewcode-block" id="Server.wait_for_entrance"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.wait_for_entrance">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">wait_for_entrance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">build</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">addr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Waits for entrance.</span>
+
+<span class="sd">        :param timeout:  Time to wait for entrance event, if exceeded, returns None.</span>
+<span class="sd">        :param nick: Player&#39;s nick.</span>
+<span class="sd">        :param build: Player&#39;s build.</span>
+<span class="sd">        :param addr: Player&#39;s address (IP:PORT)</span>
+<span class="sd">        :return:</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="n">margs</span> <span class="o">=</span> <span class="p">(</span><span class="n">nick</span><span class="p">,</span> <span class="n">build</span><span class="p">,</span> <span class="n">addr</span><span class="p">)</span>
+        <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">ENTRANCE</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">predicate</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span>
+                                               <span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
 <div class="viewcode-block" id="Server.wait_for_respawn"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.wait_for_respawn">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
     <span class="k">def</span> <span class="nf">wait_for_respawn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">team</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Waits for respawn event.</span>
 
 <span class="sd">        :param timeout: Time to wait for respawn event, if exceeded, returns None.</span>
-<span class="sd">        :param team:</span>
-<span class="sd">        :param nick:</span>
-<span class="sd">        :param check: Check function, ignored if none</span>
+<span class="sd">        :param team: Player&#39;s team.</span>
+<span class="sd">        :param nick: Player&#39;s nick.</span>
+<span class="sd">        :param check: Check function, ignored if none.</span>
 
-<span class="sd">        :return: Returns message info dict keys: (&#39;killer_nick&#39;, &#39;message&#39;)(&#39;killer_nick&#39;, &#39;killer_weapon&#39;, &#39;victim_nick&#39;, &#39;victim_weapon&#39;)</span>
+<span class="sd">        :return: Returns message info dict keys: (&#39;team&#39;, &#39;nick&#39;).</span>
 <span class="sd">        :rtype: dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
         <span class="n">margs</span> <span class="o">=</span> <span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">)</span>
-        <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
+        <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">RESPAWN</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">predicate</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span>
+                                               <span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="Server.wait_for_elim_teams_flag"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.wait_for_elim_teams_flag">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">wait_for_elim_teams_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">team</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">points</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Waits for elim teams flag event.</span>
+
+<span class="sd">        :param timeout: Time to wait for event, if exceeded, returns None.</span>
+<span class="sd">        :param team: Player&#39;s team.</span>
+<span class="sd">        :param nick: Player&#39;s nick.</span>
+<span class="sd">        :param points: Points scored.</span>
+<span class="sd">        :type points: int</span>
+<span class="sd">        :param check: Check function, ignored if none.</span>
+
+<span class="sd">        :return: Returns message info dict keys: (&#39;team&#39;, &#39;nick&#39;, &#39;points&#39;).</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="n">margs</span> <span class="o">=</span> <span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+        <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM_TEAMS_FLAG</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">predicate</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span>
+                                               <span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="Server.wait_for_team_switched"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.wait_for_team_switched">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">wait_for_team_switched</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">old_team</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">new_team</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Waits for team switch event.</span>
+
+<span class="sd">        :param timeout: Time to wait for event, if exceeded, returns None.</span>
+<span class="sd">        :param old_team: Player&#39;s old team.</span>
+<span class="sd">        :param new_team: Player&#39;s new team.</span>
+<span class="sd">        :param nick: Player&#39;s nick.</span>
+<span class="sd">        :param check: Check function, ignored if none.</span>
+
+<span class="sd">        :return: Returns message info dict keys: (&#39;nick&#39;, &#39;old_team&#39;, &#39;new_nick&#39;).</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="n">margs</span> <span class="o">=</span> <span class="p">(</span><span class="n">nick</span><span class="p">,</span> <span class="n">old_team</span><span class="p">,</span> <span class="n">new_team</span><span class="p">)</span>
+        <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">TEAM_SWITCHED</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">predicate</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span>
+                                               <span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="Server.wait_for_round_started"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.wait_for_round_started">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">wait_for_round_started</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Waits for round start.</span>
+
+<span class="sd">        :param timeout: Time to wait for event, if exceeded, returns None.</span>
+<span class="sd">        :param check: Check function, ignored if none.</span>
+
+<span class="sd">        :return: Returns an empty dict.</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="n">margs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">()</span>
+        <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">ROUND_STARTED</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">predicate</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span>
+                                               <span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="Server.wait_for_flag_captured"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.wait_for_flag_captured">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">wait_for_flag_captured</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">team</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Waits for flag capture.</span>
+
+<span class="sd">        :param timeout: Time to wait for event, if exceeded, returns None.</span>
+<span class="sd">        :param team: Player&#39;s team.</span>
+<span class="sd">        :param nick: Player&#39;s nick.</span>
+<span class="sd">        :param flag: Captured flag.</span>
+<span class="sd">        :param check: Check function, ignored if none.</span>
+
+<span class="sd">        :return: Returns an empty dict.</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="n">margs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">()</span>
+        <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">FLAG_CAPTURED</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">predicate</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span>
                                                <span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
@@ -606,22 +851,21 @@
 <span class="sd">        Waits for elimination event.</span>
 
 <span class="sd">        :param timeout: Time to wait for elimination event, if exceeded, returns None.</span>
-<span class="sd">        :param killer_nick: Killer&#39;s nick to match, ignored if None</span>
-<span class="sd">        :param killer_weapon: Killer&#39;s weapon to match, ignored if None</span>
-<span class="sd">        :param victim_nick:  Victim&#39;s nick to match, ignored if None</span>
-<span class="sd">        :param victim_weapon: Victim&#39;s weapon to match, ignored if None</span>
-<span class="sd">        :param check: Check function, ignored if none</span>
+<span class="sd">        :param killer_nick: Killer&#39;s nick to match, ignored if None.</span>
+<span class="sd">        :param killer_weapon: Killer&#39;s weapon to match, ignored if None.</span>
+<span class="sd">        :param victim_nick:  Victim&#39;s nick to match, ignored if None.</span>
+<span class="sd">        :param victim_weapon: Victim&#39;s weapon to match, ignored if None.</span>
+<span class="sd">        :param check: Check function, ignored if None.</span>
 
-<span class="sd">        :return: Returns message info dict keys: (&#39;killer_nick&#39;, &#39;message&#39;)(&#39;killer_nick&#39;, &#39;killer_weapon&#39;, &#39;victim_nick&#39;, &#39;victim_weapon&#39;)</span>
+<span class="sd">        :return: Returns message info dict keys: (&#39;killer_nick&#39;, &#39;killer_weapon&#39;, &#39;victim_nick&#39;, &#39;victim_weapon&#39;)</span>
 <span class="sd">        :rtype: dict</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
         <span class="n">margs</span> <span class="o">=</span> <span class="p">(</span><span class="n">killer_nick</span><span class="p">,</span> <span class="n">killer_weapon</span><span class="p">,</span> <span class="n">victim_nick</span><span class="p">,</span> <span class="n">victim_weapon</span><span class="p">)</span>
-        <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
+        <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">predicate</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">elim_info</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span>
-                                                  <span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+            <span class="n">elim_info</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
         <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
             <span class="n">elim_info</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">elim_info</span></div>
@@ -635,7 +879,7 @@
 <span class="sd">        :param nick: Player&#39;s nick to match, ignored if None</span>
 <span class="sd">        :type nick: str</span>
 <span class="sd">        :param message: Message text to match, ignored if None</span>
-<span class="sd">        :type messsage: str</span>
+<span class="sd">        :type message: str</span>
 <span class="sd">        :param check: Check function, ignored if None</span>
 <span class="sd">        :return: Returns message info dict keys: (&#39;nick&#39;, &#39;message&#39;)</span>
 <span class="sd">        :rtype: dict</span>
@@ -654,7 +898,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
         <span class="n">margs</span> <span class="o">=</span> <span class="p">(</span><span class="n">nick</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
-        <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
+        <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">predicate</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">message</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span>
@@ -679,8 +923,12 @@
         <span class="k">if</span> <span class="n">realtime</span><span class="p">:</span>
             <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__alive</span><span class="p">:</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="k">while</span> <span class="n">line</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">:</span>
+                    <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+                    <span class="n">line</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">line</span><span class="p">:</span>
                     <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_line</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">))</span>
+
                 <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
@@ -692,7 +940,7 @@
 <span class="sd">        :rtype: list</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;sv players&#39;</span><span class="p">)</span>
-        <span class="n">response</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;(\d+)</span><span class="se">\\</span><span class="s1"> </span><span class="se">\\</span><span class="s1">(?(.*?)</span><span class="se">\\</span><span class="s1">)?</span><span class="se">\\</span><span class="s1">]</span><span class="se">\\</span><span class="s1"> </span><span class="se">\\</span><span class="s1">*</span><span class="se">\\</span><span class="s1"> (?:OP</span><span class="se">\\</span><span class="s1"> \d+</span><span class="se">\\</span><span class="s1">,</span><span class="se">\\</span><span class="s1"> )?(.+)</span><span class="se">\\</span><span class="s1"> </span><span class="se">\\</span><span class="s1">((b\d+)</span><span class="se">\\</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;(\d+) </span><span class="se">\\</span><span class="s1">(?(.*?)</span><span class="se">\\</span><span class="s1">)?</span><span class="se">\\</span><span class="s1">] </span><span class="se">\\</span><span class="s1">* (?:OP \d+, )?(.+) </span><span class="se">\\</span><span class="s1">((b\d+)</span><span class="se">\\</span><span class="s1">)&#39;</span><span class="p">,</span> <span class="n">response</span><span class="p">)</span>
         <span class="n">players</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">p_data</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
             <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="n">nick</span><span class="o">=</span><span class="n">p_data</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
