@@ -8,6 +8,7 @@ Welcome to DPLib's documentation!
 
 .. toctree::
 
+   includelicense
    gettingstarted
    includeme
 
@@ -21,4 +22,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-* :ref:`includeme`
