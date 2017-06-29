@@ -20,7 +20,6 @@ from dplib.parse import escape_braces
 from dplib.server import Server
 
 s = Server(hostname='127.0.0.1', port=27910, logfile=r'C:\Games\Paintball2\pball\qconsole27910.log', rcon_password='hello')
-
 spawnkills = dict()
 spawnkill_last_times = dict()
 

@@ -535,6 +535,20 @@ class Server(object):
         """
         return self.rcon('set %s "%s"' % (var, value))
 
+    def get_cvar(self, var):
+        """
+        Get's cvar value
+        :param var: Variable name
+        :type var: str
+
+        :return: Cvar value
+        :rtype: str
+        """
+        res = self.rcon('"%s"' % var)
+        if re.match('^....print\\\nUnknown command \\"%s"\\.\\\n' % re.escape(var), res):
+            raise NameError('Cvar "%s" does not exist' % var)
+        return re.findall('^....print\\\n\\"%s\\" is \\"(.*?)\\"\\\n' % re.escape(var), res)[0]
+
     @staticmethod
     def __get_predicate(margs, check):
         """
