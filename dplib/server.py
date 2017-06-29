@@ -360,7 +360,6 @@ class Server(object):
 
         :param line: Line from logs
         """
-        print([line])
         for r in REGEXPS:
             results = r.findall(line)
             for res in results:

@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name='DPLib',
-      version='1.2',
+      version='1.21',
       description='Asynchronous bot framework for Digital Paint: Paintball 2 serversPython Distribution Utilities',
       author='Michał Rokita',
       author_email='mrokita@mrokita.pl',
