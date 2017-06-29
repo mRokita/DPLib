@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>dplib package &mdash; DPLib 1.1 documentation</title>
+  <title>dplib package &mdash; DPLib 1.21 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="DPLib 1.1 documentation" href="../index.html"/> 
+    <link rel="top" title="DPLib 1.21 documentation" href="../index.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -64,7 +64,7 @@
             
             
               <div class="version">
-                1.1
+                1.21
               </div>
             
           
@@ -916,7 +916,7 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>team</strong> (<em>str</em>) – Player’s team.</li>
 <li><strong>nick</strong> (<em>str</em>) – Player’s nick.</li>
-<li><strong>points</strong> – Points earned.</li>
+<li><strong>points</strong> (<em>int</em>) – Points earned.</li>
 </ul>
 </td>
 </tr>
@@ -1253,6 +1253,33 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 </dd></dl>
 
 <dl class="method">
+<dt id="dplib.server.Server.wait_for_elim_teams_flag">
+<code class="descname">wait_for_elim_teams_flag</code><span class="sig-paren">(</span><em>timeout=None</em>, <em>team=None</em>, <em>nick=None</em>, <em>points=None</em>, <em>check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_elim_teams_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_elim_teams_flag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for elim teams flag event.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>timeout</strong> – Time to wait for event, if exceeded, returns None.</li>
+<li><strong>team</strong> – Player’s team.</li>
+<li><strong>nick</strong> – Player’s nick.</li>
+<li><strong>points</strong> (<em>int</em>) – Points scored.</li>
+<li><strong>check</strong> – Check function, ignored if none.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns message info dict keys: (‘team’, ‘nick’, ‘points’).</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="dplib.server.Server.wait_for_entrance">
 <code class="descname">wait_for_entrance</code><span class="sig-paren">(</span><em>timeout=None</em>, <em>nick=None</em>, <em>build=None</em>, <em>addr=None</em>, <em>check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_entrance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_entrance" title="Permalink to this definition">¶</a></dt>
 <dd><p>Waits for entrance.</p>
@@ -1261,7 +1288,7 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>timeout</strong> – Time to wait for respawn event, if exceeded, returns None.</li>
+<li><strong>timeout</strong> – Time to wait for entrance event, if exceeded, returns None.</li>
 <li><strong>nick</strong> – Player’s nick.</li>
 <li><strong>build</strong> – Player’s build.</li>
 <li><strong>addr</strong> – Player’s address (IP:PORT)</li>
@@ -1269,6 +1296,33 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_flag_captured">
+<code class="descname">wait_for_flag_captured</code><span class="sig-paren">(</span><em>timeout=None</em>, <em>team=None</em>, <em>nick=None</em>, <em>flag=None</em>, <em>check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_flag_captured"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_flag_captured" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for flag capture.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>timeout</strong> – Time to wait for event, if exceeded, returns None.</li>
+<li><strong>team</strong> – Player’s team.</li>
+<li><strong>nick</strong> – Player’s nick.</li>
+<li><strong>flag</strong> – Captured flag.</li>
+<li><strong>check</strong> – Check function, ignored if none.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns an empty dict.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
 </td>
 </tr>
 </tbody>
@@ -1331,6 +1385,57 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns message info dict keys: (‘team’, ‘nick’).</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_round_started">
+<code class="descname">wait_for_round_started</code><span class="sig-paren">(</span><em>timeout=None</em>, <em>check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_round_started"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_round_started" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for round start.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>timeout</strong> – Time to wait for event, if exceeded, returns None.</li>
+<li><strong>check</strong> – Check function, ignored if none.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns an empty dict.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_team_switched">
+<code class="descname">wait_for_team_switched</code><span class="sig-paren">(</span><em>timeout=None</em>, <em>nick=None</em>, <em>old_team=None</em>, <em>new_team=None</em>, <em>check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_team_switched"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_team_switched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for team switch event.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>timeout</strong> – Time to wait for event, if exceeded, returns None.</li>
+<li><strong>old_team</strong> – Player’s old team.</li>
+<li><strong>new_team</strong> – Player’s new team.</li>
+<li><strong>nick</strong> – Player’s nick.</li>
+<li><strong>check</strong> – Check function, ignored if none.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns message info dict keys: (‘nick’, ‘old_team’, ‘new_nick’).</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
@@ -1450,7 +1555,7 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'1.1',
+            VERSION:'1.21',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

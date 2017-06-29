@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>dplib.server &mdash; DPLib 1.1 documentation</title>
+  <title>dplib.server &mdash; DPLib 1.21 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../genindex.html"/>
         <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="DPLib 1.1 documentation" href="../../index.html"/>
+    <link rel="top" title="DPLib 1.21 documentation" href="../../index.html"/>
         <link rel="up" title="Module code" href="../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                1.1
+                1.21
               </div>
             
           
@@ -185,7 +185,7 @@
 
 
 <span class="n">REGEXPS</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] (.*?): (.+).&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">,</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] (?:(?:</span><span class="se">\\</span><span class="s1">[OBS</span><span class="se">\\</span><span class="s1">] )|(?:</span><span class="se">\\</span><span class="s1">[ELIM</span><span class="se">\\</span><span class="s1">] ))?(.*?): (.+).&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">,</span>
     <span class="c1"># [19:54:18] hTml: test</span>
     <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] </span><span class="se">\\</span><span class="s1">*(.*?) </span><span class="se">\\</span><span class="s1">((.*?)</span><span class="se">\\</span><span class="s1">) eliminated </span><span class="se">\\</span><span class="s1">*(.*?) </span><span class="se">\\</span><span class="s1">((.*?)</span><span class="se">\\</span><span class="s1">).&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM</span><span class="p">,</span>
     <span class="c1"># [18:54:24] *|ACEBot_1| (Spyder SE) eliminated *|herself| (Spyder SE).</span>
@@ -347,7 +347,7 @@
 <span class="sd">        :param nick: Player&#39;s nick.</span>
 <span class="sd">        :type nick: str</span>
 <span class="sd">        :param points: Points earned.</span>
-<span class="sd">        :type flag: int</span>
+<span class="sd">        :type points: int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
@@ -518,7 +518,6 @@
 
 <span class="sd">        :param line: Line from logs</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="nb">print</span><span class="p">([</span><span class="n">line</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">REGEXPS</span><span class="p">:</span>
             <span class="n">results</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
@@ -705,7 +704,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Waits for entrance.</span>
 
-<span class="sd">        :param timeout:  Time to wait for respawn event, if exceeded, returns None.</span>
+<span class="sd">        :param timeout:  Time to wait for entrance event, if exceeded, returns None.</span>
 <span class="sd">        :param nick: Player&#39;s nick.</span>
 <span class="sd">        :param build: Player&#39;s build.</span>
 <span class="sd">        :param addr: Player&#39;s address (IP:PORT)</span>
@@ -739,6 +738,104 @@
         <span class="n">margs</span> <span class="o">=</span> <span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">)</span>
         <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">RESPAWN</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">predicate</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span>
+                                               <span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="Server.wait_for_elim_teams_flag"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.wait_for_elim_teams_flag">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">wait_for_elim_teams_flag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">team</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">points</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Waits for elim teams flag event.</span>
+
+<span class="sd">        :param timeout: Time to wait for event, if exceeded, returns None.</span>
+<span class="sd">        :param team: Player&#39;s team.</span>
+<span class="sd">        :param nick: Player&#39;s nick.</span>
+<span class="sd">        :param points: Points scored.</span>
+<span class="sd">        :type points: int</span>
+<span class="sd">        :param check: Check function, ignored if none.</span>
+
+<span class="sd">        :return: Returns message info dict keys: (&#39;team&#39;, &#39;nick&#39;, &#39;points&#39;).</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="n">margs</span> <span class="o">=</span> <span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+        <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM_TEAMS_FLAG</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">predicate</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span>
+                                               <span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="Server.wait_for_team_switched"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.wait_for_team_switched">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">wait_for_team_switched</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">old_team</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">new_team</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Waits for team switch event.</span>
+
+<span class="sd">        :param timeout: Time to wait for event, if exceeded, returns None.</span>
+<span class="sd">        :param old_team: Player&#39;s old team.</span>
+<span class="sd">        :param new_team: Player&#39;s new team.</span>
+<span class="sd">        :param nick: Player&#39;s nick.</span>
+<span class="sd">        :param check: Check function, ignored if none.</span>
+
+<span class="sd">        :return: Returns message info dict keys: (&#39;nick&#39;, &#39;old_team&#39;, &#39;new_nick&#39;).</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="n">margs</span> <span class="o">=</span> <span class="p">(</span><span class="n">nick</span><span class="p">,</span> <span class="n">old_team</span><span class="p">,</span> <span class="n">new_team</span><span class="p">)</span>
+        <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">TEAM_SWITCHED</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">predicate</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span>
+                                               <span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="Server.wait_for_round_started"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.wait_for_round_started">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">wait_for_round_started</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Waits for round start.</span>
+
+<span class="sd">        :param timeout: Time to wait for event, if exceeded, returns None.</span>
+<span class="sd">        :param check: Check function, ignored if none.</span>
+
+<span class="sd">        :return: Returns an empty dict.</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="n">margs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">()</span>
+        <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">ROUND_STARTED</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">predicate</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span>
+                                               <span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="Server.wait_for_flag_captured"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.wait_for_flag_captured">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">wait_for_flag_captured</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">team</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">flag</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Waits for flag capture.</span>
+
+<span class="sd">        :param timeout: Time to wait for event, if exceeded, returns None.</span>
+<span class="sd">        :param team: Player&#39;s team.</span>
+<span class="sd">        :param nick: Player&#39;s nick.</span>
+<span class="sd">        :param flag: Captured flag.</span>
+<span class="sd">        :param check: Check function, ignored if none.</span>
+
+<span class="sd">        :return: Returns an empty dict.</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="n">margs</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">()</span>
+        <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">FLAG_CAPTURED</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">predicate</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">data</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span>
                                                <span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
@@ -825,8 +922,12 @@
         <span class="k">if</span> <span class="n">realtime</span><span class="p">:</span>
             <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__alive</span><span class="p">:</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="k">while</span> <span class="n">line</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">:</span>
+                    <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
+                    <span class="n">line</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
                 <span class="k">if</span> <span class="n">line</span><span class="p">:</span>
                     <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_line</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">))</span>
+
                 <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
@@ -909,7 +1010,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.1',
+            VERSION:'1.21',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
