@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Getting Started &mdash; DPLib 1.21 documentation</title>
+  <title>Getting Started &mdash; DPLib 1.3 documentation</title>
   
 
   
@@ -35,9 +35,9 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="DPLib 1.21 documentation" href="index.html"/>
+    <link rel="top" title="DPLib 1.3 documentation" href="index.html"/>
         <link rel="next" title="README" href="includeme.html"/>
-        <link rel="prev" title="Welcome to DPLib’s documentation!" href="index.html"/> 
+        <link rel="prev" title="LICENSE" href="includelicense.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                1.21
+                1.3
               </div>
             
           
@@ -91,6 +91,7 @@
             
             
               <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="includelicense.html">LICENSE</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Getting Started</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
@@ -248,7 +249,13 @@ You should definitely play around with it. Simply edit the third line to match y
 66
 67
 68
-69</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># DPLib - Asynchronous bot framework for Digital Paint: Paintball 2 servers</span>
+69
+70
+71
+72
+73
+74
+75</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="c1"># DPLib - Asynchronous bot framework for Digital Paint: Paintball 2 servers</span>
 <span class="c1"># Copyright (C) 2017  Michał Rokita</span>
 <span class="c1">#</span>
 <span class="c1"># This program is free software: you can redistribute it and/or modify</span>
@@ -315,7 +322,13 @@ You should definitely play around with it. Simply edit the third line to match y
 <span class="k">def</span> <span class="nf">on_flag_captured</span><span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">flag</span><span class="p">):</span>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Flag captured. Team: </span><span class="si">{0}</span><span class="s1">, Nick: </span><span class="si">{1}</span><span class="s1">, Flag: </span><span class="si">{2}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">flag</span><span class="p">))</span>
 
+<span class="nd">@s</span><span class="o">.</span><span class="n">event</span>
+<span class="k">def</span> <span class="nf">on_game_end</span><span class="p">(</span><span class="n">score_blue</span><span class="p">,</span> <span class="n">score_red</span><span class="p">,</span> <span class="n">score_yellow</span><span class="p">,</span> <span class="n">score_purple</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Game ended. Blue:</span><span class="si">{}</span><span class="s1"> Red:</span><span class="si">{}</span><span class="s1"> Yellow:</span><span class="si">{}</span><span class="s1"> Purple:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">score_blue</span><span class="p">,</span> <span class="n">score_red</span><span class="p">,</span> <span class="n">score_yellow</span><span class="p">,</span> <span class="n">score_purple</span>
+    <span class="p">))</span>
 
+<span class="nb">print</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">get_status</span><span class="p">())</span>
 <span class="n">s</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
 </pre></div>
 </td></tr></table></div>
@@ -329,6 +342,7 @@ You should definitely play around with it. Simply edit the third line to match y
 <li><a class="reference internal" href="source/dplib.html#dplib.server.Server.on_round_started" title="dplib.server.Server.on_round_started"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.on_round_started()</span></code></a></li>
 <li><a class="reference internal" href="source/dplib.html#dplib.server.Server.on_flag_captured" title="dplib.server.Server.on_flag_captured"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.on_flag_captured()</span></code></a></li>
 <li><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.on_message()</span></code></li>
+<li><a class="reference internal" href="source/dplib.html#dplib.server.Server.on_game_end" title="dplib.server.Server.on_game_end"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.on_game_end()</span></code></a></li>
 </ul>
 </div>
 <div class="section" id="waiting-for-future-events">
@@ -424,6 +438,7 @@ You should definitely play around with it. Simply edit the third line to match y
 <li><a class="reference internal" href="source/dplib.html#dplib.server.Server.wait_for_round_started" title="dplib.server.Server.wait_for_round_started"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.wait_for_round_started()</span></code></a></li>
 <li><a class="reference internal" href="source/dplib.html#dplib.server.Server.wait_for_flag_captured" title="dplib.server.Server.wait_for_flag_captured"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.wait_for_flag_captured()</span></code></a></li>
 <li><a class="reference internal" href="source/dplib.html#dplib.server.Server.wait_for_message" title="dplib.server.Server.wait_for_message"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.wait_for_message()</span></code></a></li>
+<li><a class="reference internal" href="source/dplib.html#dplib.server.Server.wait_for_game_end" title="dplib.server.Server.wait_for_game_end"><code class="xref py py-func docutils literal"><span class="pre">dplib.server.Server.wait_for_game_end()</span></code></a></li>
 </ul>
 </div>
 </div>
@@ -441,7 +456,7 @@ You should definitely play around with it. Simply edit the third line to match y
         <a href="includeme.html" class="btn btn-neutral float-right" title="README" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="Welcome to DPLib’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="includelicense.html" class="btn btn-neutral" title="LICENSE" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -472,7 +487,7 @@ You should definitely play around with it. Simply edit the third line to match y
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.21',
+            VERSION:'1.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
