@@ -36,5 +36,8 @@ goto end
 :help
 %SPHINXBUILD% -M help %SOURCEDIR% %BUILDDIR% %SPHINXOPTS%
 
+:pdf
+sphinx-build -b pdf source build/pdf
+
 :end
 popd

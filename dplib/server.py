@@ -35,6 +35,7 @@ class ServerEvent(Enum):
     ELIM_TEAMS_FLAG = 9
     ROUND_STARTED = 10
     TEAM_SWITCHED = 11
+    GAME_END = 12
 
 
 class ListenerType(Enum):
@@ -43,33 +44,32 @@ class ListenerType(Enum):
 
 
 REGEXPS = {
-    re.compile('^\\[\d\d:\d\d:\d\d\\] (?:(?:\\[OBS\\] )|(?:\\[ELIM\\] ))?(.*?): (.+).'): ServerEvent.CHAT,
+    re.compile('^\\[\d\d:\d\d:\d\d\\] (?:(?:\\[OBS\\] )|(?:\\[ELIM\\] ))?(.*?): (.+)\\\r?\\\n'): ServerEvent.CHAT,
     # [19:54:18] hTml: test
-    re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?) \\((.*?)\\) eliminated \\*(.*?) \\((.*?)\\).'): ServerEvent.ELIM,
+    re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?) \\((.*?)\\) eliminated \\*(.*?) \\((.*?)\\)\\\r?\\\n'): ServerEvent.ELIM,
     # [18:54:24] *|ACEBot_1| (Spyder SE) eliminated *|herself| (Spyder SE).
-    re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) revived!'): ServerEvent.RESPAWN,
+    re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) revived!\\\r?\\\n'): ServerEvent.RESPAWN,
     # [19:03:57] *Red's ACEBot_6 revived!
-    re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) entered the game \\((.*?)\\) \\[(.*?)\\]'): ServerEvent.ENTRANCE,
+    re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) entered the game \\((.*?)\\) \\[(.*?)\\]\\\r?\\\n'): ServerEvent.ENTRANCE,
     # [19:03:57] mRokita entered the game (build 41) [127.0.0.1:22345]
-    re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) returned the(?: \\*(.*?))? flag!'): ServerEvent.FLAG_CAPTURED,
+    re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) returned the(?: \\*(.*?))? flag!\\\r?\\\n'): ServerEvent.FLAG_CAPTURED,
     # [18:54:24] *Red's hTml returned the *Blue flag!
     re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) earned (\d+) points for possesion of eliminated teams flag!'):
         ServerEvent.ELIM_TEAMS_FLAG,
     # [19:30:23] *Blue's mRokita earned 3 points for possesion of eliminated teams flag!
-    re.compile('^\\[\d\d:\d\d:\d\d\\] Round started\\.\\.\\.'): ServerEvent.ROUND_STARTED,
+    re.compile('^\\[\d\d:\d\d:\d\d\\] Round started\\.\\.\\.\\\r?\\\n'): ServerEvent.ROUND_STARTED,
     # [10:20:11] Round started...
     re.compile(
         '(?:^\\[\d\d:\d\d:\d\d\\] (.*?) switched from \\*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow))'
-        ' to \\*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow))\\.)|'
-        '(?:^\\[\d\d:\d\d:\d\d\\] (.*?) joined the \\*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow)) team\\.)|'
-        '(?:^\\[\d\d:\d\d:\d\d\\] (.*?) is now (observing)?\\.)'): ServerEvent.TEAM_SWITCHED,
+        ' to \\*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow))\\.\\\r?\\\n)|'
+        '(?:^\\[\d\d:\d\d:\d\d\\] (.*?) joined the \\*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow)) team\\.\\\r?\\\n)|'
+        '(?:^\\[\d\d:\d\d:\d\d\\] (.*?) is now (observing)?\\.\\\r?\\\n)'): ServerEvent.TEAM_SWITCHED,
     # [10:20:11] mRokita switched from Blue to Red.
     # [10:20:11] mRokita is now observing.
-    # [10:20:11] mRokita joined the Blue team.
-
+    # [10:20:11] mRokita is now observing.
+    re.compile('^\\[\d\d:\d\d:\d\d\\] \t\tGameEnd\t.+\t(.*?)\\\r?\\\n'): ServerEvent.GAME_END
 
 }
-
 CHAR_TAB = ['\0', '-', '-', '-', '_', '*', 't', '.', 'N', '-', '\n', '#', '.', '>', '*', '*',
             '[', ']', '@', '@', '@', '@', '@', '@', '<', '>', '.', '-', '*', '-', '-', '-',
             ' ', '!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/',
@@ -135,6 +135,7 @@ class Server(object):
             ServerEvent.ELIM_TEAMS_FLAG: 'on_elim_teams_flag',
             ServerEvent.ROUND_STARTED: 'on_round_started',
             ServerEvent.TEAM_SWITCHED: 'on_team_switched',
+            ServerEvent.GAME_END: 'on_game_end',
         }
         self.__listeners = {
             ServerEvent.CHAT: [],
@@ -145,6 +146,7 @@ class Server(object):
             ServerEvent.ELIM_TEAMS_FLAG: [],
             ServerEvent.ROUND_STARTED: [],
             ServerEvent.TEAM_SWITCHED: [],
+            ServerEvent.GAME_END: [],
         }
         self.loop = asyncio.get_event_loop()
 
@@ -220,6 +222,18 @@ class Server(object):
         :type build: str
         :param addr: Player's address, IP:PORT ('127.0.0.1:23414' for example)
         :type addr: str
+        """
+        pass
+
+    @asyncio.coroutine
+    def on_game_end(self, score_blue, score_red, score_yellow, score_purple):
+        """
+        On game end, can be overriden using the :func:`.Server.event` decorator.
+
+        :param score_blue: Blue's score - None if there was no Blue team.
+        :param score_red: Red's score - None if there was no Red team.
+        :param score_yellow: Yellow's score - None if there was no Yellow team.
+        :param score_purple: Purple's score - None if there was no Purple team.
         """
         pass
 
@@ -357,7 +371,7 @@ class Server(object):
             kwargs = dict()
             self.__perform_listeners(ServerEvent.ROUND_STARTED, args, kwargs)
         elif event_type == ServerEvent.TEAM_SWITCHED:
-            new_args = [arg for arg in args if arg]
+            new_args = tuple([arg for arg in args if arg])
             kwargs = {
                 'nick': new_args[0],
                 'old_team': new_args[1] if len(new_args) > 2 else 'Observer',
@@ -367,6 +381,30 @@ class Server(object):
                 kwargs['new_team'] = 'Observer'
                 kwargs['old_team'] = None
             self.__perform_listeners(ServerEvent.TEAM_SWITCHED, new_args, kwargs)
+        elif event_type == ServerEvent.GAME_END:
+            kwargs = {
+                'score_blue': None,
+                'score_red': None,
+                'score_purple': None,
+                'score_yellow': None,
+            }
+            teams = args.split(',')
+            for t in teams:
+                data = t.split(':')
+                if data[0] == 'Blue':
+                    kwargs['score_blue'] = data[1]
+                elif data[0] == 'Red':
+                    kwargs['score_red'] = data[1]
+                elif data[0] == 'Yellow':
+                    kwargs['score_yellow'] = data[1]
+                elif data[0] == 'Purple':
+                    kwargs['score_purple'] = data[1]
+            self.__perform_listeners(ServerEvent.GAME_END,
+                                     (kwargs['score_blue'],
+                                      kwargs['score_red'],
+                                      kwargs['score_yellow'],
+                                      kwargs['score_purple']), kwargs)
+
         asyncio.async(getattr(self, self.handlers[event_type])(**kwargs))
 
     @asyncio.coroutine
@@ -406,7 +444,7 @@ class Server(object):
         sock.settimeout(3)
         sock.send(bytes('\xFF\xFF\xFF\xFFrcon {} {}\n'.format(self.__rcon_password, command), 'latin-1'))
         return sock.recv(2048).decode('latin-1')
-    
+
     def permaban(self, ip=None):
         """
         Bans IP address or range of adresses and saves ban list to disk.
@@ -419,7 +457,7 @@ class Server(object):
         if ip:
             resp = self.rcon('addip %s' % ip)
             resp += '\n' + self.rcon('writeban')
-            return resp 
+            return resp
         else:
             raise TypeError('IP address is required.')
 
@@ -537,7 +575,8 @@ class Server(object):
 
     def get_cvar(self, var):
         """
-        Get's cvar value
+        Gets cvar value
+
         :param var: Variable name
         :type var: str
 
@@ -705,9 +744,35 @@ class Server(object):
         :rtype: dict
         """
         future = asyncio.Future(loop=self.loop)
-        margs = tuple()
+        margs = (team, nick, flag)
         predicate = self.__get_predicate(margs, check)
         self.__listeners[ServerEvent.FLAG_CAPTURED].append((predicate, future))
+        try:
+            data = yield from asyncio.wait_for(future, timeout,
+                                               loop=self.loop)
+        except asyncio.TimeoutError:
+            data = None
+        return data
+
+    @asyncio.coroutine
+    def wait_for_game_end(self, timeout=None, score_blue=None, score_red=None, score_yellow=None, score_purple=None, check=None):
+        """
+        Waits for game end.
+
+        :param timeout: Time to wait for event, if exceeded, returns None.
+        :param score_blue: Blue score
+        :param score_red: Red score.
+        :param score_yellow: Yellow score.
+        :param score_purple: Purple score.
+        :param check: Check function, ignored if none.
+
+        :return: Returns an empty dict.
+        :rtype: dict
+        """
+        future = asyncio.Future(loop=self.loop)
+        margs = (score_blue, score_red, score_yellow, score_purple)
+        predicate = self.__get_predicate(margs, check)
+        self.__listeners[ServerEvent.GAME_END].append((predicate, future))
         try:
             data = yield from asyncio.wait_for(future, timeout,
                                                loop=self.loop)
@@ -778,7 +843,7 @@ class Server(object):
             message = None
         return message
 
-    def start(self, scan_old=False, realtime=True):
+    def start(self, scan_old=False, realtime=True, debug=False):
         """
         Main loop.
 
@@ -798,6 +863,7 @@ class Server(object):
                     yield from asyncio.sleep(0.05)
                     line += self.__log_file.readline()
                 if line:
+                    if debug: print([line.decode('latin-1')])
                     yield from self.__parse_line(line.decode('latin-1'))
 
                 yield from asyncio.sleep(0.05)
@@ -836,7 +902,7 @@ class Server(object):
                 return p
         return None
 
-    def run(self, scan_old=False, realtime=True):
+    def run(self, scan_old=False, realtime=True, debug=False):
         """
         Runs the main loop using asyncio.
 
@@ -845,4 +911,4 @@ class Server(object):
         :param realtime: Wait for incoming logfile data
         :type realtime: bool
         """
-        self.loop.run_until_complete(self.start(scan_old, realtime))
+        self.loop.run_until_complete(self.start(scan_old, realtime, debug))

@@ -33,6 +33,7 @@ Available event handlers:
 * :func:`dplib.server.Server.on_round_started`
 * :func:`dplib.server.Server.on_flag_captured`
 * :func:`dplib.server.Server.on_message`
+* :func:`dplib.server.Server.on_game_end`
 
 Waiting for future events
 -------------------------
@@ -57,3 +58,4 @@ Available coroutines:
 * :func:`dplib.server.Server.wait_for_round_started`
 * :func:`dplib.server.Server.wait_for_flag_captured`
 * :func:`dplib.server.Server.wait_for_message`
+* :func:`dplib.server.Server.wait_for_game_end`

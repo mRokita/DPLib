@@ -13,6 +13,9 @@ BUILDDIR_EXT  = ../../dplib-docs
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
+pdf:
+    sphinx-build -b pdf source build/pdf
+
 .PHONY: help Makefile
 
 # Catch-all target: route all unknown targets to Sphinx using the new

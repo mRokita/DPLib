@@ -65,5 +65,11 @@ def on_elim_teams_flag(team, nick, points):
 def on_flag_captured(team, nick, flag):
     print('Flag captured. Team: {0}, Nick: {1}, Flag: {2}'.format(team, nick, flag))
 
+@s.event
+def on_game_end(score_blue, score_red, score_yellow, score_purple):
+    print('Game ended. Blue:{} Red:{} Yellow:{} Purple:{}'.format(
+        score_blue, score_red, score_yellow, score_purple
+    ))
+
 
 s.run()
