@@ -19,7 +19,7 @@ from enum import Enum
 import asyncio
 from socket import socket, AF_INET, SOCK_DGRAM
 
-from dplib.parse import render_text
+from dplib.parse import render_text, decode_ingame_text
 
 
 class ServerEvent(Enum):
@@ -70,22 +70,6 @@ REGEXPS = {
     re.compile('^\\[\d\d:\d\d:\d\d\\] \t\tGameEnd\t.+\t(.*?)\\\r?\\\n'): ServerEvent.GAME_END
 
 }
-CHAR_TAB = ['\0', '-', '-', '-', '_', '*', 't', '.', 'N', '-', '\n', '#', '.', '>', '*', '*',
-            '[', ']', '@', '@', '@', '@', '@', '@', '<', '>', '.', '-', '*', '-', '-', '-',
-            ' ', '!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?',
-            '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
-            'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_',
-            '`', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o',
-            'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '{', '|', '}', '~', '<',
-            '(', '=', ')', '^', '!', 'O', 'U', 'I', 'C', 'C', 'R', '#', '?', '>', '*', '*',
-            '[', ']', '@', '@', '@', '@', '@', '@', '<', '>', '*', 'X', '*', '-', '-', '-',
-            ' ', '!', '\"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/',
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ':', ';', '<', '=', '>', '?',
-            '@', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
-            'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '[', '\\', ']', '^', '_',
-            '`', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O',
-            'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '{', '|', '}', '~', '<']
 
 
 class Player(object):
@@ -443,6 +427,19 @@ class Server(object):
         sock.connect((self.__hostname, self.__port))
         sock.settimeout(3)
         sock.send(bytes('\xFF\xFF\xFF\xFFrcon {} {}\n'.format(self.__rcon_password, command), 'latin-1'))
+        return sock.recv(2048).decode('latin-1')
+
+    def status(self):
+        """
+        Execute status query.
+
+        :return: Status string
+        :rtype: str
+        """
+        sock = socket(AF_INET, SOCK_DGRAM)
+        sock.connect((self.__hostname, self.__port))
+        sock.settimeout(3)
+        sock.send(b'\xFF\xFF\xFF\xFFstatus\n')
         return sock.recv(2048).decode('latin-1')
 
     def permaban(self, ip=None):
@@ -887,6 +884,56 @@ class Server(object):
                             server=self)
             players.append(player)
         return players
+
+    def get_simple_playerlist(self):
+        """
+        Get a list of player names
+
+        :return: List of nicks
+        :rtype: list
+        """
+        status = self.get_status()
+        players = status['players']
+        playerlist = []
+        for p in players:
+            playerlist.append(p['name'])
+        return playerlist
+
+    def get_status(self):
+        """
+        Gets server status
+
+        :example:
+        .. code-block:: python
+            :linenos:
+
+            >>> s = Server(hostname='127.0.0.1', port=27910, logfile=r'C:\Games\Paintball2\pball\qconsole27910.log', rcon_password='hello')
+            >>> s.get_status()
+            {'players': [{'score': '0', 'ping': '13', 'name': 'mRokita'}], 'sv_certificated': '1', 'mapname': 'beta/wobluda_fix', 'TimeLeft': '20:00', '_scores': 'Red:0 Blue:0 ', 'gamename': 'Digital Paint Paintball 2 v1.930(186)', 'gameversion': 'DPPB2 v1.930(186)', 'sv_login': '1', 'needpass': '0', 'gamedate': 'Aug 10 2015', 'protocol': '34', 'version': '2.00 x86 Aug 10 2015 Win32 RELEASE (41)', 'hostname': 'asdfgh', 'elim': 'airtime', 'fraglimit': '50', 'timelimit': '20', 'gamedir': 'pball', 'game': 'pball', 'maxclients': '8'}
+
+        :return: status dict
+        :rtype: dict
+        """
+        dictionary = {}
+        players = []
+        response = self.status().split('\n')[1:]
+        variables = response[0]
+        players_str = (response[1:])
+        for i in players_str:
+            if not i:
+                continue
+            temp_dict = {}
+            cleaned_name = decode_ingame_text(i)
+            separated = cleaned_name.split(' ')
+            temp_dict['score'] = separated[0]
+            temp_dict['ping'] = separated[1]
+            temp_dict['name'] = cleaned_name.split("%s %s " % (separated[0], separated[1]))[1][1:-1]
+            players.append(temp_dict)
+        dictionary['players'] = players
+        variables = variables.split('\\')[1:]
+        for i in range(0, len(variables), 2):
+            dictionary[variables[i]] = variables[i + 1]
+        return dictionary
 
     def get_ingame_info(self, nick):
         """

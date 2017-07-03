@@ -71,5 +71,5 @@ def on_game_end(score_blue, score_red, score_yellow, score_purple):
         score_blue, score_red, score_yellow, score_purple
     ))
 
-
+print(s.get_status())
 s.run()
