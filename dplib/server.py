@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import re
+from collections import OrderedDict
 from enum import Enum
 import asyncio
 from socket import socket, AF_INET, SOCK_DGRAM
@@ -37,39 +38,45 @@ class ServerEvent(Enum):
     TEAM_SWITCHED = 11
     GAME_END = 12
 
+class BadRconPasswordError(Exception):
+    pass
 
 class ListenerType(Enum):
     PERMANENT = 0
     TRIGGER_ONCE = 1
 
 
-REGEXPS = {
-    re.compile('^\\[\d\d:\d\d:\d\d\\] (?:(?:\\[OBS\\] )|(?:\\[ELIM\\] ))?(.*?): (.+)\\\r?\\\n'): ServerEvent.CHAT,
+REGEXPS = OrderedDict([
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] (?:(?:\\[OBS\\] )|(?:\\[ELIM\\] ))?(.*?): (.*?)\r?\n'), ServerEvent.CHAT),
     # [19:54:18] hTml: test
-    re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?) \\((.*?)\\) eliminated \\*(.*?) \\((.*?)\\)\\\r?\\\n'): ServerEvent.ELIM,
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?) \\((.*?)\\) eliminated \\*(.*?) \\((.*?)\\)\r?\n'), ServerEvent.ELIM),
     # [18:54:24] *|ACEBot_1| (Spyder SE) eliminated *|herself| (Spyder SE).
-    re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) revived!\\\r?\\\n'): ServerEvent.RESPAWN,
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) revived!\r?\n'), ServerEvent.RESPAWN),
     # [19:03:57] *Red's ACEBot_6 revived!
-    re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) entered the game \\((.*?)\\) \\[(.*?)\\]\\\r?\\\n'): ServerEvent.ENTRANCE,
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) entered the game \\((.*?)\\) \\[(.*?)\\]\r?\n'), ServerEvent.ENTRANCE),
     # [19:03:57] mRokita entered the game (build 41) [127.0.0.1:22345]
-    re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) returned the(?: \\*(.*?))? flag!\\\r?\\\n'): ServerEvent.FLAG_CAPTURED,
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) returned the(?: \\*(.*?))? flag!\r?\n'), ServerEvent.FLAG_CAPTURED),
     # [18:54:24] *Red's hTml returned the *Blue flag!
-    re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) earned (\d+) points for possesion of eliminated teams flag!'):
-        ServerEvent.ELIM_TEAMS_FLAG,
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) earned (\d+) points for possesion of eliminated teams flag!'),
+        ServerEvent.ELIM_TEAMS_FLAG),
     # [19:30:23] *Blue's mRokita earned 3 points for possesion of eliminated teams flag!
-    re.compile('^\\[\d\d:\d\d:\d\d\\] Round started\\.\\.\\.\\\r?\\\n'): ServerEvent.ROUND_STARTED,
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] Round started\\.\\.\\.\r?\n'), ServerEvent.ROUND_STARTED),
     # [10:20:11] Round started...
-    re.compile(
+    (re.compile(
         '(?:^\\[\d\d:\d\d:\d\d\\] (.*?) switched from \\*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow))'
-        ' to \\*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow))\\.\\\r?\\\n)|'
-        '(?:^\\[\d\d:\d\d:\d\d\\] (.*?) joined the \\*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow)) team\\.\\\r?\\\n)|'
-        '(?:^\\[\d\d:\d\d:\d\d\\] (.*?) is now (observing)?\\.\\\r?\\\n)'): ServerEvent.TEAM_SWITCHED,
+        ' to \\*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow))\\.\r?\n)|'
+        '(?:^\\[\d\d:\d\d:\d\d\\] (.*?) joined the \\*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow)) team\\.\r?\n)|'
+        '(?:^\\[\d\d:\d\d:\d\d\\] (.*?) is now (observing)?\\.\r?\n)'), ServerEvent.TEAM_SWITCHED),
     # [10:20:11] mRokita switched from Blue to Red.
     # [10:20:11] mRokita is now observing.
     # [10:20:11] mRokita is now observing.
-    re.compile('^\\[\d\d:\d\d:\d\d\\] \t\tGameEnd\t.+\t(.*?)\\\r?\\\n'): ServerEvent.GAME_END
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] \t\tGameEnd\t.+\t(.*?)\r?\n'), ServerEvent.GAME_END),
+    # [10:20:11] == Map Loaded: airtime ==
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] == Map Loaded: (.+) ==\r?\n'), ServerEvent.MAPCHANGE),
+    # [19:54:54] name1 changed name to name2.
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) changed name to (.*?)\\.\r?\n'), ServerEvent.NAMECHANGE),
 
-}
+])
 
 
 class Player(object):
@@ -101,9 +108,10 @@ class Server(object):
     :type port: int
     :param logfile: Path to logfile
     :param rcon_password: rcon password
+    :param init_vars: Send come commands used for security
     """
 
-    def __init__(self, hostname, port=27910, logfile=None, rcon_password=None):
+    def __init__(self, hostname, port=27910, logfile=None, rcon_password=None, init_vars=True):
         self.__rcon_password = rcon_password
         self.__hostname = hostname
         self.__port = port
@@ -120,6 +128,8 @@ class Server(object):
             ServerEvent.ROUND_STARTED: 'on_round_started',
             ServerEvent.TEAM_SWITCHED: 'on_team_switched',
             ServerEvent.GAME_END: 'on_game_end',
+            ServerEvent.MAPCHANGE: 'on_mapchange',
+            ServerEvent.NAMECHANGE: 'on_namechange',
         }
         self.__listeners = {
             ServerEvent.CHAT: [],
@@ -131,7 +141,14 @@ class Server(object):
             ServerEvent.ROUND_STARTED: [],
             ServerEvent.TEAM_SWITCHED: [],
             ServerEvent.GAME_END: [],
+            ServerEvent.MAPCHANGE: [],
+            ServerEvent.NAMECHANGE: [],
         }
+        if init_vars and rcon_password:
+            blockednames = self.get_cvar('sv_blockednames')
+            if not 'maploaded' in blockednames.split(','):
+                # A player with name "maploaded" would block the mapchange event
+                self.set_cvar('sv_blockednames', ','.join([blockednames, 'maploaded']))
         self.loop = asyncio.get_event_loop()
 
     @asyncio.coroutine
@@ -249,6 +266,29 @@ class Server(object):
         """
         pass
 
+    @asyncio.coroutine
+    def on_mapchange(self, mapname):
+        """
+        On mapcange, can be overridden using the :func:`.Server.event` decorator.
+
+        :param mapname: Mapname
+        :type mapname: str
+        """
+        pass
+
+
+    @asyncio.coroutine
+    def on_namechange(self, old_nick, new_nick):
+        """
+        On name change, can be overridden using the :func:`.Server.event` decorator.
+
+        :param old_nick: Old nick
+        :type old_nick: str
+        :param new_nick: Old nick
+        :type new_nick: str
+        """
+        pass
+
     def event(self, func):
         """
         Decorator, used for event registration.
@@ -302,6 +342,15 @@ class Server(object):
         for i in reversed(to_remove):
             self.__listeners[event_type].pop(i)
 
+
+    def nicks_valid(self, *nicks):
+
+        nicks_ingame = [p.nick for p in self.get_players()]
+        for nick in nicks:
+            if not nick in nicks_ingame:
+                return False
+        return True
+
     @asyncio.coroutine
     def __handle_event(self, event_type, args):
         """
@@ -312,6 +361,8 @@ class Server(object):
         """
         kwargs = dict()
         if event_type == ServerEvent.CHAT:
+            if args[0] not in [p.nick for p in self.get_players()]:
+                return
             kwargs = {
                 'nick': args[0],
                 'message': args[1],
@@ -388,6 +439,17 @@ class Server(object):
                                       kwargs['score_red'],
                                       kwargs['score_yellow'],
                                       kwargs['score_purple']), kwargs)
+        elif event_type == ServerEvent.MAPCHANGE:
+            kwargs = {
+                'mapname': args
+            }
+            self.__perform_listeners(ServerEvent.MAPCHANGE, (kwargs['mapname'],), kwargs)
+        elif event_type == ServerEvent.NAMECHANGE:
+            kwargs = {
+                'old_nick': args[0],
+                'new_nick': args[1]
+            }
+            self.__perform_listeners(ServerEvent.NAMECHANGE, (kwargs['old_nick'], kwargs['new_nick']), kwargs)
 
         asyncio.async(getattr(self, self.handlers[event_type])(**kwargs))
 
@@ -400,8 +462,15 @@ class Server(object):
         """
         for r in REGEXPS:
             results = r.findall(line)
+            e = REGEXPS[r]
             for res in results:
-                yield from self.__handle_event(event_type=REGEXPS[r], args=res)
+                if e == ServerEvent.CHAT: # For security reasons
+                    if self.nicks_valid(res[0]):
+                        yield from self.__handle_event(event_type=e, args=res)
+                        return
+                    else:
+                        continue
+                yield from self.__handle_event(event_type=e, args=res)
 
     def rcon(self, command):
         """
@@ -427,7 +496,10 @@ class Server(object):
         sock.connect((self.__hostname, self.__port))
         sock.settimeout(3)
         sock.send(bytes('\xFF\xFF\xFF\xFFrcon {} {}\n'.format(self.__rcon_password, command), 'latin-1'))
-        return sock.recv(2048).decode('latin-1')
+        ret = sock.recv(2048).decode('latin-1')
+        if ret == '\xFF\xFF\xFF\xFFprint\nBad rcon_password.\n':
+            raise BadRconPasswordError('Bad rcon password')
+        return ret
 
     def status(self):
         """
@@ -802,6 +874,50 @@ class Server(object):
         except asyncio.TimeoutError:
             elim_info = None
         return elim_info
+
+    @asyncio.coroutine
+    def wait_for_mapchange(self, timeout=None, mapname=None, check=None):
+        """
+        Waits for mapchange.
+
+        :param timeout: Time to wait for elimination event, if exceeded, returns None.
+        :param mapname: Killer's nick to match, ignored if None.
+        :param check: Check function, ignored if None.
+
+        :return: Returns message info dict keys: ('killer_nick', 'killer_weapon', 'victim_nick', 'victim_weapon')
+        :rtype: dict
+        """
+        future = asyncio.Future(loop=self.loop)
+        margs = (mapname,)
+        predicate = self.__get_predicate(margs, check)
+        self.__listeners[ServerEvent.MAPCHANGE].append((predicate, future))
+        try:
+            mapchange_info = yield from asyncio.wait_for(future, timeout, loop=self.loop)
+        except asyncio.TimeoutError:
+            mapchange_info = None
+        return mapchange_info
+
+    @asyncio.coroutine
+    def wait_for_namechange(self, timeout=None, old_nick=None, new_nick=None, check=None):
+        """
+        Waits for mapchange.
+
+        :param timeout: Time to wait for elimination event, if exceeded, returns None.
+        :param mapname: Killer's nick to match, ignored if None.
+        :param check: Check function, ignored if None.
+
+        :return: Returns message info dict keys: ('killer_nick', 'killer_weapon', 'victim_nick', 'victim_weapon')
+        :rtype: dict
+        """
+        future = asyncio.Future(loop=self.loop)
+        margs = (old_nick, new_nick)
+        predicate = self.__get_predicate(margs, check)
+        self.__listeners[ServerEvent.NAMECHANGE].append((predicate, future))
+        try:
+            mapchange_info = yield from asyncio.wait_for(future, timeout, loop=self.loop)
+        except asyncio.TimeoutError:
+            mapchange_info = None
+        return mapchange_info
 
     @asyncio.coroutine
     def wait_for_message(self, timeout=None, nick=None, message=None, check=None):

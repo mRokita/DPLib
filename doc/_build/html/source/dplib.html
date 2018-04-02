@@ -711,6 +711,12 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 </div>
 <div class="section" id="module-dplib.server">
 <span id="dplib-server-module"></span><h2>dplib.server module<a class="headerlink" href="#module-dplib.server" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="dplib.server.BadRconPasswordError">
+<em class="property">exception </em><code class="descclassname">dplib.server.</code><code class="descname">BadRconPasswordError</code><a class="reference internal" href="../_modules/dplib/server.html#BadRconPasswordError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.BadRconPasswordError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
 <dl class="class">
 <dt id="dplib.server.ListenerType">
 <em class="property">class </em><code class="descclassname">dplib.server.</code><code class="descname">ListenerType</code><a class="reference internal" href="../_modules/dplib/server.html#ListenerType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.ListenerType" title="Permalink to this definition">¶</a></dt>
@@ -751,7 +757,7 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 
 <dl class="class">
 <dt id="dplib.server.Server">
-<em class="property">class </em><code class="descclassname">dplib.server.</code><code class="descname">Server</code><span class="sig-paren">(</span><em>hostname</em>, <em>port=27910</em>, <em>logfile=None</em>, <em>rcon_password=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">dplib.server.</code><code class="descname">Server</code><span class="sig-paren">(</span><em>hostname</em>, <em>port=27910</em>, <em>logfile=None</em>, <em>rcon_password=None</em>, <em>init_vars=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Represents a DP:PB2 server</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -763,6 +769,7 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 <li><strong>port</strong> (<em>int</em>) – Server port, default 27910</li>
 <li><strong>logfile</strong> – Path to logfile</li>
 <li><strong>rcon_password</strong> – rcon password</li>
+<li><strong>init_vars</strong> – Send come commands used for security</li>
 </ul>
 </td>
 </tr>
@@ -950,6 +957,11 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 </dd></dl>
 
 <dl class="method">
+<dt id="dplib.server.Server.nicks_valid">
+<code class="descname">nicks_valid</code><span class="sig-paren">(</span><em>*nicks</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.nicks_valid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.nicks_valid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="dplib.server.Server.on_chat">
 <code class="descname">on_chat</code><span class="sig-paren">(</span><em>nick</em>, <em>message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_chat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_chat" title="Permalink to this definition">¶</a></dt>
 <dd><p>On chat, can be overridden using the <code class="xref py py-func docutils literal"><span class="pre">Server.event()</span></code> decorator.</p>
@@ -1057,6 +1069,38 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 <li><strong>score_red</strong> – Red’s score - None if there was no Red team.</li>
 <li><strong>score_yellow</strong> – Yellow’s score - None if there was no Yellow team.</li>
 <li><strong>score_purple</strong> – Purple’s score - None if there was no Purple team.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_mapchange">
+<code class="descname">on_mapchange</code><span class="sig-paren">(</span><em>mapname</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_mapchange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_mapchange" title="Permalink to this definition">¶</a></dt>
+<dd><p>On mapcange, can be overridden using the <code class="xref py py-func docutils literal"><span class="pre">Server.event()</span></code> decorator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mapname</strong> (<em>str</em>) – Mapname</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_namechange">
+<code class="descname">on_namechange</code><span class="sig-paren">(</span><em>old_nick</em>, <em>new_nick</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_namechange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_namechange" title="Permalink to this definition">¶</a></dt>
+<dd><p>On name change, can be overridden using the <code class="xref py py-func docutils literal"><span class="pre">Server.event()</span></code> decorator.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>old_nick</strong> (<em>str</em>) – Old nick</li>
+<li><strong>new_nick</strong> (<em>str</em>) – Old nick</li>
 </ul>
 </td>
 </tr>
@@ -1476,6 +1520,31 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 </dd></dl>
 
 <dl class="method">
+<dt id="dplib.server.Server.wait_for_mapchange">
+<code class="descname">wait_for_mapchange</code><span class="sig-paren">(</span><em>timeout=None</em>, <em>mapname=None</em>, <em>check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_mapchange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_mapchange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for mapchange.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>timeout</strong> – Time to wait for elimination event, if exceeded, returns None.</li>
+<li><strong>mapname</strong> – Killer’s nick to match, ignored if None.</li>
+<li><strong>check</strong> – Check function, ignored if None.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns message info dict keys: (‘killer_nick’, ‘killer_weapon’, ‘victim_nick’, ‘victim_weapon’)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="dplib.server.Server.wait_for_message">
 <code class="descname">wait_for_message</code><span class="sig-paren">(</span><em>timeout=None</em>, <em>nick=None</em>, <em>message=None</em>, <em>check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_message" title="Permalink to this definition">¶</a></dt>
 <dd><p>Waits for a message.</p>
@@ -1512,6 +1581,31 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
         <span class="n">s</span><span class="o">.</span><span class="n">say</span><span class="p">(</span><span class="s1">&#39;Hi &#39;</span> <span class="o">+</span> <span class="n">msg</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;!hi &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;!&#39;</span><span class="p">)</span>
 </pre></div>
 </td></tr></table></div>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_namechange">
+<code class="descname">wait_for_namechange</code><span class="sig-paren">(</span><em>timeout=None</em>, <em>old_nick=None</em>, <em>new_nick=None</em>, <em>check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_namechange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_namechange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for mapchange.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>timeout</strong> – Time to wait for elimination event, if exceeded, returns None.</li>
+<li><strong>mapname</strong> – Killer’s nick to match, ignored if None.</li>
+<li><strong>check</strong> – Check function, ignored if None.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Returns message info dict keys: (‘killer_nick’, ‘killer_weapon’, ‘victim_nick’, ‘victim_weapon’)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">

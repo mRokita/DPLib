@@ -16,6 +16,7 @@
 
 from dplib.server import Server
 
+
 s = Server(hostname='127.0.0.1', port=27910, logfile=r'C:\Games\Paintball2\pball\qconsole27910.log', rcon_password='hello')
 
 
@@ -65,11 +66,23 @@ def on_elim_teams_flag(team, nick, points):
 def on_flag_captured(team, nick, flag):
     print('Flag captured. Team: {0}, Nick: {1}, Flag: {2}'.format(team, nick, flag))
 
+
 @s.event
 def on_game_end(score_blue, score_red, score_yellow, score_purple):
     print('Game ended. Blue:{} Red:{} Yellow:{} Purple:{}'.format(
         score_blue, score_red, score_yellow, score_purple
     ))
+
+
+@s.event
+def on_mapchange(mapname):
+    print('Map changed. Mapname: {}'.format(mapname))
+
+
+@s.event
+def on_namechange(old_nick, new_nick):
+    print('Name changed. Old nick: {} New nick: {}'.format(old_nick, new_nick))
+
 
 print(s.get_status())
 s.run()

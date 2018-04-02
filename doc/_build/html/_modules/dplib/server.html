@@ -174,6 +174,7 @@
 <span class="c1"># along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">from</span> <span class="nn">socket</span> <span class="k">import</span> <span class="n">socket</span><span class="p">,</span> <span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_DGRAM</span>
@@ -196,39 +197,45 @@
     <span class="n">TEAM_SWITCHED</span> <span class="o">=</span> <span class="mi">11</span>
     <span class="n">GAME_END</span> <span class="o">=</span> <span class="mi">12</span></div>
 
+<div class="viewcode-block" id="BadRconPasswordError"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.BadRconPasswordError">[docs]</a><span class="k">class</span> <span class="nc">BadRconPasswordError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
 
 <div class="viewcode-block" id="ListenerType"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.ListenerType">[docs]</a><span class="k">class</span> <span class="nc">ListenerType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">PERMANENT</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">TRIGGER_ONCE</span> <span class="o">=</span> <span class="mi">1</span></div>
 
 
-<span class="n">REGEXPS</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] (?:(?:</span><span class="se">\\</span><span class="s1">[OBS</span><span class="se">\\</span><span class="s1">] )|(?:</span><span class="se">\\</span><span class="s1">[ELIM</span><span class="se">\\</span><span class="s1">] ))?(.*?): (.+)</span><span class="se">\\\r</span><span class="s1">?</span><span class="se">\\\n</span><span class="s1">&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">,</span>
+<span class="n">REGEXPS</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">([</span>
+    <span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] (?:(?:</span><span class="se">\\</span><span class="s1">[OBS</span><span class="se">\\</span><span class="s1">] )|(?:</span><span class="se">\\</span><span class="s1">[ELIM</span><span class="se">\\</span><span class="s1">] ))?(.*?): (.*?)</span><span class="se">\r</span><span class="s1">?</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">),</span>
     <span class="c1"># [19:54:18] hTml: test</span>
-    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] </span><span class="se">\\</span><span class="s1">*(.*?) </span><span class="se">\\</span><span class="s1">((.*?)</span><span class="se">\\</span><span class="s1">) eliminated </span><span class="se">\\</span><span class="s1">*(.*?) </span><span class="se">\\</span><span class="s1">((.*?)</span><span class="se">\\</span><span class="s1">)</span><span class="se">\\\r</span><span class="s1">?</span><span class="se">\\\n</span><span class="s1">&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] </span><span class="se">\\</span><span class="s1">*(.*?) </span><span class="se">\\</span><span class="s1">((.*?)</span><span class="se">\\</span><span class="s1">) eliminated </span><span class="se">\\</span><span class="s1">*(.*?) </span><span class="se">\\</span><span class="s1">((.*?)</span><span class="se">\\</span><span class="s1">)</span><span class="se">\r</span><span class="s1">?</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM</span><span class="p">),</span>
     <span class="c1"># [18:54:24] *|ACEBot_1| (Spyder SE) eliminated *|herself| (Spyder SE).</span>
-    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] </span><span class="se">\\</span><span class="s1">*(.*?)</span><span class="se">\\\&#39;</span><span class="s1">s (.*?) revived!</span><span class="se">\\\r</span><span class="s1">?</span><span class="se">\\\n</span><span class="s1">&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">RESPAWN</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] </span><span class="se">\\</span><span class="s1">*(.*?)</span><span class="se">\\\&#39;</span><span class="s1">s (.*?) revived!</span><span class="se">\r</span><span class="s1">?</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">RESPAWN</span><span class="p">),</span>
     <span class="c1"># [19:03:57] *Red&#39;s ACEBot_6 revived!</span>
-    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] (.*?) entered the game </span><span class="se">\\</span><span class="s1">((.*?)</span><span class="se">\\</span><span class="s1">) </span><span class="se">\\</span><span class="s1">[(.*?)</span><span class="se">\\</span><span class="s1">]</span><span class="se">\\\r</span><span class="s1">?</span><span class="se">\\\n</span><span class="s1">&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ENTRANCE</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] (.*?) entered the game </span><span class="se">\\</span><span class="s1">((.*?)</span><span class="se">\\</span><span class="s1">) </span><span class="se">\\</span><span class="s1">[(.*?)</span><span class="se">\\</span><span class="s1">]</span><span class="se">\r</span><span class="s1">?</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ENTRANCE</span><span class="p">),</span>
     <span class="c1"># [19:03:57] mRokita entered the game (build 41) [127.0.0.1:22345]</span>
-    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] </span><span class="se">\\</span><span class="s1">*(.*?)</span><span class="se">\\\&#39;</span><span class="s1">s (.*?) returned the(?: </span><span class="se">\\</span><span class="s1">*(.*?))? flag!</span><span class="se">\\\r</span><span class="s1">?</span><span class="se">\\\n</span><span class="s1">&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">FLAG_CAPTURED</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] </span><span class="se">\\</span><span class="s1">*(.*?)</span><span class="se">\\\&#39;</span><span class="s1">s (.*?) returned the(?: </span><span class="se">\\</span><span class="s1">*(.*?))? flag!</span><span class="se">\r</span><span class="s1">?</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">FLAG_CAPTURED</span><span class="p">),</span>
     <span class="c1"># [18:54:24] *Red&#39;s hTml returned the *Blue flag!</span>
-    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] </span><span class="se">\\</span><span class="s1">*(.*?)</span><span class="se">\\\&#39;</span><span class="s1">s (.*?) earned (\d+) points for possesion of eliminated teams flag!&#39;</span><span class="p">):</span>
-        <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM_TEAMS_FLAG</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] </span><span class="se">\\</span><span class="s1">*(.*?)</span><span class="se">\\\&#39;</span><span class="s1">s (.*?) earned (\d+) points for possesion of eliminated teams flag!&#39;</span><span class="p">),</span>
+        <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM_TEAMS_FLAG</span><span class="p">),</span>
     <span class="c1"># [19:30:23] *Blue&#39;s mRokita earned 3 points for possesion of eliminated teams flag!</span>
-    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] Round started</span><span class="se">\\</span><span class="s1">.</span><span class="se">\\</span><span class="s1">.</span><span class="se">\\</span><span class="s1">.</span><span class="se">\\\r</span><span class="s1">?</span><span class="se">\\\n</span><span class="s1">&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ROUND_STARTED</span><span class="p">,</span>
+    <span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] Round started</span><span class="se">\\</span><span class="s1">.</span><span class="se">\\</span><span class="s1">.</span><span class="se">\\</span><span class="s1">.</span><span class="se">\r</span><span class="s1">?</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ROUND_STARTED</span><span class="p">),</span>
     <span class="c1"># [10:20:11] Round started...</span>
-    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+    <span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
         <span class="s1">&#39;(?:^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] (.*?) switched from </span><span class="se">\\</span><span class="s1">*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow))&#39;</span>
-        <span class="s1">&#39; to </span><span class="se">\\</span><span class="s1">*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow))</span><span class="se">\\</span><span class="s1">.</span><span class="se">\\\r</span><span class="s1">?</span><span class="se">\\\n</span><span class="s1">)|&#39;</span>
-        <span class="s1">&#39;(?:^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] (.*?) joined the </span><span class="se">\\</span><span class="s1">*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow)) team</span><span class="se">\\</span><span class="s1">.</span><span class="se">\\\r</span><span class="s1">?</span><span class="se">\\\n</span><span class="s1">)|&#39;</span>
-        <span class="s1">&#39;(?:^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] (.*?) is now (observing)?</span><span class="se">\\</span><span class="s1">.</span><span class="se">\\\r</span><span class="s1">?</span><span class="se">\\\n</span><span class="s1">)&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">TEAM_SWITCHED</span><span class="p">,</span>
+        <span class="s1">&#39; to </span><span class="se">\\</span><span class="s1">*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow))</span><span class="se">\\</span><span class="s1">.</span><span class="se">\r</span><span class="s1">?</span><span class="se">\n</span><span class="s1">)|&#39;</span>
+        <span class="s1">&#39;(?:^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] (.*?) joined the </span><span class="se">\\</span><span class="s1">*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow)) team</span><span class="se">\\</span><span class="s1">.</span><span class="se">\r</span><span class="s1">?</span><span class="se">\n</span><span class="s1">)|&#39;</span>
+        <span class="s1">&#39;(?:^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] (.*?) is now (observing)?</span><span class="se">\\</span><span class="s1">.</span><span class="se">\r</span><span class="s1">?</span><span class="se">\n</span><span class="s1">)&#39;</span><span class="p">),</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">TEAM_SWITCHED</span><span class="p">),</span>
     <span class="c1"># [10:20:11] mRokita switched from Blue to Red.</span>
     <span class="c1"># [10:20:11] mRokita is now observing.</span>
     <span class="c1"># [10:20:11] mRokita is now observing.</span>
-    <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] </span><span class="se">\t\t</span><span class="s1">GameEnd</span><span class="se">\t</span><span class="s1">.+</span><span class="se">\t</span><span class="s1">(.*?)</span><span class="se">\\\r</span><span class="s1">?</span><span class="se">\\\n</span><span class="s1">&#39;</span><span class="p">):</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">GAME_END</span>
+    <span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] </span><span class="se">\t\t</span><span class="s1">GameEnd</span><span class="se">\t</span><span class="s1">.+</span><span class="se">\t</span><span class="s1">(.*?)</span><span class="se">\r</span><span class="s1">?</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">GAME_END</span><span class="p">),</span>
+    <span class="c1"># [10:20:11] == Map Loaded: airtime ==</span>
+    <span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] == Map Loaded: (.+) ==</span><span class="se">\r</span><span class="s1">?</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">MAPCHANGE</span><span class="p">),</span>
+    <span class="c1"># [19:54:54] name1 changed name to name2.</span>
+    <span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="se">\\</span><span class="s1">[\d\d:\d\d:\d\d</span><span class="se">\\</span><span class="s1">] (.*?) changed name to (.*?)</span><span class="se">\\</span><span class="s1">.</span><span class="se">\r</span><span class="s1">?</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">NAMECHANGE</span><span class="p">),</span>
 
-<span class="p">}</span>
+<span class="p">])</span>
 
 
 <div class="viewcode-block" id="Player"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Player">[docs]</a><span class="k">class</span> <span class="nc">Player</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -260,9 +267,10 @@
 <span class="sd">    :type port: int</span>
 <span class="sd">    :param logfile: Path to logfile</span>
 <span class="sd">    :param rcon_password: rcon password</span>
+<span class="sd">    :param init_vars: Send come commands used for security</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27910</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rcon_password</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27910</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rcon_password</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_vars</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__rcon_password</span> <span class="o">=</span> <span class="n">rcon_password</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__hostname</span> <span class="o">=</span> <span class="n">hostname</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__port</span> <span class="o">=</span> <span class="n">port</span>
@@ -279,6 +287,8 @@
             <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ROUND_STARTED</span><span class="p">:</span> <span class="s1">&#39;on_round_started&#39;</span><span class="p">,</span>
             <span class="n">ServerEvent</span><span class="o">.</span><span class="n">TEAM_SWITCHED</span><span class="p">:</span> <span class="s1">&#39;on_team_switched&#39;</span><span class="p">,</span>
             <span class="n">ServerEvent</span><span class="o">.</span><span class="n">GAME_END</span><span class="p">:</span> <span class="s1">&#39;on_game_end&#39;</span><span class="p">,</span>
+            <span class="n">ServerEvent</span><span class="o">.</span><span class="n">MAPCHANGE</span><span class="p">:</span> <span class="s1">&#39;on_mapchange&#39;</span><span class="p">,</span>
+            <span class="n">ServerEvent</span><span class="o">.</span><span class="n">NAMECHANGE</span><span class="p">:</span> <span class="s1">&#39;on_namechange&#39;</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">:</span> <span class="p">[],</span>
@@ -290,7 +300,14 @@
             <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ROUND_STARTED</span><span class="p">:</span> <span class="p">[],</span>
             <span class="n">ServerEvent</span><span class="o">.</span><span class="n">TEAM_SWITCHED</span><span class="p">:</span> <span class="p">[],</span>
             <span class="n">ServerEvent</span><span class="o">.</span><span class="n">GAME_END</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="n">ServerEvent</span><span class="o">.</span><span class="n">MAPCHANGE</span><span class="p">:</span> <span class="p">[],</span>
+            <span class="n">ServerEvent</span><span class="o">.</span><span class="n">NAMECHANGE</span><span class="p">:</span> <span class="p">[],</span>
         <span class="p">}</span>
+        <span class="k">if</span> <span class="n">init_vars</span> <span class="ow">and</span> <span class="n">rcon_password</span><span class="p">:</span>
+            <span class="n">blockednames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cvar</span><span class="p">(</span><span class="s1">&#39;sv_blockednames&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;maploaded&#39;</span> <span class="ow">in</span> <span class="n">blockednames</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+                <span class="c1"># A player with name &quot;maploaded&quot; would block the mapchange event</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_cvar</span><span class="p">(</span><span class="s1">&#39;sv_blockednames&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">blockednames</span><span class="p">,</span> <span class="s1">&#39;maploaded&#39;</span><span class="p">]))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Server.on_chat"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_chat">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
@@ -408,6 +425,29 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">pass</span></div>
 
+<div class="viewcode-block" id="Server.on_mapchange"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_mapchange">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">on_mapchange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mapname</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        On mapcange, can be overridden using the :func:`.Server.event` decorator.</span>
+
+<span class="sd">        :param mapname: Mapname</span>
+<span class="sd">        :type mapname: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="Server.on_namechange"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_namechange">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">on_namechange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">old_nick</span><span class="p">,</span> <span class="n">new_nick</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        On name change, can be overridden using the :func:`.Server.event` decorator.</span>
+
+<span class="sd">        :param old_nick: Old nick</span>
+<span class="sd">        :type old_nick: str</span>
+<span class="sd">        :param new_nick: Old nick</span>
+<span class="sd">        :type new_nick: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
 <div class="viewcode-block" id="Server.event"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.event">[docs]</a>    <span class="k">def</span> <span class="nf">event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Decorator, used for event registration.</span>
@@ -461,6 +501,15 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">to_remove</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">event_type</span><span class="p">]</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
 
+
+<div class="viewcode-block" id="Server.nicks_valid"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.nicks_valid">[docs]</a>    <span class="k">def</span> <span class="nf">nicks_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">nicks</span><span class="p">):</span>
+
+        <span class="n">nicks_ingame</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">nick</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_players</span><span class="p">()]</span>
+        <span class="k">for</span> <span class="n">nick</span> <span class="ow">in</span> <span class="n">nicks</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">nick</span> <span class="ow">in</span> <span class="n">nicks_ingame</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
     <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
     <span class="k">def</span> <span class="nf">__handle_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_type</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -471,6 +520,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="n">p</span><span class="o">.</span><span class="n">nick</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_players</span><span class="p">()]:</span>
+                <span class="k">return</span>
             <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s1">&#39;nick&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
                 <span class="s1">&#39;message&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
@@ -547,6 +598,17 @@
                                       <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;score_red&#39;</span><span class="p">],</span>
                                       <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;score_yellow&#39;</span><span class="p">],</span>
                                       <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;score_purple&#39;</span><span class="p">]),</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">MAPCHANGE</span><span class="p">:</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;mapname&#39;</span><span class="p">:</span> <span class="n">args</span>
+            <span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__perform_listeners</span><span class="p">(</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">MAPCHANGE</span><span class="p">,</span> <span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;mapname&#39;</span><span class="p">],),</span> <span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">event_type</span> <span class="o">==</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">NAMECHANGE</span><span class="p">:</span>
+            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s1">&#39;old_nick&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                <span class="s1">&#39;new_nick&#39;</span><span class="p">:</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="p">}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__perform_listeners</span><span class="p">(</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">NAMECHANGE</span><span class="p">,</span> <span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;old_nick&#39;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;new_nick&#39;</span><span class="p">]),</span> <span class="n">kwargs</span><span class="p">)</span>
 
         <span class="n">asyncio</span><span class="o">.</span><span class="k">async</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">event_type</span><span class="p">])(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
 
@@ -559,8 +621,15 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">REGEXPS</span><span class="p">:</span>
             <span class="n">results</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="n">REGEXPS</span><span class="p">[</span><span class="n">r</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
-                <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">__handle_event</span><span class="p">(</span><span class="n">event_type</span><span class="o">=</span><span class="n">REGEXPS</span><span class="p">[</span><span class="n">r</span><span class="p">],</span> <span class="n">args</span><span class="o">=</span><span class="n">res</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">e</span> <span class="o">==</span> <span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">:</span> <span class="c1"># For security reasons</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nicks_valid</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                        <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">__handle_event</span><span class="p">(</span><span class="n">event_type</span><span class="o">=</span><span class="n">e</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">res</span><span class="p">)</span>
+                        <span class="k">return</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">__handle_event</span><span class="p">(</span><span class="n">event_type</span><span class="o">=</span><span class="n">e</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">res</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Server.rcon"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.rcon">[docs]</a>    <span class="k">def</span> <span class="nf">rcon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -586,7 +655,10 @@
         <span class="n">sock</span><span class="o">.</span><span class="n">connect</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">__hostname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__port</span><span class="p">))</span>
         <span class="n">sock</span><span class="o">.</span><span class="n">settimeout</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
         <span class="n">sock</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\xFF\xFF\xFF\xFF</span><span class="s1">rcon </span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__rcon_password</span><span class="p">,</span> <span class="n">command</span><span class="p">),</span> <span class="s1">&#39;latin-1&#39;</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">2048</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span></div>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">2048</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">ret</span> <span class="o">==</span> <span class="s1">&#39;</span><span class="se">\xFF\xFF\xFF\xFF</span><span class="s1">print</span><span class="se">\n</span><span class="s1">Bad rcon_password.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BadRconPasswordError</span><span class="p">(</span><span class="s1">&#39;Bad rcon password&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
 
 <div class="viewcode-block" id="Server.status"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.status">[docs]</a>    <span class="k">def</span> <span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -961,6 +1033,50 @@
         <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
             <span class="n">elim_info</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">elim_info</span></div>
+
+<div class="viewcode-block" id="Server.wait_for_mapchange"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.wait_for_mapchange">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">wait_for_mapchange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mapname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Waits for mapchange.</span>
+
+<span class="sd">        :param timeout: Time to wait for elimination event, if exceeded, returns None.</span>
+<span class="sd">        :param mapname: Killer&#39;s nick to match, ignored if None.</span>
+<span class="sd">        :param check: Check function, ignored if None.</span>
+
+<span class="sd">        :return: Returns message info dict keys: (&#39;killer_nick&#39;, &#39;killer_weapon&#39;, &#39;victim_nick&#39;, &#39;victim_weapon&#39;)</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="n">margs</span> <span class="o">=</span> <span class="p">(</span><span class="n">mapname</span><span class="p">,)</span>
+        <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">MAPCHANGE</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">predicate</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mapchange_info</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="n">mapchange_info</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">mapchange_info</span></div>
+
+<div class="viewcode-block" id="Server.wait_for_namechange"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.wait_for_namechange">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
+    <span class="k">def</span> <span class="nf">wait_for_namechange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">old_nick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">new_nick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Waits for mapchange.</span>
+
+<span class="sd">        :param timeout: Time to wait for elimination event, if exceeded, returns None.</span>
+<span class="sd">        :param mapname: Killer&#39;s nick to match, ignored if None.</span>
+<span class="sd">        :param check: Check function, ignored if None.</span>
+
+<span class="sd">        :return: Returns message info dict keys: (&#39;killer_nick&#39;, &#39;killer_weapon&#39;, &#39;victim_nick&#39;, &#39;victim_weapon&#39;)</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">future</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">Future</span><span class="p">(</span><span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="n">margs</span> <span class="o">=</span> <span class="p">(</span><span class="n">old_nick</span><span class="p">,</span> <span class="n">new_nick</span><span class="p">)</span>
+        <span class="n">predicate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__get_predicate</span><span class="p">(</span><span class="n">margs</span><span class="p">,</span> <span class="n">check</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__listeners</span><span class="p">[</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">NAMECHANGE</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">predicate</span><span class="p">,</span> <span class="n">future</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">mapchange_info</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">wait_for</span><span class="p">(</span><span class="n">future</span><span class="p">,</span> <span class="n">timeout</span><span class="p">,</span> <span class="n">loop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">TimeoutError</span><span class="p">:</span>
+            <span class="n">mapchange_info</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">mapchange_info</span></div>
 
 <div class="viewcode-block" id="Server.wait_for_message"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.wait_for_message">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
     <span class="k">def</span> <span class="nf">wait_for_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nick</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
