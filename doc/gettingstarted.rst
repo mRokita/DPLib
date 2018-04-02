@@ -69,6 +69,13 @@ Available coroutines
 Examples
 --------
 
+
+Map settings
+************
+
+.. literalinclude:: ../examples/map_settings.py
+    :linenos:
+
 Map elim script
 ***************
 
