@@ -23,7 +23,8 @@ You should definitely play around with it. Simply edit the third line to match y
     :linenos:
 
 
-Available event handlers:
+Available event handlers
+************************
 
 * :func:`dplib.server.Server.on_elim`
 * :func:`dplib.server.Server.on_entrance`
@@ -34,6 +35,8 @@ Available event handlers:
 * :func:`dplib.server.Server.on_flag_captured`
 * :func:`dplib.server.Server.on_message`
 * :func:`dplib.server.Server.on_game_end`
+* :func:`dplib.server.Server.on_mapchange`
+* :func:`dplib.server.Server.on_namechange`
 
 Waiting for future events
 -------------------------
@@ -48,7 +51,8 @@ Check out the 10th line.
 .. literalinclude:: ../examples/spawnkill_kick.py
     :linenos:
 
-Available coroutines:
+Available coroutines
+********************
 
 * :func:`dplib.server.Server.wait_for_elim`
 * :func:`dplib.server.Server.wait_for_entrance`
@@ -59,3 +63,34 @@ Available coroutines:
 * :func:`dplib.server.Server.wait_for_flag_captured`
 * :func:`dplib.server.Server.wait_for_message`
 * :func:`dplib.server.Server.wait_for_game_end`
+* :func:`dplib.server.Server.wait_for_mapchange`
+* :func:`dplib.server.Server.wait_for_namechange`
+
+Examples
+--------
+
+
+Map settings
+************
+
+.. literalinclude:: ../examples/map_settings.py
+    :linenos:
+
+Map elim script
+***************
+
+.. literalinclude:: ../examples/map_elim.py
+    :linenos:
+
+Spawnkill message
+*****************
+
+.. literalinclude:: ../examples/spawnkill_message.py
+    :linenos:
+
+Streak
+******
+
+.. literalinclude:: ../examples/streak.py
+    :linenos:
+
