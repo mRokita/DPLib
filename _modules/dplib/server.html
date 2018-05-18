@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>dplib.server &mdash; DPLib 1.4 documentation</title>
+  <title>dplib.server &mdash; DPLib 1.5 documentation</title>
   
 
   
@@ -25,25 +25,17 @@
   
 
   
-  
     <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../genindex.html"/>
-        <link rel="search" title="Search" href="../../search.html"/>
-    <link rel="top" title="DPLib 1.4 documentation" href="../../index.html"/>
-        <link rel="up" title="Module code" href="../index.html"/> 
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
@@ -65,7 +57,7 @@
             
             
               <div class="version">
-                1.4
+                1.5
               </div>
             
           
@@ -104,7 +96,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">DPLib</a>
@@ -112,9 +104,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -143,8 +136,6 @@
     
     
       <li class="wy-breadcrumbs-aside">
-        
-            
         
       </li>
     
@@ -177,6 +168,7 @@
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">from</span> <span class="nn">socket</span> <span class="k">import</span> <span class="n">socket</span><span class="p">,</span> <span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_DGRAM</span>
 
 <span class="kn">from</span> <span class="nn">dplib.parse</span> <span class="k">import</span> <span class="n">render_text</span><span class="p">,</span> <span class="n">decode_ingame_text</span>
@@ -270,13 +262,16 @@
 <span class="sd">    :param init_vars: Send come commands used for security</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27910</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rcon_password</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_vars</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hostname</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27910</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rcon_password</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pty_master</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">init_vars</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__rcon_password</span> <span class="o">=</span> <span class="n">rcon_password</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__hostname</span> <span class="o">=</span> <span class="n">hostname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__init_vars</span> <span class="o">=</span> <span class="n">init_vars</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__port</span> <span class="o">=</span> <span class="n">port</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__logfile_name</span> <span class="o">=</span> <span class="n">logfile</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__alive</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__logfile_name</span> <span class="o">=</span> <span class="n">logfile</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">pty_master</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__pty_master</span> <span class="o">=</span> <span class="n">pty_master</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">ServerEvent</span><span class="o">.</span><span class="n">CHAT</span><span class="p">:</span> <span class="s1">&#39;on_chat&#39;</span><span class="p">,</span>
             <span class="n">ServerEvent</span><span class="o">.</span><span class="n">ELIM</span><span class="p">:</span> <span class="s1">&#39;on_elim&#39;</span><span class="p">,</span>
@@ -303,12 +298,15 @@
             <span class="n">ServerEvent</span><span class="o">.</span><span class="n">MAPCHANGE</span><span class="p">:</span> <span class="p">[],</span>
             <span class="n">ServerEvent</span><span class="o">.</span><span class="n">NAMECHANGE</span><span class="p">:</span> <span class="p">[],</span>
         <span class="p">}</span>
-        <span class="k">if</span> <span class="n">init_vars</span> <span class="ow">and</span> <span class="n">rcon_password</span><span class="p">:</span>
-            <span class="n">blockednames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cvar</span><span class="p">(</span><span class="s1">&#39;sv_blockednames&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;maploaded&#39;</span> <span class="ow">in</span> <span class="n">blockednames</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
-                <span class="c1"># A player with name &quot;maploaded&quot; would block the mapchange event</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">set_cvar</span><span class="p">(</span><span class="s1">&#39;sv_blockednames&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">blockednames</span><span class="p">,</span> <span class="s1">&#39;maploaded&#39;</span><span class="p">]))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Server.is_listening"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.is_listening">[docs]</a>    <span class="k">def</span> <span class="nf">is_listening</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Check if the main loop is running.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__alive</span></div>
 
 <div class="viewcode-block" id="Server.on_chat"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.on_chat">[docs]</a>    <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
     <span class="k">def</span> <span class="nf">on_chat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
@@ -610,7 +608,10 @@
             <span class="p">}</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__perform_listeners</span><span class="p">(</span><span class="n">ServerEvent</span><span class="o">.</span><span class="n">NAMECHANGE</span><span class="p">,</span> <span class="p">(</span><span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;old_nick&#39;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;new_nick&#39;</span><span class="p">]),</span> <span class="n">kwargs</span><span class="p">)</span>
 
-        <span class="n">asyncio</span><span class="o">.</span><span class="k">async</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">event_type</span><span class="p">])(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+        <span class="n">asyncio</span><span class="o">.</span><span class="k">async</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_event_handler</span><span class="p">(</span><span class="n">event_type</span><span class="p">)(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Server.get_event_handler"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.get_event_handler">[docs]</a>    <span class="k">def</span> <span class="nf">get_event_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_type</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">event_type</span><span class="p">])</span></div>
 
     <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
     <span class="k">def</span> <span class="nf">__parse_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
@@ -681,6 +682,7 @@
 
 <span class="sd">        :return: Rcon response</span>
 <span class="sd">        :rtype: str</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ip</span><span class="p">:</span>
             <span class="n">resp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;addip </span><span class="si">%s</span><span class="s1">&#39;</span> <span class="o">%</span> <span class="n">ip</span><span class="p">)</span>
@@ -762,6 +764,7 @@
 <span class="sd">        :return: Rcon response</span>
 
 <span class="sd">        :example:</span>
+
 <span class="sd">        .. code-block:: python</span>
 <span class="sd">            :linenos:</span>
 
@@ -1115,6 +1118,7 @@
             <span class="n">message</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">message</span></div>
 
+
 <div class="viewcode-block" id="Server.start"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scan_old</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">realtime</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">debug</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Main loop.</span>
@@ -1124,22 +1128,35 @@
 <span class="sd">        :param realtime: Wait for incoming logfile data</span>
 <span class="sd">        :type realtime: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__logfile_name</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pty_master</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s2">&quot;Logfile name or PTY slave is required.&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">__alive</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__logfile_name</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">scan_old</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__logfile_name</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__logfile_name</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">scan_old</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pty_master</span><span class="p">:</span>
+            <span class="n">buf</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="k">if</span> <span class="n">realtime</span><span class="p">:</span>
             <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">__alive</span><span class="p">:</span>
-                <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-                <span class="k">while</span> <span class="n">line</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">:</span>
-                    <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
-                    <span class="n">line</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="p">:</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pty_master</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">buf</span><span class="p">:</span>
+                        <span class="n">buf</span> <span class="o">+=</span> <span class="n">os</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__pty_master</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
+                    <span class="n">l</span> <span class="o">=</span> <span class="n">buf</span><span class="o">.</span><span class="n">splitlines</span><span class="p">(</span><span class="n">keepends</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">l</span> <span class="ow">and</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="ow">in</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                        <span class="n">line</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">buf</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">line</span> <span class="o">=</span> <span class="kc">None</span>
                 <span class="k">if</span> <span class="n">line</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">debug</span><span class="p">:</span> <span class="nb">print</span><span class="p">([</span><span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)])</span>
-                    <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_line</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">))</span>
-
+                    <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[DPLib] </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+                    <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_line</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
                 <span class="k">yield from</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.05</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Server.get_players"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.get_players">[docs]</a>    <span class="k">def</span> <span class="nf">get_players</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1233,13 +1250,16 @@
 <span class="sd">        :param realtime: Wait for incoming logfile data</span>
 <span class="sd">        :type realtime: bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__init_vars</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">__rcon_password</span><span class="p">:</span>
+            <span class="n">blockednames</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_cvar</span><span class="p">(</span><span class="s1">&#39;sv_blockednames&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;maploaded&#39;</span> <span class="ow">in</span> <span class="n">blockednames</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+                <span class="c1"># A player with name &quot;maploaded&quot; would block the mapchange event</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">set_cvar</span><span class="p">(</span><span class="s1">&#39;sv_blockednames&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">blockednames</span><span class="p">,</span> <span class="s1">&#39;maploaded&#39;</span><span class="p">]))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">scan_old</span><span class="p">,</span> <span class="n">realtime</span><span class="p">,</span> <span class="n">debug</span><span class="p">))</span></div></div>
 </pre></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -1252,7 +1272,7 @@
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1270,7 +1290,8 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.4',
+            VERSION:'1.5',
+            LANGUAGE:'None',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
@@ -1280,7 +1301,7 @@
       <script type="text/javascript" src="../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
@@ -1289,14 +1310,11 @@
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
   
 
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-   
+  </script> 
 
 </body>
 </html>
