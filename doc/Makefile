@@ -3,7 +3,7 @@
 
 # You can set these variables from the command line.
 SPHINXOPTS    =
-SPHINXBUILD   = python -msphinx
+SPHINXBUILD   = python3 -msphinx
 SPHINXPROJ    = DPLib
 SOURCEDIR     = .
 BUILDDIR      = _build
@@ -14,13 +14,13 @@ help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
 pdf:
-    sphinx-build -b pdf source build/pdf
+	sphinx-build -b pdf source build/pdf
 
 .PHONY: help Makefile
 
 # Catch-all target: route all unknown targets to Sphinx using the new
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
-    sphinx-apidoc -f -o source/ ../dplib
+	sphinx-apidoc -f -o source/ ../dplib
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR_EXT)" $(SPHINXOPTS) $(O)

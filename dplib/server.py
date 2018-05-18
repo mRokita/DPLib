@@ -18,6 +18,7 @@ import re
 from collections import OrderedDict
 from enum import Enum
 import asyncio
+import os
 from socket import socket, AF_INET, SOCK_DGRAM
 
 from dplib.parse import render_text, decode_ingame_text
@@ -111,13 +112,16 @@ class Server(object):
     :param init_vars: Send come commands used for security
     """
 
-    def __init__(self, hostname, port=27910, logfile=None, rcon_password=None, init_vars=True):
+    def __init__(self, hostname, port=27910, logfile=None, rcon_password=None, pty_master=None, init_vars=True):
         self.__rcon_password = rcon_password
         self.__hostname = hostname
+        self.__init_vars = init_vars
         self.__port = port
-        self.__logfile_name = logfile
         self.__log_file = None
         self.__alive = False
+        self.__logfile_name = logfile if not pty_master else None
+        self.__pty_master = pty_master
+
         self.handlers = {
             ServerEvent.CHAT: 'on_chat',
             ServerEvent.ELIM: 'on_elim',
@@ -144,12 +148,15 @@ class Server(object):
             ServerEvent.MAPCHANGE: [],
             ServerEvent.NAMECHANGE: [],
         }
-        if init_vars and rcon_password:
-            blockednames = self.get_cvar('sv_blockednames')
-            if not 'maploaded' in blockednames.split(','):
-                # A player with name "maploaded" would block the mapchange event
-                self.set_cvar('sv_blockednames', ','.join([blockednames, 'maploaded']))
         self.loop = asyncio.get_event_loop()
+
+    def is_listening(self):
+        """
+        Check if the main loop is running.
+
+        :rtype: bool
+        """
+        return self.__alive
 
     @asyncio.coroutine
     def on_chat(self, nick, message):
@@ -451,7 +458,10 @@ class Server(object):
             }
             self.__perform_listeners(ServerEvent.NAMECHANGE, (kwargs['old_nick'], kwargs['new_nick']), kwargs)
 
-        asyncio.async(getattr(self, self.handlers[event_type])(**kwargs))
+        asyncio.async(self.get_event_handler(event_type)(**kwargs))
+
+    def get_event_handler(self, event_type):
+        return getattr(self, self.handlers[event_type])
 
     @asyncio.coroutine
     def __parse_line(self, line):
@@ -522,6 +532,7 @@ class Server(object):
 
         :return: Rcon response
         :rtype: str
+
         """
         if ip:
             resp = self.rcon('addip %s' % ip)
@@ -603,6 +614,7 @@ class Server(object):
         :return: Rcon response
 
         :example:
+
         .. code-block:: python
             :linenos:
 
@@ -956,6 +968,7 @@ class Server(object):
             message = None
         return message
 
+
     def start(self, scan_old=False, realtime=True, debug=False):
         """
         Main loop.
@@ -965,22 +978,35 @@ class Server(object):
         :param realtime: Wait for incoming logfile data
         :type realtime: bool
         """
+        if not (self.__logfile_name or self.__pty_master):
+            raise AttributeError("Logfile name or PTY slave is required.")
         self.__alive = True
-        self.__log_file = open(self.__logfile_name, 'rb')
-        if not scan_old:
+        self.__log_file = open(self.__logfile_name, 'rb') if self.__logfile_name else None
+        if not scan_old and self.__log_file:
             self.__log_file.readlines()
+        if self.__pty_master:
+            buf = ''
         if realtime:
             while self.__alive:
-                line = self.__log_file.readline()
-                while line and line.decode('latin-1')[-1] != '\n':
-                    yield from asyncio.sleep(0.05)
-                    line += self.__log_file.readline()
+                if self.__log_file:
+                    line = self.__log_file.readline().decode('latin-1')
+                elif self.__pty_master:
+                    if '\n' not in buf:
+                        buf += os.read(self.__pty_master, 128).decode('latin-1')
+                    l = buf.splitlines(keepends=True)
+                    if l and '\n' in l[0]:
+                        line = l[0]
+                        buf = ''.join(l[1:])
+                    else:
+                        line = None
                 if line:
-                    if debug: print([line.decode('latin-1')])
-                    yield from self.__parse_line(line.decode('latin-1'))
-
+                    if debug:
+                        print("[DPLib] %s" % line.strip())
+                    yield from self.__parse_line(line)
                 yield from asyncio.sleep(0.05)
-        self.__log_file.close()
+
+        if self.__log_file:
+            self.__log_file.close()
 
     def get_players(self):
         """
@@ -1074,4 +1100,9 @@ class Server(object):
         :param realtime: Wait for incoming logfile data
         :type realtime: bool
         """
+        if self.__init_vars and self.__rcon_password:
+            blockednames = self.get_cvar('sv_blockednames')
+            if not 'maploaded' in blockednames.split(','):
+                # A player with name "maploaded" would block the mapchange event
+                self.set_cvar('sv_blockednames', ','.join([blockednames, 'maploaded']))
         self.loop.run_until_complete(self.start(scan_old, realtime, debug))

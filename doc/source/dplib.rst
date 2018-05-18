@@ -4,24 +4,24 @@ dplib package
 Submodules
 ----------
 
-dplib\.dplogin module
----------------------
+dplib.dplogin module
+--------------------
 
 .. automodule:: dplib.dplogin
     :members:
     :undoc-members:
     :show-inheritance:
 
-dplib\.parse module
--------------------
+dplib.parse module
+------------------
 
 .. automodule:: dplib.parse
     :members:
     :undoc-members:
     :show-inheritance:
 
-dplib\.server module
---------------------
+dplib.server module
+-------------------
 
 .. automodule:: dplib.server
     :members:

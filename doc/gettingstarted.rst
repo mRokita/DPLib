@@ -94,3 +94,9 @@ Streak
 .. literalinclude:: ../examples/streak.py
     :linenos:
 
+Server manager
+**************
+
+.. literalinclude:: ../examples/streak.py
+    :linenos:
+

@@ -12,7 +12,6 @@ Welcome to DPLib's documentation!
    gettingstarted
    includeme
 
-   :caption: Contents:
 
 
 
