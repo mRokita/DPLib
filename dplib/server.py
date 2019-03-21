@@ -38,6 +38,7 @@ class ServerEvent(Enum):
     ROUND_STARTED = 10
     TEAM_SWITCHED = 11
     GAME_END = 12
+    DISCONNECT = 13
 
 class BadRconPasswordError(Exception):
     pass
@@ -50,7 +51,7 @@ class ListenerType(Enum):
 REGEXPS = OrderedDict([
     (re.compile('^\\[\d\d:\d\d:\d\d\\] (?:(?:\\[OBS\\] )|(?:\\[ELIM\\] ))?(.*?): (.*?)\r?\n'), ServerEvent.CHAT),
     # [19:54:18] hTml: test
-    (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?) \\((.*?)\\) eliminated \\*(.*?) \\((.*?)\\)\r?\n'), ServerEvent.ELIM),
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?) \\((.*?)\\) eliminated \\*(.*?) \\((.*?)\\)\\.\r?\n'), ServerEvent.ELIM),
     # [18:54:24] *|ACEBot_1| (Spyder SE) eliminated *|herself| (Spyder SE).
     (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) revived!\r?\n'), ServerEvent.RESPAWN),
     # [19:03:57] *Red's ACEBot_6 revived!
@@ -72,11 +73,14 @@ REGEXPS = OrderedDict([
     # [10:20:11] mRokita is now observing.
     # [10:20:11] mRokita is now observing.
     (re.compile('^\\[\d\d:\d\d:\d\d\\] \t\tGameEnd\t.+\t(.*?)\r?\n'), ServerEvent.GAME_END),
-    # [10:20:11] == Map Loaded: airtime ==
+    # when does this post?
     (re.compile('^\\[\d\d:\d\d:\d\d\\] == Map Loaded: (.+) ==\r?\n'), ServerEvent.MAPCHANGE),
-    # [19:54:54] name1 changed name to name2.
+    # [10:20:11] == Map Loaded: airtime ==
     (re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) changed name to (.*?)\\.\r?\n'), ServerEvent.NAMECHANGE),
-
+    # [19:54:54] name1 changed name to name2.
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) disconnected\\.\r?\n'), ServerEvent.DISCONNECT),
+    # [19:03:57] mRokita disconnected.
+    
 ])
 
 
@@ -134,6 +138,7 @@ class Server(object):
             ServerEvent.GAME_END: 'on_game_end',
             ServerEvent.MAPCHANGE: 'on_mapchange',
             ServerEvent.NAMECHANGE: 'on_namechange',
+            ServerEvent.DISCONNECT: 'on_disconnect',
         }
         self.__listeners = {
             ServerEvent.CHAT: [],
@@ -147,6 +152,7 @@ class Server(object):
             ServerEvent.GAME_END: [],
             ServerEvent.MAPCHANGE: [],
             ServerEvent.NAMECHANGE: [],
+            ServerEvent.DISCONNECT: [],
         }
         self.loop = asyncio.get_event_loop()
 
@@ -296,6 +302,16 @@ class Server(object):
         """
         pass
 
+    @asyncio.coroutine
+    def on_disconnect(self, nick):
+        """
+        On disconnect, can be overridden using the :func:`.Server.event`decorator.
+
+        :param nick: Disconnected player's nick
+        :type nick: str
+        """
+        pass
+    
     def event(self, func):
         """
         Decorator, used for event registration.
@@ -457,7 +473,13 @@ class Server(object):
                 'new_nick': args[1]
             }
             self.__perform_listeners(ServerEvent.NAMECHANGE, (kwargs['old_nick'], kwargs['new_nick']), kwargs)
-
+            
+        elif event_type == ServerEvent.DISCONNECT:
+            kwargs = {
+                'nick': args
+            }
+            self.__perform_listeners(ServerEvent.DISCONNECT, (kwargs['nick'],), kwargs)
+            
         asyncio.async(self.get_event_handler(event_type)(**kwargs))
 
     def get_event_handler(self, event_type):
