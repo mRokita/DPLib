@@ -502,11 +502,33 @@ class Server(object):
             'ÿÿÿÿprint\\n mRokita [127.0.0.1:9419]\\nadmin is listing IP for mRokita [127.0.0.1:9419]\\n'
 
         """
-        sock = socket(AF_INET, SOCK_DGRAM)
-        sock.connect((self.__hostname, self.__port))
-        sock.settimeout(3)
-        sock.send(bytes('\xFF\xFF\xFF\xFFrcon {} {}\n'.format(self.__rcon_password, command), 'latin-1'))
-        ret = sock.recv(2048).decode('latin-1')
+        ret = None
+        while not ret:
+            # start with a socket at 5-second timeout
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            sock.settimeout(5.0)
+            try:
+                sock.connect((self.__hostname, self.__port))
+            except socket.error:
+                print('Socket connect failed! Trying again')
+                traceback.print_exc()
+                time.sleep(5.0)
+                continue
+            ret = None
+            while not ret:
+                try:
+                    sock.send(bytes('\xFF\xFF\xFF\xFFrcon {} {}\n'.format(self.__rcon_password, command), 'latin-1'))
+                    ret = sock.recv(2048).decode('latin-1')
+                except socket.timeout:
+                    print('Socket timeout! Trying to send data again')
+                    time.sleep(5.0)
+                    # traceback.print_exc()
+                    continue
+                except:
+                    traceback.print_exc()
+                    print('Socket error. Trying to create new socket.\nIf this keeps popping up, check your settings')
+                    # break from loop
+                    break
         if ret == '\xFF\xFF\xFF\xFFprint\nBad rcon_password.\n':
             raise BadRconPasswordError('Bad rcon password')
         return ret
@@ -518,11 +540,37 @@ class Server(object):
         :return: Status string
         :rtype: str
         """
-        sock = socket(AF_INET, SOCK_DGRAM)
-        sock.connect((self.__hostname, self.__port))
-        sock.settimeout(3)
-        sock.send(b'\xFF\xFF\xFF\xFFstatus\n')
-        return sock.recv(2048).decode('latin-1')
+        ret = None
+        while not ret:
+            # start with a socket at 5-second timeout
+            sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            sock.settimeout(5.0)
+            try:
+                sock.connect((self.__hostname, self.__port))
+            except socket.error:
+                print('Socket connect failed! Trying again')
+                traceback.print_exc()
+                time.sleep(5.0)
+                continue
+            ret = None
+            while not ret:
+                try:
+                    sock.send(b'\xFF\xFF\xFF\xFFstatus\n')
+                    ret = sock.recv(2048).decode('latin-1')
+                except socket.timeout:
+                    print('Socket timeout! Trying to send data again')
+                    time.sleep(5.0)
+                    # traceback.print_exc()
+                    continue
+                except:
+                    traceback.print_exc()
+                    print('Socket error. Trying to create new socket.\nIf this keeps popping up, check your settings')
+                    # break from loop
+                    break
+        if ret == '\xFF\xFF\xFF\xFFprint\nBad rcon_password.\n':
+            raise BadRconPasswordError('Bad rcon password')
+        return ret
+
 
     def permaban(self, ip=None):
         """
