@@ -19,6 +19,7 @@ from collections import OrderedDict
 from enum import Enum
 import asyncio
 import os
+import time
 from socket import socket, AF_INET, SOCK_DGRAM
 
 from dplib.parse import render_text, decode_ingame_text
@@ -511,7 +512,6 @@ class Server(object):
                 sock.connect((self.__hostname, self.__port))
             except socket.error:
                 print('Socket connect failed! Trying again')
-                traceback.print_exc()
                 time.sleep(5.0)
                 continue
             ret = None
@@ -522,10 +522,8 @@ class Server(object):
                 except socket.timeout:
                     print('Socket timeout! Trying to send data again')
                     time.sleep(5.0)
-                    # traceback.print_exc()
                     continue
                 except:
-                    traceback.print_exc()
                     print('Socket error. Trying to create new socket.\nIf this keeps popping up, check your settings')
                     # break from loop
                     break
@@ -549,7 +547,6 @@ class Server(object):
                 sock.connect((self.__hostname, self.__port))
             except socket.error:
                 print('Socket connect failed! Trying again')
-                traceback.print_exc()
                 time.sleep(5.0)
                 continue
             ret = None
@@ -560,10 +557,8 @@ class Server(object):
                 except socket.timeout:
                     print('Socket timeout! Trying to send data again')
                     time.sleep(5.0)
-                    # traceback.print_exc()
                     continue
                 except:
-                    traceback.print_exc()
                     print('Socket error. Trying to create new socket.\nIf this keeps popping up, check your settings')
                     # break from loop
                     break
