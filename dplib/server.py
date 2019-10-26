@@ -20,7 +20,6 @@ from enum import Enum
 import asyncio
 import os
 from socket import socket, AF_INET, SOCK_DGRAM
-
 from dplib.parse import render_text, decode_ingame_text
 
 
@@ -38,6 +37,11 @@ class ServerEvent(Enum):
     ROUND_STARTED = 10
     TEAM_SWITCHED = 11
     GAME_END = 12
+    DISCONNECT = 13
+    FLAG_GRAB = 14
+    FLAG_DROP = 15
+    ROUND_END = 16
+    GAMEMODE = 17   
 
 class BadRconPasswordError(Exception):
     pass
@@ -50,15 +54,20 @@ class ListenerType(Enum):
 REGEXPS = OrderedDict([
     (re.compile('^\\[\d\d:\d\d:\d\d\\] (?:(?:\\[OBS\\] )|(?:\\[ELIM\\] ))?(.*?): (.*?)\r?\n'), ServerEvent.CHAT),
     # [19:54:18] hTml: test
-    (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?) \\((.*?)\\) eliminated \\*(.*?) \\((.*?)\\)\r?\n'), ServerEvent.ELIM),
+    (re.compile(
+        '^\\[\d\d:\d\d:\d\d\\] \\*(.*?) (?:\\((.*?)\\) eliminated \\*(.*?) \\((.*?)\\)\\.\r?\n|'
+        'eliminated ((?:himself)|(?:herself)) with a paintgren\\.\r?\n)'), ServerEvent.ELIM),
     # [18:54:24] *|ACEBot_1| (Spyder SE) eliminated *|herself| (Spyder SE).
+    # [12:25:44] *whoa eliminated herself with a paintgren.
+    # [12:26:09] *whoa eliminated himself with a paintgren.
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) revived!\r?\n'), ServerEvent.RESPAWN),
     # [19:03:57] *Red's ACEBot_6 revived!
     (re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) entered the game \\((.*?)\\) \\[(.*?)\\]\r?\n'), ServerEvent.ENTRANCE),
     # [19:03:57] mRokita entered the game (build 41) [127.0.0.1:22345]
     (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) returned the(?: \\*(.*?))? flag!\r?\n'), ServerEvent.FLAG_CAPTURED),
     # [18:54:24] *Red's hTml returned the *Blue flag!
-    (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) earned (\d+) points for possesion of eliminated teams flag!'),
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) earned (\d+) points for possesion of eliminated teams flag!\r?\n'),
         ServerEvent.ELIM_TEAMS_FLAG),
     # [19:30:23] *Blue's mRokita earned 3 points for possesion of eliminated teams flag!
     (re.compile('^\\[\d\d:\d\d:\d\d\\] Round started\\.\\.\\.\r?\n'), ServerEvent.ROUND_STARTED),
@@ -71,12 +80,20 @@ REGEXPS = OrderedDict([
     # [10:20:11] mRokita switched from Blue to Red.
     # [10:20:11] mRokita is now observing.
     # [10:20:11] mRokita is now observing.
-    (re.compile('^\\[\d\d:\d\d:\d\d\\] \t\tGameEnd\t.+\t(.*?)\r?\n'), ServerEvent.GAME_END),
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] 0:00 left in match\\.\r?\n'), ServerEvent.GAME_END),
     # [10:20:11] == Map Loaded: airtime ==
     (re.compile('^\\[\d\d:\d\d:\d\d\\] == Map Loaded: (.+) ==\r?\n'), ServerEvent.MAPCHANGE),
     # [19:54:54] name1 changed name to name2.
     (re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) changed name to (.*?)\\.\r?\n'), ServerEvent.NAMECHANGE),
-
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) disconnected\\.\r?\n'), ServerEvent.DISCONNECT),
+    # [19:03:57] whoa disconnected.
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?) got the(?: \\*(.*?))? flag\\!\r?\n'), ServerEvent.FLAG_GRAB),
+    # [19:03:57] *whoa got the *Red flag!
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?) dropped the flag\\!\r?\n'), ServerEvent.FLAG_DROP),
+    # [19:03:57] *whoa dropped the flag!
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) team wins the round\\!\r?\n'), ServerEvent.ROUND_END),
+    # [14:38:50] Blue team wins the round!
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] === ((?:Deathmatch)|(?:Team Flag CTF)|(?:Single Flag CTF)|(?:Team Siege)|(?:Team Elim)|(?:Team Siege)|(?:Team Deathmatch)|(?:Team KOTH)|(?:Pong)) ===\r?\n'), ServerEvent.GAMEMODE),
 ])
 
 
@@ -134,6 +151,11 @@ class Server(object):
             ServerEvent.GAME_END: 'on_game_end',
             ServerEvent.MAPCHANGE: 'on_mapchange',
             ServerEvent.NAMECHANGE: 'on_namechange',
+            ServerEvent.DISCONNECT: 'on_disconnect',
+            ServerEvent.FLAG_GRAB: 'on_flag_grab',
+            ServerEvent.FLAG_DROP: 'on_flag_drop',
+            ServerEvent.ROUND_END: 'on_round_end',
+            ServerEvent.GAMEMODE: 'gamemode',
         }
         self.__listeners = {
             ServerEvent.CHAT: [],
@@ -147,6 +169,11 @@ class Server(object):
             ServerEvent.GAME_END: [],
             ServerEvent.MAPCHANGE: [],
             ServerEvent.NAMECHANGE: [],
+            ServerEvent.DISCONNECT: [],
+            ServerEvent.FLAG_GRAB: [],
+            ServerEvent.FLAG_DROP: [],
+            ServerEvent.ROUND_END: [],
+            ServerEvent.GAMEMODE: [],
         }
         self.loop = asyncio.get_event_loop()
 
@@ -246,7 +273,7 @@ class Server(object):
         pass
 
     @asyncio.coroutine
-    def on_elim(self, killer_nick, killer_weapon, victim_nick, victim_weapon):
+    def on_elim(self, killer_nick, killer_weapon, victim_nick, victim_weapon, suicide):
         """
         On elim can be overridden using the :func:`.Server.event` decorator.
 
@@ -293,6 +320,58 @@ class Server(object):
         :type old_nick: str
         :param new_nick: Old nick
         :type new_nick: str
+        """
+        pass
+
+    @asyncio.coroutine
+    def on_disconnect(self, nick):
+        """
+        On disconnect, can be overridden using the :func:`.Server.event`decorator.
+
+        :param nick: Disconnected player's nick
+        :type nick: str
+        """
+        pass
+    
+    @asyncio.coroutine
+    def on_flag_grab(self, nick, flag):
+        """
+        On flag grab, can be overridden using the :func:`.Server.event` decorator.
+       
+        :param nick: Player's nick
+        :type nick: str
+        :param team: Flag color (Blue|Red|Yellow|Purple)
+        :type team: str
+        """
+        pass
+    
+    @asyncio.coroutine
+    def on_flag_drop(self, nick):
+        """
+        On flag grab, can be overridden using the :func:`.Server.event` decorator.
+       
+        :param nick: Player's nick
+        :type nick: str
+        :param team: Flag color (Blue|Red|Yellow|Purple)
+        :type team: str
+        """
+        pass
+        
+    @asyncio.coroutine
+    def on_round_end(self):
+        """
+        Onround end, can be overridden using the :func:`.Server.event` decorator.
+       
+        """
+        pass
+        
+    @asyncio.coroutine
+    def gamemode(self, gamemode):
+        """
+        Onround end, can be overridden using the :func:`.Server.event` decorator.
+        
+        :param gamemode: map's gamemode
+        :type gamemode: str
         """
         pass
 
@@ -377,10 +456,12 @@ class Server(object):
             self.__perform_listeners(ServerEvent.CHAT, args, kwargs)
         elif event_type == ServerEvent.ELIM:
             kwargs = {
-                'killer_nick': args[0],
-                'killer_weapon': args[1],
-                'victim_nick': args[2],
-                'victim_weapon': args[3],
+                    'killer_nick': args[0],
+                    'killer_weapon': args[1],
+                    'victim_nick': args[2],
+                    'victim_weapon': args[3],
+                    'suicide': args[4],
+                    
             }
             self.__perform_listeners(ServerEvent.ELIM, args, kwargs)
         elif event_type == ServerEvent.RESPAWN:
@@ -402,6 +483,7 @@ class Server(object):
                 'nick': args[1],
                 'flag': args[2],
             }
+            self.__perform_listeners(ServerEvent.FLAG_CAPTURED, args, kwargs)
         elif event_type == ServerEvent.ELIM_TEAMS_FLAG:
             kwargs = {
                 'team': args[0],
@@ -457,6 +539,35 @@ class Server(object):
                 'new_nick': args[1]
             }
             self.__perform_listeners(ServerEvent.NAMECHANGE, (kwargs['old_nick'], kwargs['new_nick']), kwargs)
+
+        elif event_type == ServerEvent.DISCONNECT:
+            kwargs = {
+                'nick': args
+            }
+            self.__perform_listeners(ServerEvent.DISCONNECT, (kwargs['nick'],), kwargs)
+        
+        elif event_type == ServerEvent.FLAG_GRAB:
+            kwargs = {
+                'nick': args[0],
+                'flag': args[1],
+            }
+            self.__perform_listeners(ServerEvent.FLAG_GRAB, (kwargs['nick'], kwargs['flag']), kwargs)
+        
+        elif event_type == ServerEvent.FLAG_DROP:
+            kwargs = {
+                'nick': args
+            }
+            self.__perform_listeners(ServerEvent.FLAG_GRAB, (kwargs['nick'],), kwargs)
+            
+        elif event_type == ServerEvent.ROUND_END:
+            kwargs = dict()
+            self.__perform_listeners(ServerEvent.ROUND_END, args, kwargs)
+            
+        elif event_type == ServerEvent.GAMEMODE:
+            kwargs = {
+                'gamemode': args
+            }
+            self.__perform_listeners(ServerEvent.GAMEMODE, args, kwargs)
 
         asyncio.async(self.get_event_handler(event_type)(**kwargs))
 
@@ -968,6 +1079,29 @@ class Server(object):
             message = None
         return message
 
+    @asyncio.coroutine
+    def wait_for_flag_drop(self, timeout=None, nick=None, check=None):
+        """
+        Waits for flag drop.
+
+        :param timeout: Time to wait for event, if exceeded, returns None.
+        :param nick: Player's nick.
+        :param flag: dropped flag.
+        :param check: Check function, ignored if none.
+
+        :return: Returns an empty dict.
+        :rtype: dict
+        """
+        future = asyncio.Future(loop=self.loop)
+        margs = (nick)
+        predicate = self.__get_predicate(margs, check)
+        self.__listeners[ServerEvent.FLAG_DROP].append((predicate, future))
+        try:
+            data = yield from asyncio.wait_for(future, timeout,
+                                               loop=self.loop)
+        except asyncio.TimeoutError:
+            data = None
+        return data
 
     def start(self, scan_old=False, realtime=True, debug=False):
         """
