@@ -37,12 +37,12 @@ class ServerEvent(Enum):
     ELIM_TEAMS_FLAG = 9
     ROUND_STARTED = 10
     TEAM_SWITCHED = 11
-    GAME_END = 12
-    DISCONNECT = 13
-    FLAG_GRAB = 14
-    FLAG_DROP = 15
-    ROUND_END = 16
-    GAMEMODE = 17
+    DISCONNECT = 12
+    FLAG_GRAB = 13
+    FLAG_DROP = 14
+    ROUND_END = 15
+    GAMEMODE = 16
+    GAME_END = 17
 
 class BadRconPasswordError(Exception):
     pass
@@ -64,15 +64,20 @@ REGEXPS = OrderedDict([
 
     (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) revived!\r?\n'), ServerEvent.RESPAWN),
     # [19:03:57] *Red's ACEBot_6 revived!
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) entered the game \\((.*?)\\) \\[(.*?)\\]\r?\n'), ServerEvent.ENTRANCE),
-    # [19:03:57] mRokita entered the game (build 41) [127.0.0.1:22345]
+    # [19:03:57] mRokita entered the game (build 41)
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) returned the(?: \\*(.*?))? flag!\r?\n'), ServerEvent.FLAG_CAPTURED),
     # [18:54:24] *Red's hTml returned the *Blue flag!
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) earned (\d+) points for possesion of eliminated teams flag!\r?\n'),
         ServerEvent.ELIM_TEAMS_FLAG),
     # [19:30:23] *Blue's mRokita earned 3 points for possesion of eliminated teams flag!
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] Round started\\.\\.\\.\r?\n'), ServerEvent.ROUND_STARTED),
     # [10:20:11] Round started...
+
     (re.compile(
         '(?:^\\[\d\d:\d\d:\d\d\\] (.*?) switched from \\*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow))'
         ' to \\*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow))\\.\r?\n)|'
@@ -81,20 +86,37 @@ REGEXPS = OrderedDict([
     # [10:20:11] mRokita switched from Blue to Red.
     # [10:20:11] mRokita is now observing.
     # [10:20:11] mRokita is now observing.
-    (re.compile('^\\[\d\d:\d\d:\d\d\\] 0:00 left in match\\.\r?\n'), ServerEvent.GAME_END),
-    # [10:20:11] == Map Loaded: airtime ==
+
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] \t\tGameEnd\t.+\t(.*?)\r?\n'), ServerEvent.GAME_END),
+    # [22:40:33]         GameEnd    441.9    No winner
+    # [22:40:33]         GameEnd    1032.6    Red:23,Blue:22
+    # [22:40:33]         GameEnd    4.9    DPBot01 wins!
+    # [22:40:33]         GameEnd    42.9    Yellow:5,Blue:0,Purple:0,Red:0
+    # [22:40:33]         GameEnd    42.9    Yellow:5,Blue:12,Purple:7
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] == Map Loaded: (.+) ==\r?\n'), ServerEvent.MAPCHANGE),
-    # [19:54:54] name1 changed name to name2.
+    # [10:20:11] == Map Loaded: airtime ==
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) changed name to (.*?)\\.\r?\n'), ServerEvent.NAMECHANGE),
+    # [19:54:54] name1 changed name to name2.
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) disconnected\\.\r?\n'), ServerEvent.DISCONNECT),
     # [19:03:57] whoa disconnected.
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?) got the(?: \\*(.*?))? flag\\!\r?\n'), ServerEvent.FLAG_GRAB),
     # [19:03:57] *whoa got the *Red flag!
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?) dropped the flag\\!\r?\n'), ServerEvent.FLAG_DROP),
     # [19:03:57] *whoa dropped the flag!
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) team wins the round\\!\r?\n'), ServerEvent.ROUND_END),
     # [14:38:50] Blue team wins the round!
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] === ((?:Deathmatch)|(?:Team Flag CTF)|(?:Single Flag CTF)|(?:Team Siege)|(?:Team Elim)|(?:Team Siege)|(?:Team Deathmatch)|(?:Team KOTH)|(?:Pong)) ===\r?\n'), ServerEvent.GAMEMODE),
+    # [09:58:11] === Team Flag CTF ===
+    # [13:16:19] === Team Siege ===
+    # [21:53:54] === Pong ===
+    # [12:21:05] === Deathmatch ===
 ])
 
 
@@ -429,12 +451,10 @@ class Server(object):
         for i in reversed(to_remove):
             self.__listeners[event_type].pop(i)
 
-
     def nicks_valid(self, *nicks):
-
         nicks_ingame = [p.nick for p in self.get_players()]
         for nick in nicks:
-            if not nick in nicks_ingame:
+            if nick not in nicks_ingame:
                 return False
         return True
 
@@ -594,11 +614,12 @@ class Server(object):
                         continue
                 yield from self.__handle_event(event_type=e, args=res)
 
-    def rcon(self, command):
+    def rcon(self, command, socket_timeout=3):
         """
         Execute a console command using RCON.
 
         :param command: Command
+        :param socket_timeout: Timeout for the UDP socket.
 
         :return: Response from server
 
@@ -616,9 +637,11 @@ class Server(object):
         """
         sock = socket(AF_INET, SOCK_DGRAM)
         sock.connect((self.__hostname, self.__port))
-        sock.settimeout(3)
+        sock.settimeout(socket_timeout)
         sock.send(bytes('\xFF\xFF\xFF\xFFrcon {} {}\n'.format(self.__rcon_password, command), 'latin-1'))
-        ret = sock.recv(2048).decode('latin-1')
+        ret = ''
+        while not ret or ret[-1] != '\0':
+            ret += sock.recv(64).decode('latin-1')
         if ret == '\xFF\xFF\xFF\xFFprint\nBad rcon_password.\n':
             raise BadRconPasswordError('Bad rcon password')
         return ret
@@ -1243,4 +1266,5 @@ class Server(object):
             if not 'maploaded' in blockednames.split(','):
                 # A player with name "maploaded" would block the mapchange event
                 self.set_cvar('sv_blockednames', ','.join([blockednames, 'maploaded']))
+                self.set_cvar('sl_logging', '2')
         self.loop.run_until_complete(self.start(scan_old, realtime, debug))

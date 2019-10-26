@@ -24,6 +24,8 @@ SERVERS = {
         'config_vars': {
             'hostname': 'FALUBAZ/devol',
             'public': 1,
+            'timelimit': 1,
+            'fraglimit': 1,
             'flagcapendsround': 0,
             'elim': 10,
         },
@@ -122,7 +124,7 @@ class ManagedServer(Server):
                 fo.write(str(pid))
 
     def get_run_command(self) -> str:
-        command = './paintball2 +set dedicated 1 +set port %s' \
+        command = './paintball2 +set dedicated 1 +set port %s +setmaster dplogin.com master0.gamespy.com' \
                   ' +set rcon_password %s' % (self.config['port'],
                                               self.config['rcon_password'])
         for v in self.config['config_vars']:
@@ -174,6 +176,7 @@ def run_servers():
         managed_server.start_process()
         managed_server.start_event_service()
 
+
 try:
     if __name__ == '__main__':
         os.chdir(PAINTBALL_DIR)
@@ -183,6 +186,7 @@ try:
         wait = False
         for s in list(managed_servers.values()):
             if s.is_listening:
+                print(s.get_cvar('hostname'))
                 wait = True
                 break
         if wait:
