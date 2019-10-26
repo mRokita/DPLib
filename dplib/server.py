@@ -458,7 +458,7 @@ class Server(object):
             }
             self.__perform_listeners(ServerEvent.NAMECHANGE, (kwargs['old_nick'], kwargs['new_nick']), kwargs)
 
-        asyncio.async(self.get_event_handler(event_type)(**kwargs))
+        asyncio.ensure_future(self.get_event_handler(event_type)(**kwargs))
 
     def get_event_handler(self, event_type):
         return getattr(self, self.handlers[event_type])
@@ -988,22 +988,25 @@ class Server(object):
             buf = ''
         if realtime:
             while self.__alive:
-                if self.__log_file:
-                    line = self.__log_file.readline().decode('latin-1')
-                elif self.__pty_master:
-                    if '\n' not in buf:
-                        buf += os.read(self.__pty_master, 128).decode('latin-1')
-                    l = buf.splitlines(keepends=True)
-                    if l and '\n' in l[0]:
-                        line = l[0]
-                        buf = ''.join(l[1:])
-                    else:
-                        line = None
-                if line:
-                    if debug:
-                        print("[DPLib] %s" % line.strip())
-                    yield from self.__parse_line(line)
-                yield from asyncio.sleep(0.05)
+                try:
+                    if self.__log_file:
+                        line = self.__log_file.readline().decode('latin-1')
+                    elif self.__pty_master:
+                        if '\n' not in buf:
+                            buf += os.read(self.__pty_master, 128).decode('latin-1')
+                        l = buf.splitlines(keepends=True)
+                        if l and '\n' in l[0]:
+                            line = l[0]
+                            buf = ''.join(l[1:])
+                        else:
+                            line = None
+                    if line:
+                        if debug:
+                            print("[DPLib] %s" % line.strip())
+                        yield from self.__parse_line(line)
+                    yield from asyncio.sleep(0.05)
+                except OSError:
+                    self.stop_listening()
 
         if self.__log_file:
             self.__log_file.close()

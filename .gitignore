@@ -1,3 +1,4 @@
 .idea/
 *.pyc
 dist/
+examples/rent_a_pub.py
