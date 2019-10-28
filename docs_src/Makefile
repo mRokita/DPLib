@@ -7,7 +7,7 @@ SPHINXBUILD   = python3 -msphinx
 SPHINXPROJ    = DPLib
 SOURCEDIR     = .
 BUILDDIR      = _build
-BUILDDIR_EXT  = ../docs
+BUILDDIR_EXT  = ..\..\dplib-docs
 
 # Put it first so that "make" without argument is like "make help".
 help:

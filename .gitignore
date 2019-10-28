@@ -1,4 +1,5 @@
 .idea/
 *.pyc
 dist/
+docs_src/_build/
 rent_a_pub.py
