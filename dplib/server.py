@@ -17,9 +17,11 @@
 import re
 from collections import OrderedDict
 from enum import Enum
+from subprocess import Popen
 import asyncio
 import os
 from socket import socket, AF_INET, SOCK_DGRAM
+from time import time
 
 from dplib.parse import render_text, decode_ingame_text
 
@@ -45,6 +47,9 @@ class ServerEvent(Enum):
     GAME_END = 17
 
 class BadRconPasswordError(Exception):
+    pass
+
+class SecurityCheckError(Exception):
     pass
 
 class ListenerType(Enum):
@@ -87,7 +92,7 @@ REGEXPS = OrderedDict([
     # [10:20:11] mRokita is now observing.
     # [10:20:11] mRokita is now observing.
 
-    (re.compile('^\\[\d\d:\d\d:\d\d\\] \t\tGameEnd\t.+\t(.*?)\r?\n'), ServerEvent.GAME_END),
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] [\t|-]{2}GameEnd[\t-](.*?)\r?\n'), ServerEvent.GAME_END),
     # [22:40:33]         GameEnd    441.9    No winner
     # [22:40:33]         GameEnd    1032.6    Red:23,Blue:22
     # [22:40:33]         GameEnd    4.9    DPBot01 wins!
@@ -139,6 +144,7 @@ class Player(object):
         self.build = build
 
 
+
 class Server(object):
     """
     Represents a DP:PB2 server
@@ -149,6 +155,8 @@ class Server(object):
     :type port: int
     :param logfile: Path to logfile
     :param rcon_password: rcon password
+    :param pty_master: Master of the dp2 process (useful only if you want to run the server from your Python script). Go to the getting started section for details.
+    :type pty_master: int
     :param init_vars: Send come commands used for security
     """
 
@@ -158,6 +166,7 @@ class Server(object):
         self.__init_vars = init_vars
         self.__port = port
         self.__log_file = None
+        self.__is_secure = False
         self.__alive = False
         self.__logfile_name = logfile if not pty_master else None
         self.__pty_master = pty_master
@@ -638,12 +647,8 @@ class Server(object):
         sock = socket(AF_INET, SOCK_DGRAM)
         sock.connect((self.__hostname, self.__port))
         sock.settimeout(socket_timeout)
-        sock.send(bytes('\xFF\xFF\xFF\xFFrcon {} {}\n'.format(self.__rcon_password, command), 'latin-1'))
-        ret = ''
-        while not ret or ret[-1] != '\0':
-            ret += sock.recv(64).decode('latin-1')
-        if ret == '\xFF\xFF\xFF\xFFprint\nBad rcon_password.\n':
-            raise BadRconPasswordError('Bad rcon password')
+        sock.send(bytes('\xFF\xFF\xFF\xFFrcon {} {}\n'.format(self.__rcon_password, command).encode('latin-1')))
+        ret = sock.recv(2048).decode('latin-1')
         return ret
 
     def status(self):
@@ -1137,37 +1142,45 @@ class Server(object):
         :type realtime: bool
         """
         if not (self.__logfile_name or self.__pty_master):
-            raise AttributeError("Logfile name or PTY slave is required.")
+            raise AttributeError("Logfile name or a Popen process is required.")
         self.__alive = True
-        self.__log_file = open(self.__logfile_name, 'rb') if self.__logfile_name else None
-        if not scan_old and self.__log_file:
+
+        if self.__logfile_name:
+            self.__log_file = open(self.__logfile_name, 'rb')
+
+        if self.__log_file and scan_old:
             self.__log_file.readlines()
-        if self.__pty_master:
-            buf = ''
+
+        buf = ''
         if realtime:
             while self.__alive:
                 try:
-                    if self.__log_file:
-                        line = self.__log_file.readline().decode('latin-1')
-                    elif self.__pty_master:
-                        if '\n' not in buf:
-                            buf += os.read(self.__pty_master, 128).decode('latin-1')
-                        l = buf.splitlines(keepends=True)
-                        if l and '\n' in l[0]:
-                            line = l[0]
-                            buf = ''.join(l[1:])
-                        else:
-                            line = None
-                    if line:
+                    buf += self._read_log()
+                    lines = buf.splitlines(True)
+                    line = ''
+                    for line in lines:
                         if debug:
                             print("[DPLib] %s" % line.strip())
                         yield from self.__parse_line(line)
+                    if line[-1] != '\n':
+                        buf = line
+                    else:
+                        buf = ''
                     yield from asyncio.sleep(0.05)
-                except OSError:
-                    self.stop_listening()
+                except OSError as e:
+                    raise e
 
         if self.__log_file:
             self.__log_file.close()
+        if self.__pty_master:
+            os.close(self.__pty_master)
+
+    def _read_log(self):
+        if self.__log_file:
+            return self.__log_file.readline().decode('latin-1')
+        elif self.__pty_master:
+            return os.read(self.__pty_master, 1024).decode('latin-1')
+
 
     def get_players(self):
         """
@@ -1252,7 +1265,45 @@ class Server(object):
                 return p
         return None
 
-    def run(self, scan_old=False, realtime=True, debug=False):
+    def make_secure(self, timeout=10):
+        """
+        This function fixes some compatibility and security issues on DP server side
+        - Adds "mapchange" to sv_blockednames
+        - Sets sl_logging to 1
+        All variables are set using the rcon protocol, use this function if you want to wait for the server to start.
+
+        :param timeout: Timeout in seconds
+        """
+        sl_logging_set = False
+        sv_blockednames_set = False
+        self.__is_secure = False
+        start_time = time()
+        while not (sl_logging_set and sv_blockednames_set) and time() - start_time < timeout:
+            try:
+                if not sl_logging_set:
+                    sl_logging = self.get_cvar('sl_logging')
+                    if sl_logging != '1':
+                        self.set_cvar('sl_logging', '1')
+                    else:
+                        sl_logging_set = True
+                if not sv_blockednames_set:
+                    blockednames = self.get_cvar('sv_blockednames')
+
+                    if not 'maploaded' in blockednames:
+                        self.set_cvar('sv_blockednames', ','.join([blockednames, 'maploaded']))
+                    else:
+                        sv_blockednames_set = True
+            except ConnectionError or timeout:
+                pass
+        if not (sl_logging_set and sv_blockednames_set):
+            raise SecurityCheckError(
+                "Configuring the DP server failed,"
+                " check if the server is running "
+                "and the rcon_password is correct.")
+        else:
+            self.__is_secure = True
+
+    def run(self, scan_old=False, realtime=True, debug=False, make_secure=True):
         """
         Runs the main loop using asyncio.
 
@@ -1261,10 +1312,13 @@ class Server(object):
         :param realtime: Wait for incoming logfile data
         :type realtime: bool
         """
-        if self.__init_vars and self.__rcon_password:
-            blockednames = self.get_cvar('sv_blockednames')
-            if not 'maploaded' in blockednames.split(','):
-                # A player with name "maploaded" would block the mapchange event
-                self.set_cvar('sv_blockednames', ','.join([blockednames, 'maploaded']))
-                self.set_cvar('sl_logging', '2')
+        if make_secure and not self.__rcon_password:
+            raise AttributeError(
+                "Setting the rcon_password is required to secure DPLib."
+                " You have to either set a rcon_password or add set"
+                " \"sl_logging 1; set sv_blockednames mapname\" "
+                "to your DP server config and use Server.run with"
+                "  make_secure=False")
+        if make_secure:
+            self.make_secure()
         self.loop.run_until_complete(self.start(scan_old, realtime, debug))

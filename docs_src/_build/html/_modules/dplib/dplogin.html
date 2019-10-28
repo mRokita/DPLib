@@ -1,0 +1,677 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>dplib.dplogin &mdash; DPLib 1.5 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> DPLib
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../includelicense.html">LICENSE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gettingstarted.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../includeme.html">README</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">DPLib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>dplib.dplogin</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for dplib.dplogin</h1><div class="highlight"><pre>
+<span></span><span class="c1"># DPLib - Asynchronous bot framework for Digital Paint: Paintball 2 servers</span>
+<span class="c1"># Copyright (C) 2017  Michał Rokita</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU Affero General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 3 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#</span>
+<span class="c1"># This program is distributed in the hope that it will be useful,</span>
+<span class="c1"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c1"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c1"># GNU Affero General Public License for more details.</span>
+<span class="c1">#</span>
+<span class="c1"># You should have received a copy of the GNU Affero General Public License</span>
+<span class="c1"># along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">DPLogin - a module for managing DPLogin accounts.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">hashlib</span> <span class="k">import</span> <span class="n">md5</span>
+<span class="kn">from</span> <span class="nn">urllib.parse</span> <span class="k">import</span> <span class="n">urlencode</span>
+<span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">build_opener</span><span class="p">,</span> <span class="n">HTTPCookieProcessor</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">http.cookiejar</span> <span class="k">import</span> <span class="n">Cookie</span><span class="p">,</span> <span class="n">CookieJar</span>
+
+<span class="n">PATTERN_USER_ID</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;User ID: (\d+)&quot;</span><span class="p">)</span>
+<span class="n">PATTERN_CLANS</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;/index.php</span><span class="se">\\</span><span class="s2">?action=viewclan&amp;clanid=(\d+)</span><span class="se">\\\&quot;</span><span class="s2">&gt;&quot;</span>
+                           <span class="s2">&quot;(.*?) </span><span class="se">\\</span><span class="s2">- (.*?)&lt;/a&gt;&quot;</span><span class="p">)</span>
+<span class="n">PATTERN_PROFILE_DATA</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;name=</span><span class="se">\\\&quot;</span><span class="s2">(.*?)</span><span class="se">\\\&quot;</span><span class="s2"> .*?value=</span><span class="se">\\\&quot;</span><span class="s2">(.*?)</span><span class="se">\\\&quot;</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">PATTERN_PROFILE_BIO</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;name=</span><span class="se">\\\&quot;</span><span class="s2">(bio)</span><span class="se">\\\&quot;</span><span class="s2"> wrap=soft&gt;&quot;</span>
+                                 <span class="s2">&quot;(.*?)&lt;/textarea&gt;&quot;</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">DOTALL</span><span class="p">)</span>
+<span class="n">PATTERN_MEMBERS</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s2">&quot;(?:&lt;b class=</span><span class="se">\\\&quot;</span><span class="s2">faqtitle</span><span class="se">\\\&quot;</span><span class="s2">&gt;&quot;</span>
+                             <span class="s2">&quot;(Leaders|Former Members|Invited Players Pending&quot;</span>
+                             <span class="s2">&quot;|Players Requesting Membership):&quot;</span>
+                             <span class="s2">&quot;&lt;/b&gt;&lt;/td&gt;&lt;/tr&gt;)?&lt;tr&gt;&lt;td&gt;&lt;a href=</span><span class="se">\\\&quot;</span><span class="s2">/index</span><span class="se">\\</span><span class="s2">.php&quot;</span>
+                             <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">?action=viewmember&amp;playerid=(\d+)</span><span class="se">\\\&quot;</span><span class="s2">&quot;</span>
+                             <span class="s2">&quot;&gt;([^&lt;&gt;]+)&lt;/a&gt;&lt;/td&gt;&lt;td&gt;.*?&lt;/td&gt;&lt;/tr&gt;&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="get_session_hash"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.get_session_hash">[docs]</a><span class="k">def</span> <span class="nf">get_session_hash</span><span class="p">(</span><span class="n">pwhash</span><span class="p">,</span> <span class="n">session_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Hash password again, use session_id as a seed.</span>
+<span class="sd">    Used at log in when no plaintext password is specified</span>
+<span class="sd">    :param pwhash:</span>
+<span class="sd">    :param session_id:</span>
+
+<span class="sd">    :return: Session hash</span>
+<span class="sd">    :rtype str:</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">hex_md5</span><span class="p">(</span><span class="n">pwhash</span><span class="o">+</span><span class="n">session_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_password_hash"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.get_password_hash">[docs]</a><span class="k">def</span> <span class="nf">get_password_hash</span><span class="p">(</span><span class="n">password</span><span class="p">,</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">session_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Hash plain password a few times.</span>
+<span class="sd">    Used at log in when a plaintext password is specified.</span>
+<span class="sd">    :param password:</span>
+<span class="sd">    :param user_id:</span>
+<span class="sd">    :param session_id:</span>
+
+<span class="sd">    :return: Hashed password</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">hex_md5</span><span class="p">(</span><span class="n">hex_md5</span><span class="p">(</span><span class="n">hex_md5</span><span class="p">(</span><span class="n">password</span> <span class="o">+</span> <span class="s2">&quot;DPLogin001&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">user_id</span><span class="p">)</span> <span class="o">+</span>
+                   <span class="n">session_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_new_password_hash"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.get_new_password_hash">[docs]</a><span class="k">def</span> <span class="nf">get_new_password_hash</span><span class="p">(</span><span class="n">password</span><span class="p">,</span> <span class="n">user_id</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Hash the password at password change.</span>
+
+<span class="sd">    :param password:</span>
+<span class="sd">    :param user_id:</span>
+
+<span class="sd">    :return: Hashed password and user id</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">hex_md5</span><span class="p">(</span><span class="n">hex_md5</span><span class="p">(</span><span class="n">password</span> <span class="o">+</span> <span class="s2">&quot;DPLogin001&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="n">user_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="hex_md5"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.hex_md5">[docs]</a><span class="k">def</span> <span class="nf">hex_md5</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Hash a string using md5</span>
+
+<span class="sd">    :param string: String to hash</span>
+
+<span class="sd">    :return: MD5 hash of string</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">md5</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="DPLogin"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.DPLogin">[docs]</a><span class="k">class</span> <span class="nc">DPLogin</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    A class that represents a  DPLogin session.</span>
+
+<span class="sd">    :param username:</span>
+<span class="sd">    :param password:</span>
+<span class="sd">    :param pw_hash:</span>
+<span class="sd">    :param pw_session_hash:</span>
+<span class="sd">    :param session_id:</span>
+<span class="sd">    :raises TypeError: Wrong password or hash</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">pw_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">pw_session_hash</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">session_id</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">((</span><span class="n">username</span> <span class="ow">and</span> <span class="n">password</span><span class="p">)</span> <span class="ow">or</span> <span class="n">session_id</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;not enough parameters&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__cj</span> <span class="o">=</span> <span class="n">CookieJar</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span> <span class="o">=</span> <span class="n">build_opener</span><span class="p">(</span>
+            <span class="n">HTTPCookieProcessor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__cj</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">addheaders</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s1">&#39;User-Agent&#39;</span><span class="p">,</span>
+             <span class="s1">&#39;Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:46.0) Gecko/20100102&#39;</span>
+             <span class="s1">&#39; Firefox/46.0)&#39;</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">username</span> <span class="o">=</span> <span class="n">username</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">password</span> <span class="o">=</span> <span class="n">password</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pw_hash</span> <span class="o">=</span> <span class="n">pw_hash</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pw_session_hash</span> <span class="o">=</span> <span class="n">pw_session_hash</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">username</span> <span class="ow">and</span> <span class="ow">not</span> <span class="p">(</span><span class="n">password</span> <span class="ow">or</span> <span class="n">pw_hash</span> <span class="ow">or</span>
+                                 <span class="n">pw_session_hash</span><span class="p">)</span> <span class="ow">and</span> <span class="n">session_id</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_sessid</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;http://dplogin.com/index.php&quot;</span><span class="p">,</span>
+                                      <span class="n">data</span><span class="o">=</span><span class="n">urlencode</span><span class="p">({</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;weblogin1&quot;</span><span class="p">,</span>
+                                                      <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span>
+                                                      <span class="s2">&quot;pwhash&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">user_id</span> <span class="o">=</span> <span class="n">PATTERN_USER_ID</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">response</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;User </span><span class="si">{}</span><span class="s2"> doesn&#39;t exist.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">username</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">session_id</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">cookie</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__cj</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">cookie</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;PHPSESSID&quot;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">set_sessid</span><span class="p">(</span><span class="n">cookie</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_sessid</span><span class="p">(</span><span class="n">session_id</span><span class="p">)</span>
+        <span class="n">pwhash</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">password</span><span class="p">:</span>
+            <span class="n">pwhash</span> <span class="o">=</span> <span class="n">get_password_hash</span><span class="p">(</span><span class="n">password</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">pw_hash</span><span class="p">:</span>
+            <span class="n">pwhash</span> <span class="o">=</span> <span class="n">get_session_hash</span><span class="p">(</span><span class="n">pw_hash</span><span class="p">,</span> <span class="n">session_id</span><span class="o">=</span><span class="n">session_id</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">pw_session_hash</span><span class="p">:</span>
+            <span class="n">pwhash</span> <span class="o">=</span> <span class="n">pw_session_hash</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;http://dplogin.com/index.php&quot;</span><span class="p">,</span>
+                                      <span class="n">data</span><span class="o">=</span><span class="n">urlencode</span><span class="p">({</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;weblogin2&quot;</span><span class="p">,</span>
+                                                      <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span>
+                                                      <span class="s2">&quot;pwhash&quot;</span><span class="p">:</span> <span class="n">pwhash</span><span class="p">,</span>
+                                                      <span class="s2">&quot;password&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;Invalid password&quot;</span> <span class="ow">in</span> <span class="n">response</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Wrong password.&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DPLogin.set_sessid"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.DPLogin.set_sessid">[docs]</a>    <span class="k">def</span> <span class="nf">set_sessid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">session_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set session id to session_id.</span>
+<span class="sd">        Used to &quot;fake&quot; session_id, pretty useful for hijacking ;)</span>
+
+<span class="sd">        :param session_id: session id to set</span>
+
+<span class="sd">        :return: None</span>
+<span class="sd">        :rtype: NoneType</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span> <span class="o">=</span> <span class="n">session_id</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__cj</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span><span class="n">Cookie</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;PHPSESSID&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">session_id</span><span class="p">,</span>
+                                    <span class="n">port</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">port_specified</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                    <span class="n">domain</span><span class="o">=</span><span class="s1">&#39;dplogin.com&#39;</span><span class="p">,</span>
+                                    <span class="n">domain_specified</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                                    <span class="n">domain_initial_dot</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="s1">&#39;/&#39;</span><span class="p">,</span>
+                                    <span class="n">secure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">expires</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">discard</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                                    <span class="n">comment</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rest</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;HttpOnly&#39;</span><span class="p">:</span> <span class="kc">None</span><span class="p">},</span>
+                                    <span class="n">rfc2109</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">comment_url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                                    <span class="n">path_specified</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="DPLogin.get_clans"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.DPLogin.get_clans">[docs]</a>    <span class="k">def</span> <span class="nf">get_clans</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get clans of the user.</span>
+
+<span class="sd">        :return: A list of dicts with clan info</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;http://dplogin.com/index.php?&quot;</span>
+                                      <span class="s2">&quot;action=main&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">PATTERN_CLANS</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="n">has_active_clan</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;&gt;Active Clan&lt;&quot;</span> <span class="ow">in</span> <span class="n">response</span>
+        <span class="n">clans</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">clan</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="n">clans</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">clan</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                          <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">clan</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                          <span class="s2">&quot;tag&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                          <span class="s2">&quot;active&quot;</span><span class="p">:</span> <span class="n">has_active_clan</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">i</span><span class="p">})</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">i</span><span class="p">:</span>
+                <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">clans</span></div>
+
+<div class="viewcode-block" id="DPLogin.leave_current_clan"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.DPLogin.leave_current_clan">[docs]</a>    <span class="k">def</span> <span class="nf">leave_current_clan</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Leave the current clan.</span>
+
+<span class="sd">        :return: HTTP Response</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">clan</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_clans</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">clan</span><span class="p">[</span><span class="s2">&quot;active&quot;</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">leave_clan</span><span class="p">(</span><span class="n">clan</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="DPLogin.leave_clan"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.DPLogin.leave_clan">[docs]</a>    <span class="k">def</span> <span class="nf">leave_clan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clan_id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Leave clan with clan_id.</span>
+<span class="sd">        :param clan_id: id of the clan to leave</span>
+
+<span class="sd">        :return: HTTP Response</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;http://dplogin.com/index.php?&quot;</span>
+                                  <span class="s2">&quot;action=leaveclan&amp;clanid=</span><span class="si">{}</span><span class="s2">&quot;</span>
+                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clan_id</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DPLogin.join_clan"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.DPLogin.join_clan">[docs]</a>    <span class="k">def</span> <span class="nf">join_clan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clan_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clan_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Join a clan.</span>
+
+<span class="sd">        :param clan_id: id of a clan</span>
+<span class="sd">        :param clan_name: name of a clan</span>
+
+<span class="sd">        :return: HTTP Response</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">clan_id</span> <span class="ow">or</span> <span class="n">clan_name</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Not enough parameters&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">clan_id</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;http://dplogin.com/index.php?action=&quot;</span>
+                                      <span class="s2">&quot;joinclan&amp;clanid=</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span>
+                                      <span class="nb">format</span><span class="p">(</span><span class="n">clan_id</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;http://dplogin.com/index.php&quot;</span><span class="p">,</span>
+                                      <span class="n">urlencode</span><span class="p">(</span>
+                                          <span class="p">{</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;joinclan&quot;</span><span class="p">,</span>
+                                           <span class="s2">&quot;clanname&quot;</span><span class="p">:</span> <span class="s2">&quot;clan_name&quot;</span><span class="p">})</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DPLogin.get_profile_data"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.DPLogin.get_profile_data">[docs]</a>    <span class="k">def</span> <span class="nf">get_profile_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get profile data.</span>
+
+<span class="sd">        :return: dict({&quot;field&quot;: &quot;value&quot;})</span>
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;http://dplogin.com/index.php?&quot;</span>
+                                      <span class="s2">&quot;action=editprofile&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">PATTERN_PROFILE_DATA</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">PATTERN_PROFILE_BIO</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">response</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">([</span><span class="nb">tuple</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">data</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="DPLogin.update_profile"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.DPLogin.update_profile">[docs]</a>    <span class="k">def</span> <span class="nf">update_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">newpassword</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">email</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">realname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">birthdate</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">displayemail</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">forumname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">aim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">icq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">msn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">yim</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">website</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bio</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update DPLogin profile.</span>
+
+<span class="sd">        :param newpassword:</span>
+<span class="sd">        :param email:</span>
+<span class="sd">        :param realname:</span>
+<span class="sd">        :param birthdate:</span>
+<span class="sd">        :param location:</span>
+<span class="sd">        :param displayemail:</span>
+<span class="sd">        :param forumname:</span>
+<span class="sd">        :param aim:</span>
+<span class="sd">        :param icq:</span>
+<span class="sd">        :param msn:</span>
+<span class="sd">        :param yim:</span>
+<span class="sd">        :param website:</span>
+<span class="sd">        :param bio:</span>
+
+<span class="sd">        :return: HTTP response</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">form_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_profile_data</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">:</span>
+            <span class="n">form_data</span><span class="p">[</span><span class="s2">&quot;pwhash&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_password_hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">password</span><span class="p">,</span>
+                                                    <span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">,</span>
+                                                    <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">pw_hash</span><span class="p">:</span>
+            <span class="n">form_data</span><span class="p">[</span><span class="s2">&quot;pwhash&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_session_hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pw_hash</span><span class="p">,</span>
+                                                   <span class="bp">self</span><span class="o">.</span><span class="n">session_id</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">pw_session_hash</span><span class="p">:</span>
+            <span class="n">form_data</span><span class="p">[</span><span class="s2">&quot;pwhash&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pw_session_hash</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;A hash/password is required to use this function&quot;</span><span class="p">)</span>
+        <span class="n">form_data</span><span class="p">[</span><span class="s2">&quot;password&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">l</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">del</span> <span class="n">l</span><span class="p">[</span><span class="s2">&quot;form_data&quot;</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">l</span><span class="p">[</span><span class="s2">&quot;self&quot;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">l</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">l</span><span class="p">[</span><span class="n">var</span><span class="p">]:</span>
+                <span class="n">form_data</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">=</span> <span class="n">l</span><span class="p">[</span><span class="n">var</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">newpassword</span><span class="p">:</span>
+            <span class="n">form_data</span><span class="p">[</span><span class="s2">&quot;newpwhash&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_new_password_hash</span><span class="p">(</span><span class="n">newpassword</span><span class="p">,</span>
+                                                           <span class="bp">self</span><span class="o">.</span><span class="n">user_id</span><span class="p">)</span>
+        <span class="n">form_data</span><span class="p">[</span><span class="s2">&quot;newpassword&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">form_data</span><span class="p">[</span><span class="s2">&quot;newpassword2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;http://dplogin.com/index.php&quot;</span><span class="p">,</span>
+                                  <span class="n">urlencode</span><span class="p">(</span><span class="n">form_data</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DPLogin.del_name"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.DPLogin.del_name">[docs]</a>    <span class="k">def</span> <span class="nf">del_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Delete a name from the account.</span>
+
+<span class="sd">        :param name: name to be deleted</span>
+
+<span class="sd">        :return: HTTP response</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;http://dplogin.com/index.php?&quot;</span>
+                                  <span class="s2">&quot;action=deletemyname&amp;name=</span><span class="si">{}</span><span class="s2">&quot;</span>
+                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DPLogin.add_name"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.DPLogin.add_name">[docs]</a>    <span class="k">def</span> <span class="nf">add_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Add a name to the account.</span>
+
+<span class="sd">        :param name: name to be deleted</span>
+
+<span class="sd">        :return: HTTP response</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;http://dplogin.com/index.php&quot;</span><span class="p">,</span>
+                                  <span class="n">urlencode</span><span class="p">({</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;addnewname&quot;</span><span class="p">,</span>
+                                             <span class="s2">&quot;newname&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">})</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DPLogin.create_clan"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.DPLogin.create_clan">[docs]</a>    <span class="k">def</span> <span class="nf">create_clan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new clan.</span>
+
+<span class="sd">        :param name: Name of the new clan</span>
+<span class="sd">        :param tag: Tag of the new clan</span>
+
+<span class="sd">        :return: HTTP response</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;http://dplogin.com/index.php&quot;</span><span class="p">,</span>
+                                  <span class="n">urlencode</span><span class="p">({</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;createclan2&quot;</span><span class="p">,</span>
+                                             <span class="s2">&quot;clanname&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+                                             <span class="s2">&quot;clantag&quot;</span><span class="p">:</span> <span class="n">tag</span><span class="p">})</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DPLogin.invite_member"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.DPLogin.invite_member">[docs]</a>    <span class="k">def</span> <span class="nf">invite_member</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clanid</span><span class="p">,</span> <span class="n">playerid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Invite a member to a clan.</span>
+
+<span class="sd">        :param clanid: id of the clan</span>
+<span class="sd">        :param playerid: id of the player to invite</span>
+<span class="sd">        :param name: name of the player to invite</span>
+
+<span class="sd">        :return: HTTP response</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">clanid</span> <span class="ow">or</span> <span class="n">playerid</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Not enough parameters&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;http://dplogin.com/index.php&quot;</span><span class="p">,</span>
+                                      <span class="n">urlencode</span><span class="p">({</span><span class="s2">&quot;action&quot;</span><span class="p">:</span> <span class="s2">&quot;inviteclanmember&quot;</span><span class="p">,</span>
+                                                 <span class="s2">&quot;clanid&quot;</span><span class="p">:</span> <span class="n">clanid</span><span class="p">,</span>
+                                                 <span class="s2">&quot;playername&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">})</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;http://dplogin.com/index.php?&quot;</span>
+                                      <span class="s2">&quot;action=inviteclanmember&quot;</span>
+                                      <span class="s2">&quot;&amp;clanid=</span><span class="si">{}</span><span class="s2">&amp;playerid=</span><span class="si">{}</span><span class="s2">&quot;</span>
+                                      <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clanid</span><span class="p">,</span> <span class="n">playerid</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="DPLogin.cancel_join_request"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.DPLogin.cancel_join_request">[docs]</a>    <span class="k">def</span> <span class="nf">cancel_join_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clanid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cancel a clan join request.</span>
+
+<span class="sd">        :param clanid: id of a clan</span>
+
+<span class="sd">        :return: HTTP response</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;http://dplogin.com/index.php?&quot;</span>
+                                  <span class="s2">&quot;action=cancelclanjoinrequest&amp;clanid=</span><span class="si">{}</span><span class="s2">&quot;</span>
+                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clanid</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DPLogin.reject_join_request"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.DPLogin.reject_join_request">[docs]</a>    <span class="k">def</span> <span class="nf">reject_join_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clanid</span><span class="p">,</span> <span class="n">playerid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reject a clan join request.</span>
+
+<span class="sd">        :param clanid: id of a clan</span>
+<span class="sd">        :param playerid: id of a player</span>
+
+<span class="sd">        :return: HTTP response</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;http://dplogin.com/index.php?&quot;</span>
+                                  <span class="s2">&quot;action=rejectclanjoinrequest&quot;</span>
+                                  <span class="s2">&quot;&amp;clanid=</span><span class="si">{}</span><span class="s2">&amp;playerid=</span><span class="si">{}</span><span class="s2">&quot;</span>
+                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clanid</span><span class="p">,</span> <span class="n">playerid</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DPLogin.make_leader"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.DPLogin.make_leader">[docs]</a>    <span class="k">def</span> <span class="nf">make_leader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clanid</span><span class="p">,</span> <span class="n">playerid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Make player with id of playerid a leader of a clan with clanid.</span>
+
+<span class="sd">        :param clanid: id of a clan</span>
+<span class="sd">        :param playerid: id of a player</span>
+
+<span class="sd">        :return: HTTP response</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;http://dplogin.com/index.php?action=&quot;</span>
+                                  <span class="s2">&quot;makeclanleader&amp;clanid=</span><span class="si">{}</span><span class="s2">&amp;playerid=</span><span class="si">{}</span><span class="s2">&quot;</span>
+                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clanid</span><span class="p">,</span> <span class="n">playerid</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DPLogin.kick_from_clan"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.DPLogin.kick_from_clan">[docs]</a>    <span class="k">def</span> <span class="nf">kick_from_clan</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clanid</span><span class="p">,</span> <span class="n">playerid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Kick a player with id of playerid from a clan with id of clanid.</span>
+
+<span class="sd">        :param clanid: id of a clan</span>
+<span class="sd">        :param playerid: id of a player</span>
+
+<span class="sd">        :return: HTTP response</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;http://dplogin.com/index.php?&quot;</span>
+                                  <span class="s2">&quot;action=kickclanmember&quot;</span>
+                                  <span class="s2">&quot;&amp;clanid=</span><span class="si">{}</span><span class="s2">&amp;playerid=</span><span class="si">{}</span><span class="s2">&quot;</span>
+                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clanid</span><span class="p">,</span> <span class="n">playerid</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DPLogin.remove_clan_leader"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.DPLogin.remove_clan_leader">[docs]</a>    <span class="k">def</span> <span class="nf">remove_clan_leader</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clanid</span><span class="p">,</span> <span class="n">playerid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Remove a leader with id of playerid from a clan with id of clanid.</span>
+
+<span class="sd">        :param clanid: id of a clan</span>
+<span class="sd">        :param playerid: id of a player</span>
+
+<span class="sd">        :return: HTTP response</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;http://dplogin.com/index.php?&quot;</span>
+                                  <span class="s2">&quot;action=removeclanleader&quot;</span>
+                                  <span class="s2">&quot;&amp;clanid=</span><span class="si">{}</span><span class="s2">&amp;playerid=</span><span class="si">{}</span><span class="s2">&quot;</span>
+                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clanid</span><span class="p">,</span> <span class="n">playerid</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DPLogin.cancel_invite"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.DPLogin.cancel_invite">[docs]</a>    <span class="k">def</span> <span class="nf">cancel_invite</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clanid</span><span class="p">,</span> <span class="n">playerid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cancel invite to clan for some player.</span>
+
+<span class="sd">        :param clanid: id of a clan</span>
+<span class="sd">        :param playerid: id of a player</span>
+
+<span class="sd">        :return: HTTP response</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;http://dplogin.com/index.php?&quot;</span>
+                                  <span class="s2">&quot;action=cancelinviteclanmember&quot;</span>
+                                  <span class="s2">&quot;&amp;clanid=</span><span class="si">{}</span><span class="s2">&amp;playerid=</span><span class="si">{}</span><span class="s2">&quot;</span>
+                                  <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clanid</span><span class="p">,</span> <span class="n">playerid</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DPLogin.get_clan_members"><a class="viewcode-back" href="../../source/dplib.html#dplib.dplogin.DPLogin.get_clan_members">[docs]</a>    <span class="k">def</span> <span class="nf">get_clan_members</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clanid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get members of a clan with id of clanid.</span>
+
+<span class="sd">        :param clanid: id of the clan</span>
+
+<span class="sd">        :return: A list of dict objects with ids, names and ranks.</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">PATTERN_MEMBERS</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__opener</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;http://dplogin.com/index.php&quot;</span>
+                               <span class="s2">&quot;?action=viewclan&amp;clanid=</span><span class="si">{}</span><span class="s2">&quot;</span>
+                               <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">clanid</span><span class="p">))</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span>
+        <span class="n">members</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">current_key</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">member</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">member</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">current_key</span> <span class="o">=</span> <span class="n">member</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">members</span><span class="p">[</span><span class="n">current_key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="n">members</span><span class="p">[</span><span class="n">current_key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">member</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                                         <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">member</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                                         <span class="s2">&quot;rank&quot;</span><span class="p">:</span> <span class="n">current_key</span><span class="p">})</span>
+        <span class="k">return</span> <span class="n">members</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017-2018, Michał Rokita
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

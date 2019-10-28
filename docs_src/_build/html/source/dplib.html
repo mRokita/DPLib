@@ -1,0 +1,1710 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>dplib package &mdash; DPLib 1.5 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> DPLib
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.5
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../includelicense.html">LICENSE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gettingstarted.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../includeme.html">README</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DPLib</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>dplib package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/source/dplib.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="dplib-package">
+<h1>dplib package<a class="headerlink" href="#dplib-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-dplib.dplogin">
+<span id="dplib-dplogin-module"></span><h2>dplib.dplogin module<a class="headerlink" href="#module-dplib.dplogin" title="Permalink to this headline">¶</a></h2>
+<p>DPLogin - a module for managing DPLogin accounts.</p>
+<dl class="class">
+<dt id="dplib.dplogin.DPLogin">
+<em class="property">class </em><code class="sig-prename descclassname">dplib.dplogin.</code><code class="sig-name descname">DPLogin</code><span class="sig-paren">(</span><em class="sig-param">username=None</em>, <em class="sig-param">password=None</em>, <em class="sig-param">pw_hash=None</em>, <em class="sig-param">pw_session_hash=None</em>, <em class="sig-param">session_id=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class that represents a  DPLogin session.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>username</strong> – </p></li>
+<li><p><strong>password</strong> – </p></li>
+<li><p><strong>pw_hash</strong> – </p></li>
+<li><p><strong>pw_session_hash</strong> – </p></li>
+<li><p><strong>session_id</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>TypeError</strong> – Wrong password or hash</p>
+</dd>
+</dl>
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.add_name">
+<code class="sig-name descname">add_name</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.add_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.add_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a name to the account.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – name to be deleted</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>HTTP response</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.cancel_invite">
+<code class="sig-name descname">cancel_invite</code><span class="sig-paren">(</span><em class="sig-param">clanid</em>, <em class="sig-param">playerid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.cancel_invite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.cancel_invite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancel invite to clan for some player.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clanid</strong> – id of a clan</p></li>
+<li><p><strong>playerid</strong> – id of a player</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>HTTP response</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.cancel_join_request">
+<code class="sig-name descname">cancel_join_request</code><span class="sig-paren">(</span><em class="sig-param">clanid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.cancel_join_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.cancel_join_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cancel a clan join request.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>clanid</strong> – id of a clan</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>HTTP response</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.create_clan">
+<code class="sig-name descname">create_clan</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">tag</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.create_clan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.create_clan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new clan.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – Name of the new clan</p></li>
+<li><p><strong>tag</strong> – Tag of the new clan</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>HTTP response</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.del_name">
+<code class="sig-name descname">del_name</code><span class="sig-paren">(</span><em class="sig-param">name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.del_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.del_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Delete a name from the account.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> – name to be deleted</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>HTTP response</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.get_clan_members">
+<code class="sig-name descname">get_clan_members</code><span class="sig-paren">(</span><em class="sig-param">clanid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.get_clan_members"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.get_clan_members" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get members of a clan with id of clanid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>clanid</strong> – id of the clan</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of dict objects with ids, names and ranks.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.get_clans">
+<code class="sig-name descname">get_clans</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.get_clans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.get_clans" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get clans of the user.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A list of dicts with clan info</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.get_profile_data">
+<code class="sig-name descname">get_profile_data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.get_profile_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.get_profile_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get profile data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>dict({“field”: “value”})</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.invite_member">
+<code class="sig-name descname">invite_member</code><span class="sig-paren">(</span><em class="sig-param">clanid</em>, <em class="sig-param">playerid=None</em>, <em class="sig-param">name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.invite_member"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.invite_member" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invite a member to a clan.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clanid</strong> – id of the clan</p></li>
+<li><p><strong>playerid</strong> – id of the player to invite</p></li>
+<li><p><strong>name</strong> – name of the player to invite</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>HTTP response</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.join_clan">
+<code class="sig-name descname">join_clan</code><span class="sig-paren">(</span><em class="sig-param">clan_id=None</em>, <em class="sig-param">clan_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.join_clan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.join_clan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Join a clan.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clan_id</strong> – id of a clan</p></li>
+<li><p><strong>clan_name</strong> – name of a clan</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>HTTP Response</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.kick_from_clan">
+<code class="sig-name descname">kick_from_clan</code><span class="sig-paren">(</span><em class="sig-param">clanid</em>, <em class="sig-param">playerid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.kick_from_clan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.kick_from_clan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kick a player with id of playerid from a clan with id of clanid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clanid</strong> – id of a clan</p></li>
+<li><p><strong>playerid</strong> – id of a player</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>HTTP response</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.leave_clan">
+<code class="sig-name descname">leave_clan</code><span class="sig-paren">(</span><em class="sig-param">clan_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.leave_clan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.leave_clan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Leave clan with clan_id.
+:param clan_id: id of the clan to leave</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>HTTP Response</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.leave_current_clan">
+<code class="sig-name descname">leave_current_clan</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.leave_current_clan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.leave_current_clan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Leave the current clan.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>HTTP Response</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.make_leader">
+<code class="sig-name descname">make_leader</code><span class="sig-paren">(</span><em class="sig-param">clanid</em>, <em class="sig-param">playerid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.make_leader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.make_leader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make player with id of playerid a leader of a clan with clanid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clanid</strong> – id of a clan</p></li>
+<li><p><strong>playerid</strong> – id of a player</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>HTTP response</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.reject_join_request">
+<code class="sig-name descname">reject_join_request</code><span class="sig-paren">(</span><em class="sig-param">clanid</em>, <em class="sig-param">playerid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.reject_join_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.reject_join_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reject a clan join request.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clanid</strong> – id of a clan</p></li>
+<li><p><strong>playerid</strong> – id of a player</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>HTTP response</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.remove_clan_leader">
+<code class="sig-name descname">remove_clan_leader</code><span class="sig-paren">(</span><em class="sig-param">clanid</em>, <em class="sig-param">playerid</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.remove_clan_leader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.remove_clan_leader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove a leader with id of playerid from a clan with id of clanid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>clanid</strong> – id of a clan</p></li>
+<li><p><strong>playerid</strong> – id of a player</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>HTTP response</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.set_sessid">
+<code class="sig-name descname">set_sessid</code><span class="sig-paren">(</span><em class="sig-param">session_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.set_sessid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.set_sessid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set session id to session_id.
+Used to “fake” session_id, pretty useful for hijacking ;)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>session_id</strong> – session id to set</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>None</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>NoneType</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.dplogin.DPLogin.update_profile">
+<code class="sig-name descname">update_profile</code><span class="sig-paren">(</span><em class="sig-param">newpassword=None</em>, <em class="sig-param">email=None</em>, <em class="sig-param">realname=None</em>, <em class="sig-param">birthdate=None</em>, <em class="sig-param">location=None</em>, <em class="sig-param">displayemail=None</em>, <em class="sig-param">forumname=None</em>, <em class="sig-param">aim=None</em>, <em class="sig-param">icq=None</em>, <em class="sig-param">msn=None</em>, <em class="sig-param">yim=None</em>, <em class="sig-param">website=None</em>, <em class="sig-param">bio=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#DPLogin.update_profile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.DPLogin.update_profile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update DPLogin profile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>newpassword</strong> – </p></li>
+<li><p><strong>email</strong> – </p></li>
+<li><p><strong>realname</strong> – </p></li>
+<li><p><strong>birthdate</strong> – </p></li>
+<li><p><strong>location</strong> – </p></li>
+<li><p><strong>displayemail</strong> – </p></li>
+<li><p><strong>forumname</strong> – </p></li>
+<li><p><strong>aim</strong> – </p></li>
+<li><p><strong>icq</strong> – </p></li>
+<li><p><strong>msn</strong> – </p></li>
+<li><p><strong>yim</strong> – </p></li>
+<li><p><strong>website</strong> – </p></li>
+<li><p><strong>bio</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>HTTP response</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="dplib.dplogin.get_new_password_hash">
+<code class="sig-prename descclassname">dplib.dplogin.</code><code class="sig-name descname">get_new_password_hash</code><span class="sig-paren">(</span><em class="sig-param">password</em>, <em class="sig-param">user_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#get_new_password_hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.get_new_password_hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hash the password at password change.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>password</strong> – </p></li>
+<li><p><strong>user_id</strong> – </p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Hashed password and user id</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="dplib.dplogin.get_password_hash">
+<code class="sig-prename descclassname">dplib.dplogin.</code><code class="sig-name descname">get_password_hash</code><span class="sig-paren">(</span><em class="sig-param">password</em>, <em class="sig-param">user_id</em>, <em class="sig-param">session_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#get_password_hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.get_password_hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hash plain password a few times.
+Used at log in when a plaintext password is specified.
+:param password:
+:param user_id:
+:param session_id:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Hashed password</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="dplib.dplogin.get_session_hash">
+<code class="sig-prename descclassname">dplib.dplogin.</code><code class="sig-name descname">get_session_hash</code><span class="sig-paren">(</span><em class="sig-param">pwhash</em>, <em class="sig-param">session_id</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#get_session_hash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.get_session_hash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hash password again, use session_id as a seed.
+Used at log in when no plaintext password is specified
+:param pwhash:
+:param session_id:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Session hash</p>
+</dd>
+<dt class="field-even">Rtype str</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="dplib.dplogin.hex_md5">
+<code class="sig-prename descclassname">dplib.dplogin.</code><code class="sig-name descname">hex_md5</code><span class="sig-paren">(</span><em class="sig-param">string</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/dplogin.html#hex_md5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.dplogin.hex_md5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hash a string using md5</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>string</strong> – String to hash</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>MD5 hash of string</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-dplib.parse">
+<span id="dplib-parse-module"></span><h2>dplib.parse module<a class="headerlink" href="#module-dplib.parse" title="Permalink to this headline">¶</a></h2>
+<p>A module for parsing DP data</p>
+<dl class="function">
+<dt id="dplib.parse.decode_ingame_text">
+<code class="sig-prename descclassname">dplib.parse.</code><code class="sig-name descname">decode_ingame_text</code><span class="sig-paren">(</span><em class="sig-param">text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/parse.html#decode_ingame_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.parse.decode_ingame_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes special chars from ingame messages/nicks</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> – Text to decode</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Decoded text</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="dplib.parse.escape_braces">
+<code class="sig-prename descclassname">dplib.parse.</code><code class="sig-name descname">escape_braces</code><span class="sig-paren">(</span><em class="sig-param">string</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/parse.html#escape_braces"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.parse.escape_braces" title="Permalink to this definition">¶</a></dt>
+<dd><p>Escapes braces, use for user-input in <a class="reference internal" href="#dplib.parse.render_text" title="dplib.parse.render_text"><code class="xref py py-func docutils literal notranslate"><span class="pre">render_text()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>string</strong> – string to escape</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>escaped string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="dplib.parse.render_text">
+<code class="sig-prename descclassname">dplib.parse.</code><code class="sig-name descname">render_text</code><span class="sig-paren">(</span><em class="sig-param">text</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/parse.html#render_text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.parse.render_text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Renders some text with formatting to a DP message.
+Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I} with italic (ASCII 135)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str</em>) – Text to render</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>DP message</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-dplib.server">
+<span id="dplib-server-module"></span><h2>dplib.server module<a class="headerlink" href="#module-dplib.server" title="Permalink to this headline">¶</a></h2>
+<dl class="exception">
+<dt id="dplib.server.BadRconPasswordError">
+<em class="property">exception </em><code class="sig-prename descclassname">dplib.server.</code><code class="sig-name descname">BadRconPasswordError</code><a class="reference internal" href="../_modules/dplib/server.html#BadRconPasswordError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.BadRconPasswordError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="dplib.server.ListenerType">
+<em class="property">class </em><code class="sig-prename descclassname">dplib.server.</code><code class="sig-name descname">ListenerType</code><a class="reference internal" href="../_modules/dplib/server.html#ListenerType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.ListenerType" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="dplib.server.ListenerType.PERMANENT">
+<code class="sig-name descname">PERMANENT</code><em class="property"> = 0</em><a class="headerlink" href="#dplib.server.ListenerType.PERMANENT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ListenerType.TRIGGER_ONCE">
+<code class="sig-name descname">TRIGGER_ONCE</code><em class="property"> = 1</em><a class="headerlink" href="#dplib.server.ListenerType.TRIGGER_ONCE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dplib.server.Player">
+<em class="property">class </em><code class="sig-prename descclassname">dplib.server.</code><code class="sig-name descname">Player</code><span class="sig-paren">(</span><em class="sig-param">server</em>, <em class="sig-param">id</em>, <em class="sig-param">dplogin</em>, <em class="sig-param">nick</em>, <em class="sig-param">build</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Player"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Player" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Player info from sv players command</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attributes</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p>dplogin - dplogin.com account id, None when Player has no account</p></li>
+<li><p>nick - nickname:</p></li>
+<li><p>build - game build</p></li>
+<li><p>server - an instance of <a class="reference internal" href="#dplib.server.Server" title="dplib.server.Server"><code class="xref py py-class docutils literal notranslate"><span class="pre">Server</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="dplib.server.Server">
+<em class="property">class </em><code class="sig-prename descclassname">dplib.server.</code><code class="sig-name descname">Server</code><span class="sig-paren">(</span><em class="sig-param">hostname</em>, <em class="sig-param">port=27910</em>, <em class="sig-param">logfile=None</em>, <em class="sig-param">rcon_password=None</em>, <em class="sig-param">pty_master=None</em>, <em class="sig-param">init_vars=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Represents a DP:PB2 server</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>hostname</strong> (<em>str</em>) – Server hostname, for example ‘127.0.0.1’</p></li>
+<li><p><strong>port</strong> (<em>int</em>) – Server port, default 27910</p></li>
+<li><p><strong>logfile</strong> – Path to logfile</p></li>
+<li><p><strong>rcon_password</strong> – rcon password</p></li>
+<li><p><strong>init_vars</strong> – Send come commands used for security</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="method">
+<dt id="dplib.server.Server.cprint">
+<code class="sig-name descname">cprint</code><span class="sig-paren">(</span><em class="sig-param">message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.cprint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.cprint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cprints a message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>message</strong> – Text, can contain {C} - color char {U} - underline char {I} italic.</p>
+</dd>
+</dl>
+<p>Remember to escape user input using :func:<a href="#id1"><span class="problematic" id="id2">`</span></a>dplib.parse.escape_brac</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Rcon response</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.event">
+<code class="sig-name descname">event</code><span class="sig-paren">(</span><em class="sig-param">func</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.event"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.event" title="Permalink to this definition">¶</a></dt>
+<dd><p>Decorator, used for event registration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>func</strong> – function to register</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>builtin_function_or_method</p>
+</dd>
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7
+8</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">dplib.server</span> <span class="kn">import</span> <span class="n">Server</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="n">hostname</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27910</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;qconsole27910.log&#39;</span><span class="p">,</span> <span class="n">rcon_password</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nd">@s.event</span>
+<span class="gp">... </span><span class="k">def</span> <span class="nf">on_chat</span><span class="p">(</span><span class="n">nick</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="k">print</span><span class="p">((</span><span class="n">nick</span><span class="p">,</span> <span class="n">message</span><span class="p">))</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+<span class="go">(&#39;mRokita&#39;, &#39;Hi&#39;)</span>
+</pre></div>
+</td></tr></table></div>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.gamemode">
+<code class="sig-name descname">gamemode</code><span class="sig-paren">(</span><em class="sig-param">gamemode</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.gamemode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.gamemode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Onround end, can be overridden using the <code class="xref py py-func docutils literal notranslate"><span class="pre">Server.event()</span></code> decorator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>gamemode</strong> (<em>str</em>) – map’s gamemode</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.get_cvar">
+<code class="sig-name descname">get_cvar</code><span class="sig-paren">(</span><em class="sig-param">var</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.get_cvar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.get_cvar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets cvar value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>var</strong> (<em>str</em>) – Variable name</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Cvar value</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.get_event_handler">
+<code class="sig-name descname">get_event_handler</code><span class="sig-paren">(</span><em class="sig-param">event_type</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.get_event_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.get_event_handler" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.get_ingame_info">
+<code class="sig-name descname">get_ingame_info</code><span class="sig-paren">(</span><em class="sig-param">nick</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.get_ingame_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.get_ingame_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get ingame info about a player with nickname</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>nick</strong> – Nick</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An instance of <a class="reference internal" href="#dplib.server.Player" title="dplib.server.Player"><code class="xref py py-class docutils literal notranslate"><span class="pre">Player</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.get_players">
+<code class="sig-name descname">get_players</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.get_players"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.get_players" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets playerlist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of <a class="reference internal" href="#dplib.server.Player" title="dplib.server.Player"><code class="xref py py-class docutils literal notranslate"><span class="pre">Player</span></code></a> instances</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.get_simple_playerlist">
+<code class="sig-name descname">get_simple_playerlist</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.get_simple_playerlist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.get_simple_playerlist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of player names</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>List of nicks</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.get_status">
+<code class="sig-name descname">get_status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.get_status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.get_status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets server status</p>
+<dl class="field-list simple">
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="n">hostname</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27910</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;C:\Games\Paintball2\pball\qconsole27910.log&#39;</span><span class="p">,</span> <span class="n">rcon_password</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">get_status</span><span class="p">()</span>
+<span class="go">{&#39;players&#39;: [{&#39;score&#39;: &#39;0&#39;, &#39;ping&#39;: &#39;13&#39;, &#39;name&#39;: &#39;mRokita&#39;}], &#39;sv_certificated&#39;: &#39;1&#39;, &#39;mapname&#39;: &#39;beta/wobluda_fix&#39;, &#39;TimeLeft&#39;: &#39;20:00&#39;, &#39;_scores&#39;: &#39;Red:0 Blue:0 &#39;, &#39;gamename&#39;: &#39;Digital Paint Paintball 2 v1.930(186)&#39;, &#39;gameversion&#39;: &#39;DPPB2 v1.930(186)&#39;, &#39;sv_login&#39;: &#39;1&#39;, &#39;needpass&#39;: &#39;0&#39;, &#39;gamedate&#39;: &#39;Aug 10 2015&#39;, &#39;protocol&#39;: &#39;34&#39;, &#39;version&#39;: &#39;2.00 x86 Aug 10 2015 Win32 RELEASE (41)&#39;, &#39;hostname&#39;: &#39;asdfgh&#39;, &#39;elim&#39;: &#39;airtime&#39;, &#39;fraglimit&#39;: &#39;50&#39;, &#39;timelimit&#39;: &#39;20&#39;, &#39;gamedir&#39;: &#39;pball&#39;, &#39;game&#39;: &#39;pball&#39;, &#39;maxclients&#39;: &#39;8&#39;}</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>status dict</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.is_listening">
+<code class="sig-name descname">is_listening</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.is_listening"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.is_listening" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if the main loop is running.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.kick">
+<code class="sig-name descname">kick</code><span class="sig-paren">(</span><em class="sig-param">id=None</em>, <em class="sig-param">nick=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.kick"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.kick" title="Permalink to this definition">¶</a></dt>
+<dd><p>Kicks a player with id using rcon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> – Player’s id</p></li>
+<li><p><strong>nick</strong> – Player’s nick</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Rcon response</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.nicks_valid">
+<code class="sig-name descname">nicks_valid</code><span class="sig-paren">(</span><em class="sig-param">*nicks</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.nicks_valid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.nicks_valid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_chat">
+<code class="sig-name descname">on_chat</code><span class="sig-paren">(</span><em class="sig-param">nick</em>, <em class="sig-param">message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_chat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_chat" title="Permalink to this definition">¶</a></dt>
+<dd><p>On chat, can be overridden using the <code class="xref py py-func docutils literal notranslate"><span class="pre">Server.event()</span></code> decorator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nick</strong> (<em>str</em>) – Player’s nick.</p></li>
+<li><p><strong>message</strong> (<em>str</em>) – Message.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_disconnect">
+<code class="sig-name descname">on_disconnect</code><span class="sig-paren">(</span><em class="sig-param">nick</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_disconnect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_disconnect" title="Permalink to this definition">¶</a></dt>
+<dd><p>On disconnect, can be overridden using the :func:<a href="#id3"><span class="problematic" id="id4">`</span></a>.Server.event`decorator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>nick</strong> (<em>str</em>) – Disconnected player’s nick</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_elim">
+<code class="sig-name descname">on_elim</code><span class="sig-paren">(</span><em class="sig-param">killer_nick</em>, <em class="sig-param">killer_weapon</em>, <em class="sig-param">victim_nick</em>, <em class="sig-param">victim_weapon</em>, <em class="sig-param">suicide</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_elim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_elim" title="Permalink to this definition">¶</a></dt>
+<dd><p>On elim can be overridden using the <code class="xref py py-func docutils literal notranslate"><span class="pre">Server.event()</span></code> decorator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>killer_nick</strong> (<em>str</em>) – Killer’s nick</p></li>
+<li><p><strong>killer_weapon</strong> (<em>str</em>) – Killer’s weapon</p></li>
+<li><p><strong>victim_nick</strong> (<em>str</em>) – Victim’s nick</p></li>
+<li><p><strong>victim_weapon</strong> (<em>str</em>) – Victim’s weapon</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_elim_teams_flag">
+<code class="sig-name descname">on_elim_teams_flag</code><span class="sig-paren">(</span><em class="sig-param">team</em>, <em class="sig-param">nick</em>, <em class="sig-param">points</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_elim_teams_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_elim_teams_flag" title="Permalink to this definition">¶</a></dt>
+<dd><p>On scored points for possession of eliminated teams flag, can be overridden using the <code class="xref py py-func docutils literal notranslate"><span class="pre">Server.event()</span></code> decorator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>team</strong> (<em>str</em>) – Player’s team.</p></li>
+<li><p><strong>nick</strong> (<em>str</em>) – Player’s nick.</p></li>
+<li><p><strong>points</strong> (<em>int</em>) – Points earned.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_entrance">
+<code class="sig-name descname">on_entrance</code><span class="sig-paren">(</span><em class="sig-param">nick</em>, <em class="sig-param">build</em>, <em class="sig-param">addr</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_entrance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_entrance" title="Permalink to this definition">¶</a></dt>
+<dd><p>On entrance, can be overriden using the <code class="xref py py-func docutils literal notranslate"><span class="pre">Server.event()</span></code> decorator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nick</strong> (<em>str</em>) – Player’s nick</p></li>
+<li><p><strong>build</strong> (<em>str</em>) – Player’s game version (‘build 41’ for example</p></li>
+<li><p><strong>addr</strong> (<em>str</em>) – Player’s address, IP:PORT (‘127.0.0.1:23414’ for example)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_flag_captured">
+<code class="sig-name descname">on_flag_captured</code><span class="sig-paren">(</span><em class="sig-param">team</em>, <em class="sig-param">nick</em>, <em class="sig-param">flag</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_flag_captured"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_flag_captured" title="Permalink to this definition">¶</a></dt>
+<dd><p>On flag captured, can be overridden using the <code class="xref py py-func docutils literal notranslate"><span class="pre">Server.event()</span></code> decorator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>team</strong> (<em>str</em>) – Player’s team.</p></li>
+<li><p><strong>nick</strong> (<em>str</em>) – Player’s nick.</p></li>
+<li><p><strong>flag</strong> (<em>str</em>) – Captured flag (Blue|Red|Yellow|Purple|White)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_flag_drop">
+<code class="sig-name descname">on_flag_drop</code><span class="sig-paren">(</span><em class="sig-param">nick</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_flag_drop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_flag_drop" title="Permalink to this definition">¶</a></dt>
+<dd><p>On flag grab, can be overridden using the <code class="xref py py-func docutils literal notranslate"><span class="pre">Server.event()</span></code> decorator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nick</strong> (<em>str</em>) – Player’s nick</p></li>
+<li><p><strong>team</strong> (<em>str</em>) – Flag color (Blue|Red|Yellow|Purple)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_flag_grab">
+<code class="sig-name descname">on_flag_grab</code><span class="sig-paren">(</span><em class="sig-param">nick</em>, <em class="sig-param">flag</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_flag_grab"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_flag_grab" title="Permalink to this definition">¶</a></dt>
+<dd><p>On flag grab, can be overridden using the <code class="xref py py-func docutils literal notranslate"><span class="pre">Server.event()</span></code> decorator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nick</strong> (<em>str</em>) – Player’s nick</p></li>
+<li><p><strong>team</strong> (<em>str</em>) – Flag color (Blue|Red|Yellow|Purple)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_game_end">
+<code class="sig-name descname">on_game_end</code><span class="sig-paren">(</span><em class="sig-param">score_blue</em>, <em class="sig-param">score_red</em>, <em class="sig-param">score_yellow</em>, <em class="sig-param">score_purple</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_game_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_game_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>On game end, can be overriden using the <code class="xref py py-func docutils literal notranslate"><span class="pre">Server.event()</span></code> decorator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>score_blue</strong> – Blue’s score - None if there was no Blue team.</p></li>
+<li><p><strong>score_red</strong> – Red’s score - None if there was no Red team.</p></li>
+<li><p><strong>score_yellow</strong> – Yellow’s score - None if there was no Yellow team.</p></li>
+<li><p><strong>score_purple</strong> – Purple’s score - None if there was no Purple team.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_mapchange">
+<code class="sig-name descname">on_mapchange</code><span class="sig-paren">(</span><em class="sig-param">mapname</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_mapchange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_mapchange" title="Permalink to this definition">¶</a></dt>
+<dd><p>On mapcange, can be overridden using the <code class="xref py py-func docutils literal notranslate"><span class="pre">Server.event()</span></code> decorator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mapname</strong> (<em>str</em>) – Mapname</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_namechange">
+<code class="sig-name descname">on_namechange</code><span class="sig-paren">(</span><em class="sig-param">old_nick</em>, <em class="sig-param">new_nick</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_namechange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_namechange" title="Permalink to this definition">¶</a></dt>
+<dd><p>On name change, can be overridden using the <code class="xref py py-func docutils literal notranslate"><span class="pre">Server.event()</span></code> decorator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>old_nick</strong> (<em>str</em>) – Old nick</p></li>
+<li><p><strong>new_nick</strong> (<em>str</em>) – Old nick</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_respawn">
+<code class="sig-name descname">on_respawn</code><span class="sig-paren">(</span><em class="sig-param">team</em>, <em class="sig-param">nick</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_respawn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_respawn" title="Permalink to this definition">¶</a></dt>
+<dd><p>On respawn, can be overridden using the <code class="xref py py-func docutils literal notranslate"><span class="pre">Server.event()</span></code> decorator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>team</strong> (<em>str</em>) – Player’s team (Blue|Red|Yellow|Purple)</p></li>
+<li><p><strong>nick</strong> (<em>str</em>) – Player’s nick</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_round_end">
+<code class="sig-name descname">on_round_end</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_round_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_round_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Onround end, can be overridden using the <code class="xref py py-func docutils literal notranslate"><span class="pre">Server.event()</span></code> decorator.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_round_started">
+<code class="sig-name descname">on_round_started</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_round_started"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_round_started" title="Permalink to this definition">¶</a></dt>
+<dd><p>On round started, can be overridden using the <code class="xref py py-func docutils literal notranslate"><span class="pre">Server.event()</span></code> decorator.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.on_team_switched">
+<code class="sig-name descname">on_team_switched</code><span class="sig-paren">(</span><em class="sig-param">nick</em>, <em class="sig-param">old_team</em>, <em class="sig-param">new_team</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.on_team_switched"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.on_team_switched" title="Permalink to this definition">¶</a></dt>
+<dd><p>On team switched, can be overridden using the <code class="xref py py-func docutils literal notranslate"><span class="pre">Server.event()</span></code> decorator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nick</strong> (<em>str</em>) – Player’s nick</p></li>
+<li><p><strong>old_team</strong> (<em>str</em>) – Old team (Blue|Red|Yellow|Purple|Observer)</p></li>
+<li><p><strong>new_team</strong> (<em>str</em>) – New team (Blue|Red|Yellow|Purple|Observer)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.permaban">
+<code class="sig-name descname">permaban</code><span class="sig-paren">(</span><em class="sig-param">ip=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.permaban"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.permaban" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bans IP address or range of adresses and saves ban list to disk.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ip</strong> – IP address to ban</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Rcon response</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.rcon">
+<code class="sig-name descname">rcon</code><span class="sig-paren">(</span><em class="sig-param">command</em>, <em class="sig-param">socket_timeout=3</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.rcon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.rcon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a console command using RCON.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>command</strong> – Command</p></li>
+<li><p><strong>socket_timeout</strong> – Timeout for the UDP socket.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Response from server</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Example</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">dplib.server</span> <span class="kn">import</span> <span class="n">Server</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="n">hostname</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27910</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;qconsole27910.log&#39;</span><span class="p">,</span> <span class="n">rcon_password</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="s1">&#39;sv listuserip&#39;</span><span class="p">)</span>
+<span class="go">&#39;ÿÿÿÿprint\n mRokita [127.0.0.1:9419]\nadmin is listing IP for mRokita [127.0.0.1:9419]\n&#39;</span>
+</pre></div>
+</td></tr></table></div>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.remove_permaban">
+<code class="sig-name descname">remove_permaban</code><span class="sig-paren">(</span><em class="sig-param">ip=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.remove_permaban"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.remove_permaban" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes ban on IP address and saves ban list to disk.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ip</strong> – IP address to unban</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Rcon response</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.remove_tempobans">
+<code class="sig-name descname">remove_tempobans</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.remove_tempobans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.remove_tempobans" title="Permalink to this definition">¶</a></dt>
+<dd><p>Removes all temporary bans</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Rcon response</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.run">
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">scan_old=False</em>, <em class="sig-param">realtime=True</em>, <em class="sig-param">debug=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Runs the main loop using asyncio.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scan_old</strong> (<em>bool</em>) – Scan present logfile data</p></li>
+<li><p><strong>realtime</strong> (<em>bool</em>) – Wait for incoming logfile data</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.say">
+<code class="sig-name descname">say</code><span class="sig-paren">(</span><em class="sig-param">message</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.say"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.say" title="Permalink to this definition">¶</a></dt>
+<dd><p>Say a message</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>message</strong> – Text, can contain {C} - color char {U} - underline char {I} italic.</p>
+</dd>
+</dl>
+<p>Remember to escape user input using <a class="reference internal" href="#dplib.parse.escape_braces" title="dplib.parse.escape_braces"><code class="xref py py-func docutils literal notranslate"><span class="pre">dplib.parse.escape_braces()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Rcon response</p>
+</dd>
+<dt class="field-odd">Example</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">dplib.server</span> <span class="kn">import</span> <span class="n">Server</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="n">hostname</span><span class="o">=</span><span class="s1">&#39;127.0.0.1&#39;</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="mi">27910</span><span class="p">,</span> <span class="n">logfile</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;qconsole27910.log&#39;</span><span class="p">,</span> <span class="n">rcon_password</span><span class="o">=</span><span class="s1">&#39;hello&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">say</span><span class="p">(</span><span class="s1">&#39;{C}ARed text&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">say</span><span class="p">(</span><span class="s1">&#39;{U}Underline{U}&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">s</span><span class="o">.</span><span class="n">say</span><span class="p">(</span><span class="s1">&#39;{I}Italic{I}&#39;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+<dl class="field-list simple">
+<dt class="field-odd">Ingame result</dt>
+<dd class="field-odd"><p></p></dd>
+</dl>
+<img alt="source\....docimagessay_test.png" src="source\....docimagessay_test.png" />
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.set_cvar">
+<code class="sig-name descname">set_cvar</code><span class="sig-paren">(</span><em class="sig-param">var</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.set_cvar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.set_cvar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set a server cvar</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>var</strong> – cvar name</p></li>
+<li><p><strong>value</strong> – value to set</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Rcon response</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.start">
+<code class="sig-name descname">start</code><span class="sig-paren">(</span><em class="sig-param">scan_old=False</em>, <em class="sig-param">realtime=True</em>, <em class="sig-param">debug=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main loop.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>scan_old</strong> (<em>bool</em>) – Scan present logfile data</p></li>
+<li><p><strong>realtime</strong> (<em>bool</em>) – Wait for incoming logfile data</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.status">
+<code class="sig-name descname">status</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.status"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.status" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute status query.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Status string</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.stop_listening">
+<code class="sig-name descname">stop_listening</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.stop_listening"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.stop_listening" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stop the main loop</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.tempoban">
+<code class="sig-name descname">tempoban</code><span class="sig-paren">(</span><em class="sig-param">id=None</em>, <em class="sig-param">nick=None</em>, <em class="sig-param">duration=3</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.tempoban"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.tempoban" title="Permalink to this definition">¶</a></dt>
+<dd><p>Temporarily bans a player with specified id using rcon</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> – Player’s id</p></li>
+<li><p><strong>nick</strong> – Player’s nick</p></li>
+<li><p><strong>duration</strong> – Ban duration in minutes (defaults to 3)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Rcon response</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_elim">
+<code class="sig-name descname">wait_for_elim</code><span class="sig-paren">(</span><em class="sig-param">timeout=None</em>, <em class="sig-param">killer_nick=None</em>, <em class="sig-param">killer_weapon=None</em>, <em class="sig-param">victim_nick=None</em>, <em class="sig-param">victim_weapon=None</em>, <em class="sig-param">check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_elim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_elim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for elimination event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timeout</strong> – Time to wait for elimination event, if exceeded, returns None.</p></li>
+<li><p><strong>killer_nick</strong> – Killer’s nick to match, ignored if None.</p></li>
+<li><p><strong>killer_weapon</strong> – Killer’s weapon to match, ignored if None.</p></li>
+<li><p><strong>victim_nick</strong> – Victim’s nick to match, ignored if None.</p></li>
+<li><p><strong>victim_weapon</strong> – Victim’s weapon to match, ignored if None.</p></li>
+<li><p><strong>check</strong> – Check function, ignored if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns message info dict keys: (‘killer_nick’, ‘killer_weapon’, ‘victim_nick’, ‘victim_weapon’)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_elim_teams_flag">
+<code class="sig-name descname">wait_for_elim_teams_flag</code><span class="sig-paren">(</span><em class="sig-param">timeout=None</em>, <em class="sig-param">team=None</em>, <em class="sig-param">nick=None</em>, <em class="sig-param">points=None</em>, <em class="sig-param">check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_elim_teams_flag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_elim_teams_flag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for elim teams flag event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timeout</strong> – Time to wait for event, if exceeded, returns None.</p></li>
+<li><p><strong>team</strong> – Player’s team.</p></li>
+<li><p><strong>nick</strong> – Player’s nick.</p></li>
+<li><p><strong>points</strong> (<em>int</em>) – Points scored.</p></li>
+<li><p><strong>check</strong> – Check function, ignored if none.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns message info dict keys: (‘team’, ‘nick’, ‘points’).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_entrance">
+<code class="sig-name descname">wait_for_entrance</code><span class="sig-paren">(</span><em class="sig-param">timeout=None</em>, <em class="sig-param">nick=None</em>, <em class="sig-param">build=None</em>, <em class="sig-param">addr=None</em>, <em class="sig-param">check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_entrance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_entrance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for entrance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timeout</strong> – Time to wait for entrance event, if exceeded, returns None.</p></li>
+<li><p><strong>nick</strong> – Player’s nick.</p></li>
+<li><p><strong>build</strong> – Player’s build.</p></li>
+<li><p><strong>addr</strong> – Player’s address (IP:PORT)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_flag_captured">
+<code class="sig-name descname">wait_for_flag_captured</code><span class="sig-paren">(</span><em class="sig-param">timeout=None</em>, <em class="sig-param">team=None</em>, <em class="sig-param">nick=None</em>, <em class="sig-param">flag=None</em>, <em class="sig-param">check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_flag_captured"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_flag_captured" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for flag capture.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timeout</strong> – Time to wait for event, if exceeded, returns None.</p></li>
+<li><p><strong>team</strong> – Player’s team.</p></li>
+<li><p><strong>nick</strong> – Player’s nick.</p></li>
+<li><p><strong>flag</strong> – Captured flag.</p></li>
+<li><p><strong>check</strong> – Check function, ignored if none.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns an empty dict.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_flag_drop">
+<code class="sig-name descname">wait_for_flag_drop</code><span class="sig-paren">(</span><em class="sig-param">timeout=None</em>, <em class="sig-param">nick=None</em>, <em class="sig-param">check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_flag_drop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_flag_drop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for flag drop.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timeout</strong> – Time to wait for event, if exceeded, returns None.</p></li>
+<li><p><strong>nick</strong> – Player’s nick.</p></li>
+<li><p><strong>flag</strong> – dropped flag.</p></li>
+<li><p><strong>check</strong> – Check function, ignored if none.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns an empty dict.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_game_end">
+<code class="sig-name descname">wait_for_game_end</code><span class="sig-paren">(</span><em class="sig-param">timeout=None</em>, <em class="sig-param">score_blue=None</em>, <em class="sig-param">score_red=None</em>, <em class="sig-param">score_yellow=None</em>, <em class="sig-param">score_purple=None</em>, <em class="sig-param">check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_game_end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_game_end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for game end.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timeout</strong> – Time to wait for event, if exceeded, returns None.</p></li>
+<li><p><strong>score_blue</strong> – Blue score</p></li>
+<li><p><strong>score_red</strong> – Red score.</p></li>
+<li><p><strong>score_yellow</strong> – Yellow score.</p></li>
+<li><p><strong>score_purple</strong> – Purple score.</p></li>
+<li><p><strong>check</strong> – Check function, ignored if none.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns an empty dict.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_mapchange">
+<code class="sig-name descname">wait_for_mapchange</code><span class="sig-paren">(</span><em class="sig-param">timeout=None</em>, <em class="sig-param">mapname=None</em>, <em class="sig-param">check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_mapchange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_mapchange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for mapchange.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timeout</strong> – Time to wait for elimination event, if exceeded, returns None.</p></li>
+<li><p><strong>mapname</strong> – Killer’s nick to match, ignored if None.</p></li>
+<li><p><strong>check</strong> – Check function, ignored if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns message info dict keys: (‘killer_nick’, ‘killer_weapon’, ‘victim_nick’, ‘victim_weapon’)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_message">
+<code class="sig-name descname">wait_for_message</code><span class="sig-paren">(</span><em class="sig-param">timeout=None</em>, <em class="sig-param">nick=None</em>, <em class="sig-param">message=None</em>, <em class="sig-param">check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_message"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for a message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timeout</strong> – Time to wait for message, if exceeded, returns None.</p></li>
+<li><p><strong>nick</strong> (<em>str</em>) – Player’s nick to match, ignored if None</p></li>
+<li><p><strong>message</strong> (<em>str</em>) – Message text to match, ignored if None</p></li>
+<li><p><strong>check</strong> – Check function, ignored if None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns message info dict keys: (‘nick’, ‘message’)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+<dt class="field-even">Example</dt>
+<dd class="field-even"><p></p></dd>
+</dl>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="nd">@s.event</span>
+<span class="k">def</span> <span class="nf">on_chat</span><span class="p">(</span><span class="n">nick</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">message</span> <span class="o">==</span> <span class="s1">&#39;!start&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">elim_active</span><span class="p">:</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="k">yield from</span> <span class="n">s</span><span class="o">.</span><span class="n">wait_for_message</span><span class="p">(</span><span class="n">check</span><span class="o">=</span><span class="k">lambda</span> <span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;!hi &#39;</span><span class="p">))</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">say</span><span class="p">(</span><span class="s1">&#39;Hi &#39;</span> <span class="o">+</span> <span class="n">msg</span><span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;!hi &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;!&#39;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_namechange">
+<code class="sig-name descname">wait_for_namechange</code><span class="sig-paren">(</span><em class="sig-param">timeout=None</em>, <em class="sig-param">old_nick=None</em>, <em class="sig-param">new_nick=None</em>, <em class="sig-param">check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_namechange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_namechange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for mapchange.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timeout</strong> – Time to wait for elimination event, if exceeded, returns None.</p></li>
+<li><p><strong>mapname</strong> – Killer’s nick to match, ignored if None.</p></li>
+<li><p><strong>check</strong> – Check function, ignored if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns message info dict keys: (‘killer_nick’, ‘killer_weapon’, ‘victim_nick’, ‘victim_weapon’)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_respawn">
+<code class="sig-name descname">wait_for_respawn</code><span class="sig-paren">(</span><em class="sig-param">timeout=None</em>, <em class="sig-param">team=None</em>, <em class="sig-param">nick=None</em>, <em class="sig-param">check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_respawn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_respawn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for respawn event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timeout</strong> – Time to wait for respawn event, if exceeded, returns None.</p></li>
+<li><p><strong>team</strong> – Player’s team.</p></li>
+<li><p><strong>nick</strong> – Player’s nick.</p></li>
+<li><p><strong>check</strong> – Check function, ignored if none.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns message info dict keys: (‘team’, ‘nick’).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_round_started">
+<code class="sig-name descname">wait_for_round_started</code><span class="sig-paren">(</span><em class="sig-param">timeout=None</em>, <em class="sig-param">check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_round_started"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_round_started" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for round start.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timeout</strong> – Time to wait for event, if exceeded, returns None.</p></li>
+<li><p><strong>check</strong> – Check function, ignored if none.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns an empty dict.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.wait_for_team_switched">
+<code class="sig-name descname">wait_for_team_switched</code><span class="sig-paren">(</span><em class="sig-param">timeout=None</em>, <em class="sig-param">nick=None</em>, <em class="sig-param">old_team=None</em>, <em class="sig-param">new_team=None</em>, <em class="sig-param">check=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.wait_for_team_switched"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.wait_for_team_switched" title="Permalink to this definition">¶</a></dt>
+<dd><p>Waits for team switch event.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>timeout</strong> – Time to wait for event, if exceeded, returns None.</p></li>
+<li><p><strong>old_team</strong> – Player’s old team.</p></li>
+<li><p><strong>new_team</strong> – Player’s new team.</p></li>
+<li><p><strong>nick</strong> – Player’s nick.</p></li>
+<li><p><strong>check</strong> – Check function, ignored if none.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Returns message info dict keys: (‘nick’, ‘old_team’, ‘new_nick’).</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="dplib.server.ServerEvent">
+<em class="property">class </em><code class="sig-prename descclassname">dplib.server.</code><code class="sig-name descname">ServerEvent</code><a class="reference internal" href="../_modules/dplib/server.html#ServerEvent"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.ServerEvent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.CHAT">
+<code class="sig-name descname">CHAT</code><em class="property"> = 1</em><a class="headerlink" href="#dplib.server.ServerEvent.CHAT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.DATE">
+<code class="sig-name descname">DATE</code><em class="property"> = 5</em><a class="headerlink" href="#dplib.server.ServerEvent.DATE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.DISCONNECT">
+<code class="sig-name descname">DISCONNECT</code><em class="property"> = 12</em><a class="headerlink" href="#dplib.server.ServerEvent.DISCONNECT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.ELIM">
+<code class="sig-name descname">ELIM</code><em class="property"> = 2</em><a class="headerlink" href="#dplib.server.ServerEvent.ELIM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.ELIM_TEAMS_FLAG">
+<code class="sig-name descname">ELIM_TEAMS_FLAG</code><em class="property"> = 9</em><a class="headerlink" href="#dplib.server.ServerEvent.ELIM_TEAMS_FLAG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.ENTRANCE">
+<code class="sig-name descname">ENTRANCE</code><em class="property"> = 7</em><a class="headerlink" href="#dplib.server.ServerEvent.ENTRANCE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.FLAG_CAPTURED">
+<code class="sig-name descname">FLAG_CAPTURED</code><em class="property"> = 8</em><a class="headerlink" href="#dplib.server.ServerEvent.FLAG_CAPTURED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.FLAG_DROP">
+<code class="sig-name descname">FLAG_DROP</code><em class="property"> = 14</em><a class="headerlink" href="#dplib.server.ServerEvent.FLAG_DROP" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.FLAG_GRAB">
+<code class="sig-name descname">FLAG_GRAB</code><em class="property"> = 13</em><a class="headerlink" href="#dplib.server.ServerEvent.FLAG_GRAB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.GAMEMODE">
+<code class="sig-name descname">GAMEMODE</code><em class="property"> = 16</em><a class="headerlink" href="#dplib.server.ServerEvent.GAMEMODE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.GAME_END">
+<code class="sig-name descname">GAME_END</code><em class="property"> = 17</em><a class="headerlink" href="#dplib.server.ServerEvent.GAME_END" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.MAPCHANGE">
+<code class="sig-name descname">MAPCHANGE</code><em class="property"> = 4</em><a class="headerlink" href="#dplib.server.ServerEvent.MAPCHANGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.NAMECHANGE">
+<code class="sig-name descname">NAMECHANGE</code><em class="property"> = 6</em><a class="headerlink" href="#dplib.server.ServerEvent.NAMECHANGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.RESPAWN">
+<code class="sig-name descname">RESPAWN</code><em class="property"> = 3</em><a class="headerlink" href="#dplib.server.ServerEvent.RESPAWN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.ROUND_END">
+<code class="sig-name descname">ROUND_END</code><em class="property"> = 15</em><a class="headerlink" href="#dplib.server.ServerEvent.ROUND_END" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.ROUND_STARTED">
+<code class="sig-name descname">ROUND_STARTED</code><em class="property"> = 10</em><a class="headerlink" href="#dplib.server.ServerEvent.ROUND_STARTED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.TEAM_SWITCHED">
+<code class="sig-name descname">TEAM_SWITCHED</code><em class="property"> = 11</em><a class="headerlink" href="#dplib.server.ServerEvent.TEAM_SWITCHED" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.ServerEvent.TIMEOUT">
+<code class="sig-name descname">TIMEOUT</code><em class="property"> = 0</em><a class="headerlink" href="#dplib.server.ServerEvent.TIMEOUT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-dplib">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-dplib" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017-2018, Michał Rokita
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
