@@ -678,6 +678,12 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 </dl>
 </dd></dl>
 
+<dl class="exception">
+<dt id="dplib.server.SecurityCheckError">
+<em class="property">exception </em><code class="sig-prename descclassname">dplib.server.</code><code class="sig-name descname">SecurityCheckError</code><a class="reference internal" href="../_modules/dplib/server.html#SecurityCheckError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.SecurityCheckError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+</dd></dl>
+
 <dl class="class">
 <dt id="dplib.server.Server">
 <em class="property">class </em><code class="sig-prename descclassname">dplib.server.</code><code class="sig-name descname">Server</code><span class="sig-paren">(</span><em class="sig-param">hostname</em>, <em class="sig-param">port=27910</em>, <em class="sig-param">logfile=None</em>, <em class="sig-param">rcon_password=None</em>, <em class="sig-param">pty_master=None</em>, <em class="sig-param">init_vars=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server" title="Permalink to this definition">¶</a></dt>
@@ -690,6 +696,7 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 <li><p><strong>port</strong> (<em>int</em>) – Server port, default 27910</p></li>
 <li><p><strong>logfile</strong> – Path to logfile</p></li>
 <li><p><strong>rcon_password</strong> – rcon password</p></li>
+<li><p><strong>pty_master</strong> (<em>int</em>) – Master of the dp2 process (useful only if you want to run the server from your Python script). Go to the getting started section for details.</p></li>
 <li><p><strong>init_vars</strong> – Send come commands used for security</p></li>
 </ul>
 </dd>
@@ -874,6 +881,20 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.make_secure">
+<code class="sig-name descname">make_secure</code><span class="sig-paren">(</span><em class="sig-param">timeout=10</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.make_secure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.make_secure" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function fixes some compatibility and security issues on DP server side
+- Adds “mapchange” to sv_blockednames
+- Sets sl_logging to 1
+All variables are set using the rcon protocol, use this function if you want to wait for the server to start.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>timeout</strong> – Timeout in seconds</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1160,7 +1181,7 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 
 <dl class="method">
 <dt id="dplib.server.Server.run">
-<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">scan_old=False</em>, <em class="sig-param">realtime=True</em>, <em class="sig-param">debug=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.run" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">scan_old=False</em>, <em class="sig-param">realtime=True</em>, <em class="sig-param">debug=False</em>, <em class="sig-param">make_secure=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>Runs the main loop using asyncio.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>

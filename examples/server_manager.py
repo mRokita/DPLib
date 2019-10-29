@@ -8,8 +8,11 @@ import sys
 from multiprocessing import Process
 from shlex import quote
 from threading import Thread
+import string
+import random
 from time import time, sleep
 import pty
+import aioftp
 
 from _socket import timeout
 
@@ -29,7 +32,7 @@ SERVERS = {
             'port': 27911,
             'flagcapendsround': 0,
             'elim': 10,
-            'rcon_password': '21fasjkl',
+            'rcon_password': ''.join(random.choice(string.ascii_letters) for i in range(10)),
         },
         'startup_commands': [
             ['setmaster', 'dplogin.com'],
@@ -59,6 +62,15 @@ SERVERS = {
 managed_servers = dict()
 
 
+
+
+def get_map_download_path(mapname):
+    return os.path.join(PAINTBALL_DIR, 'pball', 'maps', mapname + '.bsp')
+
+def get_map_server_path(mapname):
+    return os.path.join('pball', 'maps', mapname + '.bsp')
+
+
 class ManagedServer(Server):
 
     def __init__(self, server_id: str, config: dict):
@@ -66,6 +78,27 @@ class ManagedServer(Server):
         self.server_id = server_id
         self.pty_master = None
         self.pty_slave = None
+
+    async def on_chat(self, nick, message):
+        if message.find('!map ') == 0:
+            mapname = message.split('!map ')[1:][0]
+            if os.path.exists(get_map_download_path(mapname)):
+                self.say("{C}9Map {C}A" + mapname + "{C}9 is already on the server, changing")
+                self.new_map(mapname)
+            else:
+                async with aioftp.ClientSession("ic3y.de", 21) as client:
+                    if await client.exists(get_map_server_path(mapname)):
+                        self.say(
+                            "{C}9Downloading {C}A" + mapname + "{C}9 from ic3y.de...")
+                        print(get_map_server_path(mapname))
+                        await client.download(get_map_server_path(mapname), get_map_download_path(mapname), write_into=True)
+                        self.say(
+                            "{C}A" + mapname + "{C}9 has been downloaded successfully, changing map...")
+                        self.new_map(mapname)
+                    else:
+                        self.say(
+                            "{C}9 Map {C}A" + mapname + "{C}9 is not available at ic3y.de")
+                        self.new_map(mapname)
 
     @property
     def running(self) -> bool:
@@ -77,14 +110,13 @@ class ManagedServer(Server):
 
     def get_event_handler(self, event_type):
         if event_type in self.handlers:
-            @asyncio.coroutine
-            def handle(**kwargs):
+            async def handle(**kwargs):
                 if event_type in self.config['event_rcons']:
                     self.rcon(self.config['event_rcons'][event_type].format(
                         **kwargs))
                 if event_type in self.config['event_lambdas']:
                     self.config['event_lambdas'][event_type](**kwargs)
-
+                await getattr(self, self.handlers[event_type])(**kwargs)
             return handle
         else:
             return super().get_event_handler(event_type)

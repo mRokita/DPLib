@@ -15,6 +15,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import re
+import select
 from collections import OrderedDict
 from enum import Enum
 from subprocess import Popen
@@ -46,11 +47,29 @@ class ServerEvent(Enum):
     GAMEMODE = 16
     GAME_END = 17
 
+
+class GameMode(Enum):
+    CTF = 'CTF'
+    ONE_FLAG = '1Flag'
+    ELIMINATION = 'Elim'
+    DEATHMATCH = 'DM'
+    SIEGE = 'Siege'
+    TDM = 'TDM'
+    KOTH = 'KOTH'
+    PONG = 'Pong'
+
+
 class BadRconPasswordError(Exception):
     pass
 
+
 class SecurityCheckError(Exception):
     pass
+
+
+class MapNotFoundError(Exception):
+    pass
+
 
 class ListenerType(Enum):
     PERMANENT = 0
@@ -664,6 +683,24 @@ class Server(object):
         sock.send(b'\xFF\xFF\xFF\xFFstatus\n')
         return sock.recv(2048).decode('latin-1')
 
+    def new_map(self, map_name, gamemode=None):
+        """
+        Changes the map using sv newmap <mapname> <gamemode>
+        :param map_name: map name, without .bsp
+        :param gamemode: Game mode
+        :type gamemode: GameMode
+        :return: Rcon response
+        :raises MapNotFoundError: When map is not found on the server
+        :rtype: str
+        """
+        command = 'sv newmap {map}'
+        if gamemode:
+            command += ' {gamemode}'
+        res = self.rcon(command.format(map=map_name, gamemode=gamemode))
+        if 'Cannot find mapfile' in res or 'usage' in res:
+            raise MapNotFoundError
+        return res
+
     def permaban(self, ip=None):
         """
         Bans IP address or range of adresses and saves ban list to disk.
@@ -1162,7 +1199,7 @@ class Server(object):
                         if debug:
                             print("[DPLib] %s" % line.strip())
                         yield from self.__parse_line(line)
-                    if line[-1] != '\n':
+                    if not line or line[-1] != '\n':
                         buf = line
                     else:
                         buf = ''
@@ -1179,8 +1216,11 @@ class Server(object):
         if self.__log_file:
             return self.__log_file.readline().decode('latin-1')
         elif self.__pty_master:
-            return os.read(self.__pty_master, 1024).decode('latin-1')
-
+            r, w, x = select.select([self.__pty_master], [], [], 0.01)
+            if r:
+                return os.read(self.__pty_master, 1024).decode('latin-1')
+            else:
+                return ''
 
     def get_players(self):
         """
