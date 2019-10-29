@@ -97,6 +97,6 @@ Streak
 Server manager
 **************
 
-.. literalinclude:: ../examples/streak.py
+.. literalinclude:: ../examples/server_manager.py
     :linenos:
 
