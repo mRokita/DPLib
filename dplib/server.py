@@ -174,7 +174,7 @@ class Server(object):
     :type port: int
     :param logfile: Path to logfile
     :param rcon_password: rcon password
-    :param pty_master: Master of the dp2 process (useful only if you want to run the server from your Python script). Go to the getting started section for details.
+    :param pty_master: Master of the dp2 process (Linux only, useful only if you want to run the server from your Python script). Go to the getting started section for details.
     :type pty_master: int
     :param init_vars: Send come commands used for security
     """

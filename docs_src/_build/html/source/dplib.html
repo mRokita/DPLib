@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>dplib package &mdash; DPLib 1.5 documentation</title>
+  <title>dplib package &mdash; DPLib 1.6 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.5
+                1.6
               </div>
             
           
@@ -645,6 +645,53 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 </dd></dl>
 
 <dl class="class">
+<dt id="dplib.server.GameMode">
+<em class="property">class </em><code class="sig-prename descclassname">dplib.server.</code><code class="sig-name descname">GameMode</code><a class="reference internal" href="../_modules/dplib/server.html#GameMode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.GameMode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
+<p>An enumeration.</p>
+<dl class="attribute">
+<dt id="dplib.server.GameMode.CTF">
+<code class="sig-name descname">CTF</code><em class="property"> = 'CTF'</em><a class="headerlink" href="#dplib.server.GameMode.CTF" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.GameMode.DEATHMATCH">
+<code class="sig-name descname">DEATHMATCH</code><em class="property"> = 'DM'</em><a class="headerlink" href="#dplib.server.GameMode.DEATHMATCH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.GameMode.ELIMINATION">
+<code class="sig-name descname">ELIMINATION</code><em class="property"> = 'Elim'</em><a class="headerlink" href="#dplib.server.GameMode.ELIMINATION" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.GameMode.KOTH">
+<code class="sig-name descname">KOTH</code><em class="property"> = 'KOTH'</em><a class="headerlink" href="#dplib.server.GameMode.KOTH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.GameMode.ONE_FLAG">
+<code class="sig-name descname">ONE_FLAG</code><em class="property"> = '1Flag'</em><a class="headerlink" href="#dplib.server.GameMode.ONE_FLAG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.GameMode.PONG">
+<code class="sig-name descname">PONG</code><em class="property"> = 'Pong'</em><a class="headerlink" href="#dplib.server.GameMode.PONG" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.GameMode.SIEGE">
+<code class="sig-name descname">SIEGE</code><em class="property"> = 'Siege'</em><a class="headerlink" href="#dplib.server.GameMode.SIEGE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="dplib.server.GameMode.TDM">
+<code class="sig-name descname">TDM</code><em class="property"> = 'TDM'</em><a class="headerlink" href="#dplib.server.GameMode.TDM" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
 <dt id="dplib.server.ListenerType">
 <em class="property">class </em><code class="sig-prename descclassname">dplib.server.</code><code class="sig-name descname">ListenerType</code><a class="reference internal" href="../_modules/dplib/server.html#ListenerType"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.ListenerType" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum.Enum</span></code></p>
@@ -659,6 +706,12 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 <code class="sig-name descname">TRIGGER_ONCE</code><em class="property"> = 1</em><a class="headerlink" href="#dplib.server.ListenerType.TRIGGER_ONCE" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+</dd></dl>
+
+<dl class="exception">
+<dt id="dplib.server.MapNotFoundError">
+<em class="property">exception </em><code class="sig-prename descclassname">dplib.server.</code><code class="sig-name descname">MapNotFoundError</code><a class="reference internal" href="../_modules/dplib/server.html#MapNotFoundError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.MapNotFoundError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 </dd></dl>
 
 <dl class="class">
@@ -696,7 +749,7 @@ Replaces {C} with color char (ASCII 136), {U} with underline (ASCII 134) and {I}
 <li><p><strong>port</strong> (<em>int</em>) – Server port, default 27910</p></li>
 <li><p><strong>logfile</strong> – Path to logfile</p></li>
 <li><p><strong>rcon_password</strong> – rcon password</p></li>
-<li><p><strong>pty_master</strong> (<em>int</em>) – Master of the dp2 process (useful only if you want to run the server from your Python script). Go to the getting started section for details.</p></li>
+<li><p><strong>pty_master</strong> (<em>int</em>) – Master of the dp2 process (Linux only, useful only if you want to run the server from your Python script). Go to the getting started section for details.</p></li>
 <li><p><strong>init_vars</strong> – Send come commands used for security</p></li>
 </ul>
 </dd>
@@ -897,6 +950,18 @@ All variables are set using the rcon protocol, use this function if you want to 
 <dd class="field-odd"><p><strong>timeout</strong> – Timeout in seconds</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="dplib.server.Server.new_map">
+<code class="sig-name descname">new_map</code><span class="sig-paren">(</span><em class="sig-param">map_name</em>, <em class="sig-param">gamemode=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dplib/server.html#Server.new_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#dplib.server.Server.new_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Changes the map using sv newmap &lt;mapname&gt; &lt;gamemode&gt;
+:param map_name: map name, without .bsp
+:param gamemode: Game mode
+:type gamemode: GameMode
+:return: Rcon response
+:raises MapNotFoundError: When map is not found on the server
+:rtype: str</p>
 </dd></dl>
 
 <dl class="method">

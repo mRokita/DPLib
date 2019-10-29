@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>dplib.server &mdash; DPLib 1.5 documentation</title>
+  <title>dplib.server &mdash; DPLib 1.6 documentation</title>
   
 
   
@@ -58,7 +58,7 @@
             
             
               <div class="version">
-                1.5
+                1.6
               </div>
             
           
@@ -166,6 +166,7 @@
 <span class="c1"># along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
 
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">select</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="k">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">subprocess</span> <span class="k">import</span> <span class="n">Popen</span>
@@ -197,11 +198,29 @@
     <span class="n">GAMEMODE</span> <span class="o">=</span> <span class="mi">16</span>
     <span class="n">GAME_END</span> <span class="o">=</span> <span class="mi">17</span></div>
 
+
+<div class="viewcode-block" id="GameMode"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.GameMode">[docs]</a><span class="k">class</span> <span class="nc">GameMode</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">CTF</span> <span class="o">=</span> <span class="s1">&#39;CTF&#39;</span>
+    <span class="n">ONE_FLAG</span> <span class="o">=</span> <span class="s1">&#39;1Flag&#39;</span>
+    <span class="n">ELIMINATION</span> <span class="o">=</span> <span class="s1">&#39;Elim&#39;</span>
+    <span class="n">DEATHMATCH</span> <span class="o">=</span> <span class="s1">&#39;DM&#39;</span>
+    <span class="n">SIEGE</span> <span class="o">=</span> <span class="s1">&#39;Siege&#39;</span>
+    <span class="n">TDM</span> <span class="o">=</span> <span class="s1">&#39;TDM&#39;</span>
+    <span class="n">KOTH</span> <span class="o">=</span> <span class="s1">&#39;KOTH&#39;</span>
+    <span class="n">PONG</span> <span class="o">=</span> <span class="s1">&#39;Pong&#39;</span></div>
+
+
 <div class="viewcode-block" id="BadRconPasswordError"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.BadRconPasswordError">[docs]</a><span class="k">class</span> <span class="nc">BadRconPasswordError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span></div>
 
+
 <div class="viewcode-block" id="SecurityCheckError"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.SecurityCheckError">[docs]</a><span class="k">class</span> <span class="nc">SecurityCheckError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
     <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="MapNotFoundError"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.MapNotFoundError">[docs]</a><span class="k">class</span> <span class="nc">MapNotFoundError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
 
 <div class="viewcode-block" id="ListenerType"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.ListenerType">[docs]</a><span class="k">class</span> <span class="nc">ListenerType</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
     <span class="n">PERMANENT</span> <span class="o">=</span> <span class="mi">0</span>
@@ -306,7 +325,7 @@
 <span class="sd">    :type port: int</span>
 <span class="sd">    :param logfile: Path to logfile</span>
 <span class="sd">    :param rcon_password: rcon password</span>
-<span class="sd">    :param pty_master: Master of the dp2 process (useful only if you want to run the server from your Python script). Go to the getting started section for details.</span>
+<span class="sd">    :param pty_master: Master of the dp2 process (Linux only, useful only if you want to run the server from your Python script). Go to the getting started section for details.</span>
 <span class="sd">    :type pty_master: int</span>
 <span class="sd">    :param init_vars: Send come commands used for security</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -815,6 +834,24 @@
         <span class="n">sock</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\xFF\xFF\xFF\xFF</span><span class="s1">status</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">sock</span><span class="o">.</span><span class="n">recv</span><span class="p">(</span><span class="mi">2048</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Server.new_map"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.new_map">[docs]</a>    <span class="k">def</span> <span class="nf">new_map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">map_name</span><span class="p">,</span> <span class="n">gamemode</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Changes the map using sv newmap &lt;mapname&gt; &lt;gamemode&gt;</span>
+<span class="sd">        :param map_name: map name, without .bsp</span>
+<span class="sd">        :param gamemode: Game mode</span>
+<span class="sd">        :type gamemode: GameMode</span>
+<span class="sd">        :return: Rcon response</span>
+<span class="sd">        :raises MapNotFoundError: When map is not found on the server</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;sv newmap </span><span class="si">{map}</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="n">gamemode</span><span class="p">:</span>
+            <span class="n">command</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{gamemode}</span><span class="s1">&#39;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">map</span><span class="o">=</span><span class="n">map_name</span><span class="p">,</span> <span class="n">gamemode</span><span class="o">=</span><span class="n">gamemode</span><span class="p">))</span>
+        <span class="k">if</span> <span class="s1">&#39;Cannot find mapfile&#39;</span> <span class="ow">in</span> <span class="n">res</span> <span class="ow">or</span> <span class="s1">&#39;usage&#39;</span> <span class="ow">in</span> <span class="n">res</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">MapNotFoundError</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
 <div class="viewcode-block" id="Server.permaban"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.permaban">[docs]</a>    <span class="k">def</span> <span class="nf">permaban</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ip</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Bans IP address or range of adresses and saves ban list to disk.</span>
@@ -1313,7 +1350,7 @@
                         <span class="k">if</span> <span class="n">debug</span><span class="p">:</span>
                             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;[DPLib] </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
                         <span class="k">yield from</span> <span class="bp">self</span><span class="o">.</span><span class="n">__parse_line</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span> <span class="ow">or</span> <span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">:</span>
                         <span class="n">buf</span> <span class="o">=</span> <span class="n">line</span>
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">buf</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
@@ -1330,8 +1367,11 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__log_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pty_master</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__pty_master</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
-
+            <span class="n">r</span><span class="p">,</span> <span class="n">w</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">select</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">__pty_master</span><span class="p">],</span> <span class="p">[],</span> <span class="p">[],</span> <span class="mf">0.01</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">r</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__pty_master</span><span class="p">,</span> <span class="mi">1024</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;latin-1&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s1">&#39;&#39;</span>
 
 <div class="viewcode-block" id="Server.get_players"><a class="viewcode-back" href="../../source/dplib.html#dplib.server.Server.get_players">[docs]</a>    <span class="k">def</span> <span class="nf">get_players</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

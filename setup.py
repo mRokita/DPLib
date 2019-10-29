@@ -18,7 +18,7 @@
 from distutils.core import setup
 
 setup(name='DPLib',
-      version='1.5',
+      version='1.6',
       description='Asynchronous bot framework for Digital Paint: Paintball 2 servers',
       author='Michał Rokita',
       author_email='mrokita@mrokita.pl',

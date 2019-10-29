@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Getting Started &mdash; DPLib 1.5 documentation</title>
+  <title>Getting Started &mdash; DPLib 1.6 documentation</title>
   
 
   
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.5
+                1.6
               </div>
             
           
@@ -1052,7 +1052,39 @@ You should definitely play around with it. Simply edit the third line to match y
 220
 221
 222
-223</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/python3</span>
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/python3</span>
 <span class="kn">import</span> <span class="nn">asyncio</span>
 <span class="kn">import</span> <span class="nn">shlex</span>
 <span class="kn">import</span> <span class="nn">signal</span>
@@ -1062,8 +1094,11 @@ You should definitely play around with it. Simply edit the third line to match y
 <span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Process</span>
 <span class="kn">from</span> <span class="nn">shlex</span> <span class="k">import</span> <span class="n">quote</span>
 <span class="kn">from</span> <span class="nn">threading</span> <span class="k">import</span> <span class="n">Thread</span>
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">from</span> <span class="nn">time</span> <span class="k">import</span> <span class="n">time</span><span class="p">,</span> <span class="n">sleep</span>
 <span class="kn">import</span> <span class="nn">pty</span>
+<span class="kn">import</span> <span class="nn">aioftp</span>
 
 <span class="kn">from</span> <span class="nn">_socket</span> <span class="k">import</span> <span class="n">timeout</span>
 
@@ -1083,7 +1118,7 @@ You should definitely play around with it. Simply edit the third line to match y
             <span class="s1">&#39;port&#39;</span><span class="p">:</span> <span class="mi">27911</span><span class="p">,</span>
             <span class="s1">&#39;flagcapendsround&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
             <span class="s1">&#39;elim&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
-            <span class="s1">&#39;rcon_password&#39;</span><span class="p">:</span> <span class="s1">&#39;21fasjkl&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;rcon_password&#39;</span><span class="p">:</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_letters</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)),</span>
         <span class="p">},</span>
         <span class="s1">&#39;startup_commands&#39;</span><span class="p">:</span> <span class="p">[</span>
             <span class="p">[</span><span class="s1">&#39;setmaster&#39;</span><span class="p">,</span> <span class="s1">&#39;dplogin.com&#39;</span><span class="p">],</span>
@@ -1113,6 +1148,15 @@ You should definitely play around with it. Simply edit the third line to match y
 <span class="n">managed_servers</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
 
+
+
+<span class="k">def</span> <span class="nf">get_map_download_path</span><span class="p">(</span><span class="n">mapname</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">PAINTBALL_DIR</span><span class="p">,</span> <span class="s1">&#39;pball&#39;</span><span class="p">,</span> <span class="s1">&#39;maps&#39;</span><span class="p">,</span> <span class="n">mapname</span> <span class="o">+</span> <span class="s1">&#39;.bsp&#39;</span><span class="p">)</span>
+
+<span class="k">def</span> <span class="nf">get_map_server_path</span><span class="p">(</span><span class="n">mapname</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;pball&#39;</span><span class="p">,</span> <span class="s1">&#39;maps&#39;</span><span class="p">,</span> <span class="n">mapname</span> <span class="o">+</span> <span class="s1">&#39;.bsp&#39;</span><span class="p">)</span>
+
+
 <span class="k">class</span> <span class="nc">ManagedServer</span><span class="p">(</span><span class="n">Server</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
@@ -1120,6 +1164,27 @@ You should definitely play around with it. Simply edit the third line to match y
         <span class="bp">self</span><span class="o">.</span><span class="n">server_id</span> <span class="o">=</span> <span class="n">server_id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pty_master</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">pty_slave</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">on_chat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nick</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">message</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;!map &#39;</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">mapname</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;!map &#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">get_map_download_path</span><span class="p">(</span><span class="n">mapname</span><span class="p">)):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">say</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{C}</span><span class="s2">9Map </span><span class="si">{C}</span><span class="s2">A&quot;</span> <span class="o">+</span> <span class="n">mapname</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">{C}</span><span class="s2">9 is already on the server, changing&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">new_map</span><span class="p">(</span><span class="n">mapname</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">async</span> <span class="k">with</span> <span class="n">aioftp</span><span class="o">.</span><span class="n">ClientSession</span><span class="p">(</span><span class="s2">&quot;ic3y.de&quot;</span><span class="p">,</span> <span class="mi">21</span><span class="p">)</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">get_map_server_path</span><span class="p">(</span><span class="n">mapname</span><span class="p">)):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">say</span><span class="p">(</span>
+                            <span class="s2">&quot;</span><span class="si">{C}</span><span class="s2">9Downloading </span><span class="si">{C}</span><span class="s2">A&quot;</span> <span class="o">+</span> <span class="n">mapname</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">{C}</span><span class="s2">9 from ic3y.de...&quot;</span><span class="p">)</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="n">get_map_server_path</span><span class="p">(</span><span class="n">mapname</span><span class="p">))</span>
+                        <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="n">get_map_server_path</span><span class="p">(</span><span class="n">mapname</span><span class="p">),</span> <span class="n">get_map_download_path</span><span class="p">(</span><span class="n">mapname</span><span class="p">),</span> <span class="n">write_into</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">say</span><span class="p">(</span>
+                            <span class="s2">&quot;</span><span class="si">{C}</span><span class="s2">A&quot;</span> <span class="o">+</span> <span class="n">mapname</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">{C}</span><span class="s2">9 has been downloaded successfully, changing map...&quot;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">new_map</span><span class="p">(</span><span class="n">mapname</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">say</span><span class="p">(</span>
+                            <span class="s2">&quot;</span><span class="si">{C}</span><span class="s2">9 Map </span><span class="si">{C}</span><span class="s2">A&quot;</span> <span class="o">+</span> <span class="n">mapname</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="si">{C}</span><span class="s2">9 is not available at ic3y.de&quot;</span><span class="p">)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">new_map</span><span class="p">(</span><span class="n">mapname</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">running</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -1131,14 +1196,13 @@ You should definitely play around with it. Simply edit the third line to match y
 
     <span class="k">def</span> <span class="nf">get_event_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_type</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">event_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">:</span>
-            <span class="nd">@asyncio</span><span class="o">.</span><span class="n">coroutine</span>
-            <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">async</span> <span class="k">def</span> <span class="nf">handle</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">event_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;event_rcons&#39;</span><span class="p">]:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">rcon</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;event_rcons&#39;</span><span class="p">][</span><span class="n">event_type</span><span class="p">]</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
                 <span class="k">if</span> <span class="n">event_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;event_lambdas&#39;</span><span class="p">]:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;event_lambdas&#39;</span><span class="p">][</span><span class="n">event_type</span><span class="p">](</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
+                <span class="k">await</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">handlers</span><span class="p">[</span><span class="n">event_type</span><span class="p">])(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">handle</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_event_handler</span><span class="p">(</span><span class="n">event_type</span><span class="p">)</span>
