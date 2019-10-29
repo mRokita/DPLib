@@ -15,11 +15,15 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import re
+import select
 from collections import OrderedDict
 from enum import Enum
+from subprocess import Popen
 import asyncio
 import os
 from socket import socket, AF_INET, SOCK_DGRAM
+from time import time
+
 from dplib.parse import render_text, decode_ingame_text
 
 
@@ -36,15 +40,36 @@ class ServerEvent(Enum):
     ELIM_TEAMS_FLAG = 9
     ROUND_STARTED = 10
     TEAM_SWITCHED = 11
-    GAME_END = 12
-    DISCONNECT = 13
-    FLAG_GRAB = 14
-    FLAG_DROP = 15
-    ROUND_END = 16
-    GAMEMODE = 17   
+    DISCONNECT = 12
+    FLAG_GRAB = 13
+    FLAG_DROP = 14
+    ROUND_END = 15
+    GAMEMODE = 16
+    GAME_END = 17
+
+
+class GameMode(Enum):
+    CTF = 'CTF'
+    ONE_FLAG = '1Flag'
+    ELIMINATION = 'Elim'
+    DEATHMATCH = 'DM'
+    SIEGE = 'Siege'
+    TDM = 'TDM'
+    KOTH = 'KOTH'
+    PONG = 'Pong'
+
 
 class BadRconPasswordError(Exception):
     pass
+
+
+class SecurityCheckError(Exception):
+    pass
+
+
+class MapNotFoundError(Exception):
+    pass
+
 
 class ListenerType(Enum):
     PERMANENT = 0
@@ -63,15 +88,20 @@ REGEXPS = OrderedDict([
 
     (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) revived!\r?\n'), ServerEvent.RESPAWN),
     # [19:03:57] *Red's ACEBot_6 revived!
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) entered the game \\((.*?)\\) \\[(.*?)\\]\r?\n'), ServerEvent.ENTRANCE),
-    # [19:03:57] mRokita entered the game (build 41) [127.0.0.1:22345]
+    # [19:03:57] mRokita entered the game (build 41)
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) returned the(?: \\*(.*?))? flag!\r?\n'), ServerEvent.FLAG_CAPTURED),
     # [18:54:24] *Red's hTml returned the *Blue flag!
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) earned (\d+) points for possesion of eliminated teams flag!\r?\n'),
         ServerEvent.ELIM_TEAMS_FLAG),
     # [19:30:23] *Blue's mRokita earned 3 points for possesion of eliminated teams flag!
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] Round started\\.\\.\\.\r?\n'), ServerEvent.ROUND_STARTED),
     # [10:20:11] Round started...
+
     (re.compile(
         '(?:^\\[\d\d:\d\d:\d\d\\] (.*?) switched from \\*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow))'
         ' to \\*((?:Red)|(?:Purple)|(?:Blue)|(?:Yellow))\\.\r?\n)|'
@@ -80,20 +110,37 @@ REGEXPS = OrderedDict([
     # [10:20:11] mRokita switched from Blue to Red.
     # [10:20:11] mRokita is now observing.
     # [10:20:11] mRokita is now observing.
-    (re.compile('^\\[\d\d:\d\d:\d\d\\] 0:00 left in match\\.\r?\n'), ServerEvent.GAME_END),
-    # [10:20:11] == Map Loaded: airtime ==
+
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] [\t|-]{2}GameEnd[\t-](.*?)\r?\n'), ServerEvent.GAME_END),
+    # [22:40:33]         GameEnd    441.9    No winner
+    # [22:40:33]         GameEnd    1032.6    Red:23,Blue:22
+    # [22:40:33]         GameEnd    4.9    DPBot01 wins!
+    # [22:40:33]         GameEnd    42.9    Yellow:5,Blue:0,Purple:0,Red:0
+    # [22:40:33]         GameEnd    42.9    Yellow:5,Blue:12,Purple:7
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] == Map Loaded: (.+) ==\r?\n'), ServerEvent.MAPCHANGE),
-    # [19:54:54] name1 changed name to name2.
+    # [10:20:11] == Map Loaded: airtime ==
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) changed name to (.*?)\\.\r?\n'), ServerEvent.NAMECHANGE),
+    # [19:54:54] name1 changed name to name2.
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) disconnected\\.\r?\n'), ServerEvent.DISCONNECT),
     # [19:03:57] whoa disconnected.
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?) got the(?: \\*(.*?))? flag\\!\r?\n'), ServerEvent.FLAG_GRAB),
     # [19:03:57] *whoa got the *Red flag!
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?) dropped the flag\\!\r?\n'), ServerEvent.FLAG_DROP),
     # [19:03:57] *whoa dropped the flag!
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) team wins the round\\!\r?\n'), ServerEvent.ROUND_END),
     # [14:38:50] Blue team wins the round!
+
     (re.compile('^\\[\d\d:\d\d:\d\d\\] === ((?:Deathmatch)|(?:Team Flag CTF)|(?:Single Flag CTF)|(?:Team Siege)|(?:Team Elim)|(?:Team Siege)|(?:Team Deathmatch)|(?:Team KOTH)|(?:Pong)) ===\r?\n'), ServerEvent.GAMEMODE),
+    # [09:58:11] === Team Flag CTF ===
+    # [13:16:19] === Team Siege ===
+    # [21:53:54] === Pong ===
+    # [12:21:05] === Deathmatch ===
 ])
 
 
@@ -116,6 +163,7 @@ class Player(object):
         self.build = build
 
 
+
 class Server(object):
     """
     Represents a DP:PB2 server
@@ -126,6 +174,8 @@ class Server(object):
     :type port: int
     :param logfile: Path to logfile
     :param rcon_password: rcon password
+    :param pty_master: Master of the dp2 process (useful only if you want to run the server from your Python script). Go to the getting started section for details.
+    :type pty_master: int
     :param init_vars: Send come commands used for security
     """
 
@@ -135,6 +185,7 @@ class Server(object):
         self.__init_vars = init_vars
         self.__port = port
         self.__log_file = None
+        self.__is_secure = False
         self.__alive = False
         self.__logfile_name = logfile if not pty_master else None
         self.__pty_master = pty_master
@@ -332,44 +383,44 @@ class Server(object):
         :type nick: str
         """
         pass
-    
+
     @asyncio.coroutine
     def on_flag_grab(self, nick, flag):
         """
         On flag grab, can be overridden using the :func:`.Server.event` decorator.
-       
+
         :param nick: Player's nick
         :type nick: str
         :param team: Flag color (Blue|Red|Yellow|Purple)
         :type team: str
         """
         pass
-    
+
     @asyncio.coroutine
     def on_flag_drop(self, nick):
         """
         On flag grab, can be overridden using the :func:`.Server.event` decorator.
-       
+
         :param nick: Player's nick
         :type nick: str
         :param team: Flag color (Blue|Red|Yellow|Purple)
         :type team: str
         """
         pass
-        
+
     @asyncio.coroutine
     def on_round_end(self):
         """
         Onround end, can be overridden using the :func:`.Server.event` decorator.
-       
+
         """
         pass
-        
+
     @asyncio.coroutine
     def gamemode(self, gamemode):
         """
         Onround end, can be overridden using the :func:`.Server.event` decorator.
-        
+
         :param gamemode: map's gamemode
         :type gamemode: str
         """
@@ -428,12 +479,10 @@ class Server(object):
         for i in reversed(to_remove):
             self.__listeners[event_type].pop(i)
 
-
     def nicks_valid(self, *nicks):
-
         nicks_ingame = [p.nick for p in self.get_players()]
         for nick in nicks:
-            if not nick in nicks_ingame:
+            if nick not in nicks_ingame:
                 return False
         return True
 
@@ -461,7 +510,7 @@ class Server(object):
                     'victim_nick': args[2],
                     'victim_weapon': args[3],
                     'suicide': args[4],
-                    
+
             }
             self.__perform_listeners(ServerEvent.ELIM, args, kwargs)
         elif event_type == ServerEvent.RESPAWN:
@@ -545,31 +594,31 @@ class Server(object):
                 'nick': args
             }
             self.__perform_listeners(ServerEvent.DISCONNECT, (kwargs['nick'],), kwargs)
-        
+
         elif event_type == ServerEvent.FLAG_GRAB:
             kwargs = {
                 'nick': args[0],
                 'flag': args[1],
             }
             self.__perform_listeners(ServerEvent.FLAG_GRAB, (kwargs['nick'], kwargs['flag']), kwargs)
-        
+
         elif event_type == ServerEvent.FLAG_DROP:
             kwargs = {
                 'nick': args
             }
             self.__perform_listeners(ServerEvent.FLAG_GRAB, (kwargs['nick'],), kwargs)
-            
+
         elif event_type == ServerEvent.ROUND_END:
             kwargs = dict()
             self.__perform_listeners(ServerEvent.ROUND_END, args, kwargs)
-            
+
         elif event_type == ServerEvent.GAMEMODE:
             kwargs = {
                 'gamemode': args
             }
             self.__perform_listeners(ServerEvent.GAMEMODE, args, kwargs)
 
-        asyncio.async(self.get_event_handler(event_type)(**kwargs))
+        asyncio.ensure_future(self.get_event_handler(event_type)(**kwargs))
 
     def get_event_handler(self, event_type):
         return getattr(self, self.handlers[event_type])
@@ -593,11 +642,12 @@ class Server(object):
                         continue
                 yield from self.__handle_event(event_type=e, args=res)
 
-    def rcon(self, command):
+    def rcon(self, command, socket_timeout=3):
         """
         Execute a console command using RCON.
 
         :param command: Command
+        :param socket_timeout: Timeout for the UDP socket.
 
         :return: Response from server
 
@@ -615,11 +665,9 @@ class Server(object):
         """
         sock = socket(AF_INET, SOCK_DGRAM)
         sock.connect((self.__hostname, self.__port))
-        sock.settimeout(3)
-        sock.send(bytes('\xFF\xFF\xFF\xFFrcon {} {}\n'.format(self.__rcon_password, command), 'latin-1'))
+        sock.settimeout(socket_timeout)
+        sock.send(bytes('\xFF\xFF\xFF\xFFrcon {} {}\n'.format(self.__rcon_password, command).encode('latin-1')))
         ret = sock.recv(2048).decode('latin-1')
-        if ret == '\xFF\xFF\xFF\xFFprint\nBad rcon_password.\n':
-            raise BadRconPasswordError('Bad rcon password')
         return ret
 
     def status(self):
@@ -634,6 +682,24 @@ class Server(object):
         sock.settimeout(3)
         sock.send(b'\xFF\xFF\xFF\xFFstatus\n')
         return sock.recv(2048).decode('latin-1')
+
+    def new_map(self, map_name, gamemode=None):
+        """
+        Changes the map using sv newmap <mapname> <gamemode>
+        :param map_name: map name, without .bsp
+        :param gamemode: Game mode
+        :type gamemode: GameMode
+        :return: Rcon response
+        :raises MapNotFoundError: When map is not found on the server
+        :rtype: str
+        """
+        command = 'sv newmap {map}'
+        if gamemode:
+            command += ' {gamemode}'
+        res = self.rcon(command.format(map=map_name, gamemode=gamemode))
+        if 'Cannot find mapfile' in res or 'usage' in res:
+            raise MapNotFoundError
+        return res
 
     def permaban(self, ip=None):
         """
@@ -675,7 +741,7 @@ class Server(object):
         :param id: Player's id
         :param nick: Player's nick
         :param duration: Ban duration in minutes (defaults to 3)
-        
+
         :return: Rcon response
         :rtype: str
         """
@@ -1113,34 +1179,48 @@ class Server(object):
         :type realtime: bool
         """
         if not (self.__logfile_name or self.__pty_master):
-            raise AttributeError("Logfile name or PTY slave is required.")
+            raise AttributeError("Logfile name or a Popen process is required.")
         self.__alive = True
-        self.__log_file = open(self.__logfile_name, 'rb') if self.__logfile_name else None
-        if not scan_old and self.__log_file:
+
+        if self.__logfile_name:
+            self.__log_file = open(self.__logfile_name, 'rb')
+
+        if self.__log_file and scan_old:
             self.__log_file.readlines()
-        if self.__pty_master:
-            buf = ''
+
+        buf = ''
         if realtime:
             while self.__alive:
-                if self.__log_file:
-                    line = self.__log_file.readline().decode('latin-1')
-                elif self.__pty_master:
-                    if '\n' not in buf:
-                        buf += os.read(self.__pty_master, 128).decode('latin-1')
-                    l = buf.splitlines(keepends=True)
-                    if l and '\n' in l[0]:
-                        line = l[0]
-                        buf = ''.join(l[1:])
+                try:
+                    buf += self._read_log()
+                    lines = buf.splitlines(True)
+                    line = ''
+                    for line in lines:
+                        if debug:
+                            print("[DPLib] %s" % line.strip())
+                        yield from self.__parse_line(line)
+                    if not line or line[-1] != '\n':
+                        buf = line
                     else:
-                        line = None
-                if line:
-                    if debug:
-                        print("[DPLib] %s" % line.strip())
-                    yield from self.__parse_line(line)
-                yield from asyncio.sleep(0.05)
+                        buf = ''
+                    yield from asyncio.sleep(0.05)
+                except OSError as e:
+                    raise e
 
         if self.__log_file:
             self.__log_file.close()
+        if self.__pty_master:
+            os.close(self.__pty_master)
+
+    def _read_log(self):
+        if self.__log_file:
+            return self.__log_file.readline().decode('latin-1')
+        elif self.__pty_master:
+            r, w, x = select.select([self.__pty_master], [], [], 0.01)
+            if r:
+                return os.read(self.__pty_master, 1024).decode('latin-1')
+            else:
+                return ''
 
     def get_players(self):
         """
@@ -1225,7 +1305,45 @@ class Server(object):
                 return p
         return None
 
-    def run(self, scan_old=False, realtime=True, debug=False):
+    def make_secure(self, timeout=10):
+        """
+        This function fixes some compatibility and security issues on DP server side
+        - Adds "mapchange" to sv_blockednames
+        - Sets sl_logging to 1
+        All variables are set using the rcon protocol, use this function if you want to wait for the server to start.
+
+        :param timeout: Timeout in seconds
+        """
+        sl_logging_set = False
+        sv_blockednames_set = False
+        self.__is_secure = False
+        start_time = time()
+        while not (sl_logging_set and sv_blockednames_set) and time() - start_time < timeout:
+            try:
+                if not sl_logging_set:
+                    sl_logging = self.get_cvar('sl_logging')
+                    if sl_logging != '1':
+                        self.set_cvar('sl_logging', '1')
+                    else:
+                        sl_logging_set = True
+                if not sv_blockednames_set:
+                    blockednames = self.get_cvar('sv_blockednames')
+
+                    if not 'maploaded' in blockednames:
+                        self.set_cvar('sv_blockednames', ','.join([blockednames, 'maploaded']))
+                    else:
+                        sv_blockednames_set = True
+            except ConnectionError or timeout:
+                pass
+        if not (sl_logging_set and sv_blockednames_set):
+            raise SecurityCheckError(
+                "Configuring the DP server failed,"
+                " check if the server is running "
+                "and the rcon_password is correct.")
+        else:
+            self.__is_secure = True
+
+    def run(self, scan_old=False, realtime=True, debug=False, make_secure=True):
         """
         Runs the main loop using asyncio.
 
@@ -1234,9 +1352,13 @@ class Server(object):
         :param realtime: Wait for incoming logfile data
         :type realtime: bool
         """
-        if self.__init_vars and self.__rcon_password:
-            blockednames = self.get_cvar('sv_blockednames')
-            if not 'maploaded' in blockednames.split(','):
-                # A player with name "maploaded" would block the mapchange event
-                self.set_cvar('sv_blockednames', ','.join([blockednames, 'maploaded']))
+        if make_secure and not self.__rcon_password:
+            raise AttributeError(
+                "Setting the rcon_password is required to secure DPLib."
+                " You have to either set a rcon_password or add set"
+                " \"sl_logging 1; set sv_blockednames mapname\" "
+                "to your DP server config and use Server.run with"
+                "  make_secure=False")
+        if make_secure:
+            self.make_secure()
         self.loop.run_until_complete(self.start(scan_old, realtime, debug))
