@@ -58,6 +58,14 @@ class GameMode(Enum):
     KOTH = 'KOTH'
     PONG = 'Pong'
 
+    @classmethod
+    def is_valid(cls, gamemode):
+        return gamemode in cls._value2member_map_
+
+    @classmethod
+    def get_list(cls):
+        return set(cls._value2member_map_)
+
 
 class BadRconPasswordError(Exception):
     pass
@@ -162,6 +170,22 @@ class Player(object):
         self.nick = nick
         self.build = build
 
+    @property
+    def is_bot(self):
+        return self.dplogin == 'bot'
+
+    def __eq__(self, o):
+        if o == self.nick:
+            return True
+        if o == self.dplogin:
+            return True
+        if not type(o) == Player:
+            return False
+        if o.dplogin == self.dplogin:
+            return True
+        if o.nick == self.nick:
+            return True
+        return super().__eq__(o)
 
 
 class Server(object):
@@ -179,7 +203,7 @@ class Server(object):
     :param init_vars: Send come commands used for security
     """
 
-    def __init__(self, hostname, port=27910, logfile=None, rcon_password=None, pty_master=None, init_vars=True):
+    def __init__(self, hostname, port=27910, logfile=None, rcon_password=None, pty_master=None, pty_slave=None, init_vars=True):
         self.__rcon_password = rcon_password
         self.__hostname = hostname
         self.__init_vars = init_vars
@@ -188,7 +212,8 @@ class Server(object):
         self.__is_secure = False
         self.__alive = False
         self.__logfile_name = logfile if not pty_master else None
-        self.__pty_master = pty_master
+        self._pty_master = pty_master
+        self._pty_slave = pty_slave
 
         self.handlers = {
             ServerEvent.CHAT: 'on_chat',
@@ -226,15 +251,16 @@ class Server(object):
             ServerEvent.ROUND_END: [],
             ServerEvent.GAMEMODE: [],
         }
-        self.loop = asyncio.get_event_loop()
+        self.loop = None
 
+    @property
     def is_listening(self):
         """
         Check if the main loop is running.
 
         :rtype: bool
         """
-        return self.__alive
+        return self.loop is not None
 
     @asyncio.coroutine
     def on_chat(self, nick, message):
@@ -458,6 +484,8 @@ class Server(object):
         Stop the main loop
         """
         self.__alive = False
+        self.__is_secure = False
+
 
     def __perform_listeners(self, event_type, args, kwargs):
         """
@@ -685,21 +713,57 @@ class Server(object):
 
     def new_map(self, map_name, gamemode=None):
         """
-        Changes the map using sv newmap <mapname> <gamemode>
+        Changes the map using sv newmap <mapname> <gamemode>.
+
         :param map_name: map name, without .bsp
         :param gamemode: Game mode
         :type gamemode: GameMode
+
         :return: Rcon response
-        :raises MapNotFoundError: When map is not found on the server
+        :raise MapNotFoundError: When map is not found on the server
         :rtype: str
         """
         command = 'sv newmap {map}'
         if gamemode:
+            if not GameMode.is_valid(gamemode):
+                raise ValueError("Invalid gamemode")
             command += ' {gamemode}'
         res = self.rcon(command.format(map=map_name, gamemode=gamemode))
         if 'Cannot find mapfile' in res or 'usage' in res:
             raise MapNotFoundError
         return res
+
+    def add_bot(self, nick=None):
+        """
+        Adds a DP2Bot to the game
+
+        :return: Rcon response
+        :param nick: Name of the bot (optional)
+        :rtype: str
+        """
+        command = 'sv addbot'
+        if nick:
+            command += ' {name}'
+        res = self.rcon(command.format(name=nick))
+        return res
+
+    def remove_bot(self, nick):
+        """
+        Removes a bot from the server
+        :param nick: Name of the bot or 'all'
+        :return: Rcon response
+        :rtype: str
+        :raises ValueError: When bot is not on the server
+        """
+        if nick == 'all' or\
+            nick in [p.nick for p in self.get_players() if p.is_bot]:
+            command = 'sv removebot {nick}'
+            return self.rcon(command.format(nick=nick))
+        else:
+            raise ValueError("Bot \"%s\" is not in the playerlist" % nick)
+
+
+
 
     def permaban(self, ip=None):
         """
@@ -745,14 +809,18 @@ class Server(object):
         :return: Rcon response
         :rtype: str
         """
+        if not any([nick, id]):
+            raise TypeError('Player id or nick is required.')
         if type(duration) != int:
             raise TypeError('Ban duration should be an integer, not a ' + str(type(duration)))
         if nick:
-            id = self.get_ingame_info(nick).id
-        if id:
-            return self.rcon('tban %s %s' % (id, str(duration)))
-        else:
-            raise TypeError('Player id or nick is required.')
+            player = self.get_ingame_info(nick=nick)
+        elif id:
+            player = self.get_ingame_info(ingame_id=nick)
+        if not player:
+            raise ValueError(
+                    "Player \"%s\" is not in the playerlist" % nick)
+        return self.rcon('tban %s %s' % (player.id, str(duration)))
 
     def remove_tempobans(self):
         """
@@ -773,12 +841,15 @@ class Server(object):
         :return: Rcon response
         :rtype: str
         """
-        if nick:
-            id = self.get_ingame_info(nick).id
-        if id:
-            return self.rcon('kick %s' % id)
-        else:
+        if not any([id, nick]):
             raise TypeError('Player id or nick is required.')
+        if nick:
+            player = self.get_ingame_info(nick=nick)
+        elif id:
+            player = self.get_ingame_info(id=id)
+        if not player:
+            raise ValueError("Player \"%s\" is not in the playerlist" % nick)
+        return self.rcon('kick %s' % id)
 
     def say(self, message):
         """
@@ -1178,7 +1249,7 @@ class Server(object):
         :param realtime: Wait for incoming logfile data
         :type realtime: bool
         """
-        if not (self.__logfile_name or self.__pty_master):
+        if not (self.__logfile_name or self._pty_master):
             raise AttributeError("Logfile name or a Popen process is required.")
         self.__alive = True
 
@@ -1196,6 +1267,8 @@ class Server(object):
                     lines = buf.splitlines(True)
                     line = ''
                     for line in lines:
+                        if line and line[-1] != '\n':
+                            continue
                         if debug:
                             print("[DPLib] %s" % line.strip())
                         yield from self.__parse_line(line)
@@ -1206,21 +1279,43 @@ class Server(object):
                     yield from asyncio.sleep(0.05)
                 except OSError as e:
                     raise e
+        yield from self._perform_cleanup()
 
+    @asyncio.coroutine
+    def _perform_cleanup(self):
+        if self.loop:
+            tasks = [t for t in asyncio.Task.all_tasks() if t is not
+                     asyncio.Task.current_task()]
+            [task.cancel() for task in tasks]
+            yield from asyncio.gather(*tasks)
         if self.__log_file:
-            self.__log_file.close()
-        if self.__pty_master:
-            os.close(self.__pty_master)
+            try:
+                self.__log_file.close()
+            except OSError:
+                pass
+        if self._pty_master:
+            try:
+                os.close(self._pty_master)
+            except OSError:
+                pass
+        if self._pty_slave:
+            try:
+                os.close(self._pty_slave)
+            except OSError:
+                pass
 
     def _read_log(self):
-        if self.__log_file:
-            return self.__log_file.readline().decode('latin-1')
-        elif self.__pty_master:
-            r, w, x = select.select([self.__pty_master], [], [], 0.01)
-            if r:
-                return os.read(self.__pty_master, 1024).decode('latin-1')
-            else:
-                return ''
+        try:
+            if self.__log_file:
+                return self.__log_file.readline().decode('latin-1')
+            elif self._pty_master:
+                r, w, x = select.select([self._pty_master], [], [], 0.01)
+                if r:
+                    return os.read(self._pty_master, 1024).decode('latin-1')
+                else:
+                    return ''
+        except OSError:
+            return ''
 
     def get_players(self):
         """
@@ -1291,25 +1386,57 @@ class Server(object):
             dictionary[variables[i]] = variables[i + 1]
         return dictionary
 
-    def get_ingame_info(self, nick):
+    def get_ingame_info(self, nick=None, ingame_id=None, dplogin=None, player=None):
         """
         Get ingame info about a player with nickname
 
         :param nick: Nick
 
-        :return: An instance of :class:`.Player`
+        :param dplogin: Nick
+
+
+        :param player: An instance of :class:`.Player`
+
+        :return: An instance of :class:`.Player`, None if not on the server
         """
+        if not any([nick, ingame_id, dplogin, player]):
+            raise ValueError("At least one argument is required")
         players = self.get_players()
         for p in players:
-            if p.nick == nick:
+            if nick and p.nick == nick:
+                return p
+            if ingame_id and p.id == ingame_id:
+                return p
+            if dplogin and p.dplogin == dplogin:
+                return p
+            if player and p == player:
                 return p
         return None
+
+    @asyncio.coroutine
+    def wait_for_ingame_info(self, nick=None,
+                             ingame_id=None, dplogin=None,
+                             player=None, max_tries=5, sleep_interval=.2):
+        tries = 0
+        while True:
+            info = self.get_ingame_info(nick)
+            tries += 1
+            if info and not info.dplogin and tries < max_tries:
+                yield from asyncio.sleep(sleep_interval)
+            else:
+                return info
+
+    @property
+    def is_secure(self):
+        return self.__is_secure
 
     def make_secure(self, timeout=10):
         """
         This function fixes some compatibility and security issues on DP server side
         - Adds "mapchange" to sv_blockednames
         - Sets sl_logging to 1
+
+
         All variables are set using the rcon protocol, use this function if you want to wait for the server to start.
 
         :param timeout: Timeout in seconds
@@ -1361,4 +1488,10 @@ class Server(object):
                 "  make_secure=False")
         if make_secure:
             self.make_secure()
+        while self.loop:
+            pass
+        self.loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(self.loop)
         self.loop.run_until_complete(self.start(scan_old, realtime, debug))
+        self.loop.close()
+        self.loop = None
