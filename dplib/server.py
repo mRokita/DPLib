@@ -101,7 +101,9 @@ REGEXPS = OrderedDict([
     (re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) entered the game \\((.*?)\\) \\[(.*?)\\]\r?\n'), ServerEvent.ENTRANCE),
     # [19:03:57] mRokita entered the game (build 41)
 
-    (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) returned the(?: \\*(.*?))? flag!\r?\n'), ServerEvent.FLAG_CAPTURED),
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) returned the(?: \\*(.*?))? flag!\r?\n'
+                ),
+     ServerEvent.FLAG_CAPTURED),
     # [18:54:24] *Red's hTml returned the *Blue flag!
 
     (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?)\\\'s (.*?) earned (\d+) points for possesion of eliminated teams flag!\r?\n'),
@@ -142,18 +144,43 @@ REGEXPS = OrderedDict([
     (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?) dropped the flag\\!\r?\n'), ServerEvent.FLAG_DROP),
     # [19:03:57] *whoa dropped the flag!
 
-    (re.compile('^\\[\d\d:\d\d:\d\d\\]( (.*?) team wins the round\\!|              RoundEnd        (.*?)   (.*?) (.*?))\r?\n'), ServerEvent.ROUND_END),
+    (re.compile('^\\[\d\d:\d\d:\d\d\\]( (.*?) team wins the round\\!|'
+                '              RoundEnd        (.*?)   (.*?) (.*?))\r?\n'), ServerEvent.ROUND_END),
     # [14:38:50] Blue team wins the round!
     # [01:14:17]              RoundEnd        443.9   Red FlagCapture
 
-    (re.compile('^\\[\d\d:\d\d:\d\d\\] === ((?:Deathmatch)|(?:Team Flag CTF)|(?:Single Flag CTF)|(?:Team Siege)|(?:Team Elim)|(?:Team Siege)|(?:Team Deathmatch)|(?:Team KOTH)|(?:Pong)) ===\r?\n'), ServerEvent.GAMEMODE),
+    (re.compile('^\\[\d\d:\d\d:\d\d\\] === ('
+                '(?:Deathmatch)'
+                '|(?:Team Flag CTF)'
+                '|(?:Single Flag CTF)'
+                '|(?:Team Siege)'
+                '|(?:Team Elim)'
+                '|(?:Team Siege)'
+                '|(?:Team Deathmatch)'
+                '|(?:Team KOTH)'
+                '|(?:Pong)'
+                ') ===\r?\n'), ServerEvent.GAMEMODE),
     # [09:58:11] === Team Flag CTF ===
     # [13:16:19] === Team Siege ===
     # [21:53:54] === Pong ===
     # [12:21:05] === Deathmatch ===
 
     (re.compile(
-        '^\[\d\d:\d\d:\d\d\] Stats for (.*?):\r?\n      Weapon: Sho Kil \%Acc\r?\n\[\d\d:\d\d:\d\d\]          PGP:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]      Trracer:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]     Stingray:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]        VM\-68:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]    Spyder SE:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]      Carbine:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]   Autococker:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]      Automag:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]    PaintGren:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\] Total kills/shots: (.*?): (.*?)\r?\n\[\d\d:\d\d:\d\d\] Total alive time: (.*?) secs\r?\n\[\d\d:\d\d:\d\d\] Total elim time: (.*?) secs\r?\n\[\d\d:\d\d:\d\d\] Shots/sec: (.*?)\r?\n'
+        '^\[\d\d:\d\d:\d\d\] Stats for (.*?):\r?\n'
+        '      Weapon: Sho Kil \%Acc\r?\n'
+        '\[\d\d:\d\d:\d\d\]          PGP:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n'
+        '\[\d\d:\d\d:\d\d\]      Trracer:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n'
+        '\[\d\d:\d\d:\d\d\]     Stingray:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n'
+        '\[\d\d:\d\d:\d\d\]        VM\-68:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n'
+        '\[\d\d:\d\d:\d\d\]    Spyder SE:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n'
+        '\[\d\d:\d\d:\d\d\]      Carbine:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n'
+        '\[\d\d:\d\d:\d\d\]   Autococker:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n'
+        '\[\d\d:\d\d:\d\d\]      Automag:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n'
+        '\[\d\d:\d\d:\d\d\]    PaintGren:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n'
+        '\[\d\d:\d\d:\d\d\] Total kills/shots: (.*?): (.*?)\r?\n'
+        '\[\d\d:\d\d:\d\d\] Total alive time: (.*?) secs\r?\n'
+        '\[\d\d:\d\d:\d\d\] Total elim time: (.*?) secs\r?\n'
+        '\[\d\d:\d\d:\d\d\] Shots/sec: (.*?)\r?\n'
     ), ServerEvent.LOG_STATS),
 
 
@@ -409,7 +436,7 @@ class Server(object):
     @asyncio.coroutine
     def on_mapchange(self, mapname):
         """
-        On mapcange, can be overridden using the :func:`.Server.event` decorator.
+        On map change, can be overridden using the :func:`.Server.event` decorator.
 
         :param mapname: Mapname
         :type mapname: str
@@ -454,7 +481,7 @@ class Server(object):
     @asyncio.coroutine
     def on_flag_drop(self, nick):
         """
-        On flag grab, can be overridden using the :func:`.Server.event` decorator.
+        On flag drop, can be overridden using the :func:`.Server.event` decorator.
 
         :param nick: Player's nick
         :type nick: str
@@ -474,7 +501,7 @@ class Server(object):
     @asyncio.coroutine
     def gamemode(self, gamemode):
         """
-        Onround end, can be overridden using the :func:`.Server.event` decorator.
+        Gamemode, can be overridden using the :func:`.Server.event` decorator.
 
         :param gamemode: map's gamemode
         :type gamemode: str
@@ -484,9 +511,9 @@ class Server(object):
     @asyncio.coroutine
     def log_stats(self, nick, pgp_shots, pgp_kills, pgp_accuracy, trracer_shots, trracer_kills, trracer_accuracy, stingray_shots, stingray_kills, stingray_accuracy, vm_68_shots, vm_68_kills, vm_68_accuracy, spyder_se_shots, spyder_se_kills, spyder_se_accuracy, carbine_shots, carbine_kills, carbine_accuracy, autococker_shots, autococker_kills, autococker_accuracy, automag_shots, automag_kills, automag_accuracy, paintgren_thrown, paintgren_kills, paintgren_accuracy, kills_to_shots, total_accuracy, total_time_alive, total_time_elim, shots_to_sec):
         """
-        On map end, can be overridden using the :func:`.Server.event` decorator.
+        Log stats, can be overridden using the :func:`.Server.event` decorator.
 
-        :param stats: map's stats for all players
+        :param stats: map's stats for a player
         :type gamemode: dict
         """
         pass
@@ -1351,6 +1378,9 @@ class Server(object):
                     end_pattern = re.compile("\[\d\d:\d\d:\d\d\] Shots\/sec: (.*?)\r?\n")
                     for line in lines:
                         if start_pattern.match(line):
+                            # if the line matches the start pattern for multiline text block from g_writestats
+                            # read the log line by line and keep adding them to buffer,
+                            # till a match with the end pattern
                             while True:
                                 buf += self._read_log()
                                 if end_pattern.match(buf.splitlines(True)[-1]):
