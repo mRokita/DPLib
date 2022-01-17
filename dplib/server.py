@@ -46,6 +46,7 @@ class ServerEvent(Enum):
     ROUND_END = 15
     GAMEMODE = 16
     GAME_END = 17
+    LOG_STATS = 18
 
 
 class GameMode(Enum):
@@ -119,7 +120,7 @@ REGEXPS = OrderedDict([
     # [10:20:11] mRokita is now observing.
     # [10:20:11] mRokita is now observing.
 
-    (re.compile('^\\[\d\d:\d\d:\d\d\\] [\t|-]{2}GameEnd[\t-](.*?)\r?\n'), ServerEvent.GAME_END),
+    (re.compile('^\[\d\d:\d\d:\d\d\] 		GameEnd	(.*?)	(.*?)\r?\n'), ServerEvent.GAME_END),
     # [22:40:33]         GameEnd    441.9    No winner
     # [22:40:33]         GameEnd    1032.6    Red:23,Blue:22
     # [22:40:33]         GameEnd    4.9    DPBot01 wins!
@@ -141,14 +142,38 @@ REGEXPS = OrderedDict([
     (re.compile('^\\[\d\d:\d\d:\d\d\\] \\*(.*?) dropped the flag\\!\r?\n'), ServerEvent.FLAG_DROP),
     # [19:03:57] *whoa dropped the flag!
 
-    (re.compile('^\\[\d\d:\d\d:\d\d\\] (.*?) team wins the round\\!\r?\n'), ServerEvent.ROUND_END),
+    (re.compile('^\\[\d\d:\d\d:\d\d\\]( (.*?) team wins the round\\!|              RoundEnd        (.*?)   (.*?) (.*?))\r?\n'), ServerEvent.ROUND_END),
     # [14:38:50] Blue team wins the round!
+    # [01:14:17]              RoundEnd        443.9   Red FlagCapture
 
     (re.compile('^\\[\d\d:\d\d:\d\d\\] === ((?:Deathmatch)|(?:Team Flag CTF)|(?:Single Flag CTF)|(?:Team Siege)|(?:Team Elim)|(?:Team Siege)|(?:Team Deathmatch)|(?:Team KOTH)|(?:Pong)) ===\r?\n'), ServerEvent.GAMEMODE),
     # [09:58:11] === Team Flag CTF ===
     # [13:16:19] === Team Siege ===
     # [21:53:54] === Pong ===
     # [12:21:05] === Deathmatch ===
+
+    (re.compile(
+        '^\[\d\d:\d\d:\d\d\] Stats for (.*?):\r?\n      Weapon: Sho Kil \%Acc\r?\n\[\d\d:\d\d:\d\d\]          PGP:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]      Trracer:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]     Stingray:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]        VM\-68:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]    Spyder SE:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]      Carbine:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]   Autococker:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]      Automag:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]    PaintGren:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\] Total kills/shots: (.*?): (.*?)\r?\n\[\d\d:\d\d:\d\d\] Total alive time: (.*?) secs\r?\n\[\d\d:\d\d:\d\d\] Total elim time: (.*?) secs\r?\n\[\d\d:\d\d:\d\d\] Shots/sec: (.*?)\r?\n'
+    ), ServerEvent.LOG_STATS),
+
+
+    #'^\[\d\d:\d\d:\d\d\] Stats for (.*?):\n      Weapon: Sho Kil \%Acc\n\[\d\d:\d\d:\d\d\]          PGP:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]      Trracer:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]     Stingray:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]        VM\-68:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]    Spyder SE:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]      Carbine:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]   Autococker:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]      Automag:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\]    PaintGren:\s*(.*?) \s*(.*?) \s*(.*?)\r?\n\[\d\d:\d\d:\d\d\] Total kills/shots: (.*?) (.*?)\r?\n\[\d\d:\d\d:\d\d\] Total alive time: (.*?) secs\r?\n\[\d\d:\d\d:\d\d\] Total elim time: (.*?) secs\r?\n\[\d\d:\d\d:\d\d\] Shots/sec: (.*?)\r?\n'
+    # [10:44:35] Stats for whoa@60fps:
+    #       Weapon: Sho Kil %Acc
+    # [10:44:35]          PGP:   0   0   0.00
+    # [10:44:35]      Trracer:   0   0   0.00
+    # [10:44:35]     Stingray:   0   0   0.00
+    # [10:44:35]        VM-68:   0   0   0.00
+    # [10:44:35]    Spyder SE:   0   0   0.00
+    # [10:44:35]      Carbine:   0   0   0.00
+    # [10:44:35]   Autococker:  11   1   9.09
+    # [10:44:35]      Automag:   0   0   0.00
+    # [10:44:35]    PaintGren:   0   0   0.00
+    # [10:44:35] Total kills/shots: 1/11: 9.09%
+    # [10:44:35] Total alive time: 49.3 secs
+    # [10:44:35] Total elim time: 5.0 secs
+    # [10:44:35] Shots/sec: 0.22
+
 ])
 
 
@@ -234,6 +259,7 @@ class Server(object):
             ServerEvent.FLAG_DROP: 'on_flag_drop',
             ServerEvent.ROUND_END: 'on_round_end',
             ServerEvent.GAMEMODE: 'gamemode',
+            ServerEvent.LOG_STATS: 'log_stats',
         }
         self.__listeners = {
             ServerEvent.CHAT: [],
@@ -252,6 +278,7 @@ class Server(object):
             ServerEvent.FLAG_DROP: [],
             ServerEvent.ROUND_END: [],
             ServerEvent.GAMEMODE: [],
+            ServerEvent.LOG_STATS: [],
         }
         self.loop = None
 
@@ -340,7 +367,7 @@ class Server(object):
         pass
 
     @asyncio.coroutine
-    def on_game_end(self, score_blue, score_red, score_yellow, score_purple):
+    def on_game_end(self, time, results):
         """
         On game end, can be overriden using the :func:`.Server.event` decorator.
 
@@ -451,6 +478,16 @@ class Server(object):
 
         :param gamemode: map's gamemode
         :type gamemode: str
+        """
+        pass
+
+    @asyncio.coroutine
+    def log_stats(self, nick, pgp_shots, pgp_kills, pgp_accuracy, trracer_shots, trracer_kills, trracer_accuracy, stingray_shots, stingray_kills, stingray_accuracy, vm_68_shots, vm_68_kills, vm_68_accuracy, spyder_se_shots, spyder_se_kills, spyder_se_accuracy, carbine_shots, carbine_kills, carbine_accuracy, autococker_shots, autococker_kills, autococker_accuracy, automag_shots, automag_kills, automag_accuracy, paintgren_thrown, paintgren_kills, paintgren_accuracy, kills_to_shots, total_accuracy, total_time_alive, total_time_elim, shots_to_sec):
+        """
+        On map end, can be overridden using the :func:`.Server.event` decorator.
+
+        :param stats: map's stats for all players
+        :type gamemode: dict
         """
         pass
 
@@ -586,27 +623,10 @@ class Server(object):
             self.__perform_listeners(ServerEvent.TEAM_SWITCHED, new_args, kwargs)
         elif event_type == ServerEvent.GAME_END:
             kwargs = {
-                'score_blue': None,
-                'score_red': None,
-                'score_purple': None,
-                'score_yellow': None,
+                'time': args[0],
+                'results': args[1],
             }
-            teams = args.split(',')
-            for t in teams:
-                data = t.split(':')
-                if data[0] == 'Blue':
-                    kwargs['score_blue'] = data[1]
-                elif data[0] == 'Red':
-                    kwargs['score_red'] = data[1]
-                elif data[0] == 'Yellow':
-                    kwargs['score_yellow'] = data[1]
-                elif data[0] == 'Purple':
-                    kwargs['score_purple'] = data[1]
-            self.__perform_listeners(ServerEvent.GAME_END,
-                                     (kwargs['score_blue'],
-                                      kwargs['score_red'],
-                                      kwargs['score_yellow'],
-                                      kwargs['score_purple']), kwargs)
+            self.__perform_listeners(ServerEvent.GAME_END, args, kwargs)
         elif event_type == ServerEvent.MAPCHANGE:
             kwargs = {
                 'mapname': args
@@ -647,6 +667,46 @@ class Server(object):
                 'gamemode': args
             }
             self.__perform_listeners(ServerEvent.GAMEMODE, args, kwargs)
+
+        elif event_type == ServerEvent.LOG_STATS:
+            kwargs = {
+                'nick': args[0],
+                'pgp_shots': args[1],
+                'pgp_kills': args[2],
+                'pgp_accuracy': args[3],
+                'trracer_shots': args[4],
+                'trracer_kills': args[5],
+                'trracer_accuracy': args[6],
+                'stingray_shots': args[7],
+                'stingray_kills': args[8],
+                'stingray_accuracy': args[9],
+                'vm_68_shots': args[10],
+                'vm_68_kills': args[11],
+                'vm_68_accuracy': args[12],
+                'spyder_se_shots': args[13],
+                'spyder_se_kills': args[14],
+                'spyder_se_accuracy': args[15],
+                'carbine_shots': args[16],
+                'carbine_kills': args[17],
+                'carbine_accuracy': args[18],
+                'autococker_shots': args[19],
+                'autococker_kills': args[20],
+                'autococker_accuracy': args[21],
+                'automag_shots': args[22],
+                'automag_kills': args[23],
+                'automag_accuracy': args[24],
+                'paintgren_thrown': args[25],
+                'paintgren_kills': args[26],
+                'paintgren_accuracy': args[27],
+                'kills_to_shots': args[28],
+                'total_accuracy': args[29],
+                'total_time_alive': args[30],
+                'total_time_elim': args[31],
+                'shots_to_sec': args[32],
+
+            }
+
+            self.__perform_listeners(ServerEvent.LOG_STATS, args, kwargs)
 
         asyncio.ensure_future(self.get_event_handler(event_type)(**kwargs))
 
@@ -1086,22 +1146,19 @@ class Server(object):
         return data
 
     @asyncio.coroutine
-    def wait_for_game_end(self, timeout=None, score_blue=None, score_red=None, score_yellow=None, score_purple=None, check=None):
+    def wait_for_game_end(self, timeout=None, time=None, results=None, check=None):
         """
         Waits for game end.
 
         :param timeout: Time to wait for event, if exceeded, returns None.
         :param score_blue: Blue score
-        :param score_red: Red score.
-        :param score_yellow: Yellow score.
-        :param score_purple: Purple score.
         :param check: Check function, ignored if none.
 
         :return: Returns an empty dict.
         :rtype: dict
         """
         future = asyncio.Future(loop=self.loop)
-        margs = (score_blue, score_red, score_yellow, score_purple)
+        margs = (time, results)
         predicate = self.__get_predicate(margs, check)
         self.__listeners[ServerEvent.GAME_END].append((predicate, future))
         try:
@@ -1143,10 +1200,10 @@ class Server(object):
         Waits for mapchange.
 
         :param timeout: Time to wait for elimination event, if exceeded, returns None.
-        :param mapname: Killer's nick to match, ignored if None.
+        :param mapname: Map name to match.
         :param check: Check function, ignored if None.
 
-        :return: Returns message info dict keys: ('killer_nick', 'killer_weapon', 'victim_nick', 'victim_weapon')
+        :return: Returns message str with mapname
         :rtype: dict
         """
         future = asyncio.Future(loop=self.loop)
@@ -1158,6 +1215,28 @@ class Server(object):
         except asyncio.TimeoutError:
             mapchange_info = None
         return mapchange_info
+
+    @asyncio.coroutine
+    def wait_for_gamemode(self, timeout=None, gamemode=None, check=None):
+        """
+        Waits for gamemode.
+
+        :param timeout: Time to wait for gamemode event, if exceeded, returns None.
+        :param gamemode: Game mode to match
+        :param check: Check function, ignored if None.
+
+        :return: Returns message str with the gamemode
+        :rtype: dict
+        """
+        future = asyncio.Future(loop=self.loop)
+        margs = (gamemode,)
+        predicate = self.__get_predicate(margs, check)
+        self.__listeners[ServerEvent.GAMEMODE].append((predicate, future))
+        try:
+           gamemode_info = yield from asyncio.wait_for(future, timeout, loop=self.loop)
+        except asyncio.TimeoutError:
+            gamemode_info = None
+        return gamemode_info
 
     @asyncio.coroutine
     def wait_for_namechange(self, timeout=None, old_nick=None, new_nick=None, check=None):
@@ -1268,7 +1347,16 @@ class Server(object):
                     buf += self._read_log()
                     lines = buf.splitlines(True)
                     line = ''
+                    start_pattern = re.compile("\[\d\d:\d\d:\d\d\] Stats for (.*?):\r?\n")
+                    end_pattern = re.compile("\[\d\d:\d\d:\d\d\] Shots\/sec: (.*?)\r?\n")
                     for line in lines:
+                        if start_pattern.match(line):
+                            while True:
+                                buf += self._read_log()
+                                if end_pattern.match(buf.splitlines(True)[-1]):
+                                    line = buf
+                                    buf = ''
+                                    break
                         if line and line[-1] != '\n':
                             continue
                         if debug:
@@ -1444,6 +1532,7 @@ class Server(object):
         :param timeout: Timeout in seconds
         """
         sl_logging_set = False
+        g_writestats_set = False
         sv_blockednames_set = False
         self.__is_secure = False
         start_time = time()
@@ -1455,6 +1544,12 @@ class Server(object):
                         self.set_cvar('sl_logging', '1')
                     else:
                         sl_logging_set = True
+                if not g_writestats_set:
+                    g_writestats = self.get_cvar('g_writestats')
+                    if g_writestats != '1':
+                        self.set_cvar('g_writestats', '1')
+                    else:
+                        g_writestats_set  = True
                 if not sv_blockednames_set:
                     blockednames = self.get_cvar('sv_blockednames')
 
